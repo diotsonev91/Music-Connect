@@ -1,0 +1,51 @@
+.container {
+   
+    width: 100vw;
+    max-width:25em;
+    padding: 2em 2em 0 2em;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px rgb(55, 137, 143);
+    
+
+    margin: 1rem auto;
+
+    border: 3px solid rgb(58, 88, 105);
+    background: rgba(0, 2, 2, 0.76);
+    position: relative;
+}
+
+@media only screen and (max-width: 800px) {
+    .container{
+        width:80%;
+        padding-bottom:0;
+    }
+    .button {
+        font-size: small;
+        
+    }
+  }
+
+  @media only screen and (max-width: 1200px) {
+    .container{
+        width:80%;
+        padding-bottom:0;
+    }
+    .button {
+        font-size: medium;
+        
+    }
+
+  }
+
+
+.container::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4); 
+    border-radius: 10px;
+    z-index: -1;
+}
+
+
+

@@ -1,0 +1,61 @@
+/* TYPOGRAPHY */
+/* Import Lato font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+
+
+/* RESET */
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  
+}
+
+
+:root {
+  --primary-font: "Lato", sans-serif;
+  --text-color: rgba(255, 255, 255, 0.87);
+  --bg-color: #242424;
+
+  font-family: var(--primary-font);
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: var(--text-color);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Apply to body */
+body {
+  background-color: rgb(255, 255, 255);
+  width:100%;
+  
+}
+
+/* Apply font to form elements */
+body, input, button, select, textarea {
+  font: inherit;
+}
+
+/* Lists */
+ul, ol {
+  list-style: none;
+}
+
+/* Paragraph spacing */
+p, ul, ol {
+  padding-bottom: 1.5em;
+}
+

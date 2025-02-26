@@ -1,0 +1,139 @@
+
+
+label {
+    display: block;
+    font-weight: bold;
+    padding-bottom: 0.4em;
+    transition: all 0.3s ease-in-out;
+    color: #333;
+}
+
+.input {
+    display: block;
+    width: 100%;
+    padding: 0.5em 0.5em;
+    color:#000000;
+    border: none;
+    border-bottom: 2px solid #bbb;
+    outline: none;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: #ffffff;
+    backdrop-filter: blur(40px) brightness(0.8);
+}
+
+.input-invalid {
+    border-color: #fc3849;
+    background: rgba(224, 11, 29, 0.712);
+}
+
+.input-valid {
+    border-color: #2a9d8f;
+    background: rgba(42, 157, 144, 0.801);
+}
+
+.input:focus{
+    border-color: #eecf43;
+    box-shadow: 0 0 8px rgba(67, 97, 238, 0.3);
+    background: white;
+}
+
+/* Field Styling */
+.field {
+    margin-top: 1em;
+    padding-bottom: 1em;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.field .icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    font-size: 1.2em;
+    color: #999;
+    transition: color 0.3s;
+}
+
+.field label {
+    order: -1;
+    position: absolute;
+    top: 1em;
+    left: 0.5em;
+    font-size: 1em;
+    color: #111;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+}
+
+/* Smooth floating label */
+.field input:focus ~ label,
+.field input:not(:placeholder-shown) ~ label {
+    transform: translateY(-2.5em);
+    font-size: 1em;
+    color: #ffffff;
+}
+
+/* Required asterisk */
+.field input:required ~ label::after {
+    content: '*';
+    color: #e63946;
+    margin-left: 0.3em;
+    font-size: 1.1em;
+   
+}
+
+/* Validation Colors */
+.input-invalid ~ .icon,
+.input-invalid ~ label {
+    color: #f56b76;
+}
+
+.field input:focus ~ .icon,
+.field input:focus ~ label {
+    color: #fdfdff;
+}
+
+.input-valid ~ .icon,
+.input-valid ~ label {
+    color: #2a9d8f;
+}
+
+.field input::placeholder {
+    color: transparent;
+}
+
+
+
+.helper {
+    text-align: start;
+    display: block;
+    font-size: 0.85em;
+    opacity: 0.7;
+    padding: 0.1em 0 0.2em 0;
+    color: #ffffff;
+    backdrop-filter: blur(3px) brightness(1.4);
+    font-weight: 600;
+}
+
+.error {
+    color:#e63946;
+    text-align: start;
+    background-color: #423030;
+}
+
+
+
+@media only screen and (max-width: 800px) {
+    input{
+        font-size: small;
+    }
+  }
+
+  @media only screen and (max-width: 1200px) {
+    input{
+        font-size: medium;
+    }
+  }
