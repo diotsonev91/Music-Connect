@@ -1,7 +1,6 @@
 import React from "react";
 import FormBox from "../shared/components/FormBox";
 import { auth, db } from "../firebaseConfig";
-import { auth } from "../firebaseConfig";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore"; 
 

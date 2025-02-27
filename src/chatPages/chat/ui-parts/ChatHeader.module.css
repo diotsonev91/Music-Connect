@@ -1,0 +1,54 @@
+.chatHeader {
+    display: flex;
+    align-items: center;
+    background: #0078ff;
+    color: white;
+
+    padding: 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-bottom: 1px solid #ddd;
+    height: 4em;
+}
+
+.profileButton {
+    font-size: 1em;
+    border-radius: 50px;
+    padding:0.5em;
+    cursor: pointer;
+}
+.userInfo {
+    display: flex;
+    align-items: center; 
+    justify-content: flex-start; 
+    flex-grow: 1; 
+    gap: 10px; 
+}
+
+
+.texts {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+
+.texts span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.texts p {
+    font-size: 14px;
+    font-weight: 300;
+    color: #a5a5a5;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+

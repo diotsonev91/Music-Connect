@@ -1,0 +1,9 @@
+.chatWindow {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;
+    background: #28838acb;
+    border-left: 1px solid #ddd;
+}
