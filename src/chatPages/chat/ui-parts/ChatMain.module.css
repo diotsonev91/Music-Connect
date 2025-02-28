@@ -8,7 +8,7 @@
     background-position: center;
 }
 
-.chatMain p {
+.chatMain .pStyle {
     color: #555;
     text-align: center;
 }

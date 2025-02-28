@@ -1,6 +1,7 @@
 .chatHeader {
     display: flex;
     align-items: center;
+    
     background: #0078ff;
     color: white;
 
@@ -13,16 +14,24 @@
 
 .profileButton {
     font-size: 1em;
-    border-radius: 50px;
-    padding:0.5em;
+    
     cursor: pointer;
+    border: solid black;
+    border-radius: 50px;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 7px;
+    margin-left: 1em;
+    margin-right: 70%;
+    
+
 }
 .userInfo {
     display: flex;
     align-items: center; 
     justify-content: flex-start; 
     flex-grow: 1; 
-    gap: 10px; 
+    gap: 10px
 }
 
 
@@ -38,7 +47,7 @@
     font-weight: bold;
 }
 
-.texts p {
+.texts .pStyle {
     font-size: 14px;
     font-weight: 300;
     color: #a5a5a5;

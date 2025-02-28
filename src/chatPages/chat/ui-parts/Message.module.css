@@ -1,0 +1,123 @@
+.messageWrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 10px 0;
+}
+
+/* Sender Message (Right-aligned) */
+.sender {
+    justify-content: flex-end;
+}
+
+/* Receiver Message (Left-aligned) */
+.receiver {
+    justify-content: flex-start;
+}
+
+/* Avatar Styling */
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* If the message is from the sender, hide the avatar */
+.sender .avatar {
+    display: none;
+}
+
+.messageBubble {
+    max-width: 60%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    font-size: 1em;
+    line-height: 1.4;
+    word-wrap: break-word;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Different styles for sender & receiver */
+.sender .messageBubble {
+    background-color: #0078ff;
+    color: white;
+    border-bottom-right-radius: 5px;
+}
+
+.receiver .messageBubble {
+    background-color: #e0e0e0;
+    color: black;
+    border-bottom-left-radius: 5px;
+}
+
+/* Timestamp Styling */
+.timestamp {
+    font-size: 0.8em;
+    color: gray;
+    display: block;
+    text-align: right;
+    margin-top: 5px;
+}
+
+.senderTimestamp {
+    color:white;
+}
+
+/* Image Container (For Sent Images) */
+.imageContainer {
+    
+    margin-bottom: 5px;
+}
+
+.imageContainerSender{
+    display: flex;
+    justify-content: end;
+    margin-left: 3em;
+}
+
+.imageContainerReceiver {
+    display: flex;
+    justify-content: start;
+    margin-left: 3em;
+}
+
+/* Sent Image */
+.messageImage {
+    margin:3px;
+    width: 200px; /* Adjust size */
+    height: 200px; /* Make it square */
+    border-radius: 10px;
+    object-fit: cover;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Fullscreen Image Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* Enlarged Image */
+.fullscreenImage {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 2px 4px 15px rgba(255, 255, 255, 0.3);
+    transition: transform 0.3s ease-in-out;
+}
+
+.fullscreenImage:hover {
+    transform: scale(1.05);
+}
