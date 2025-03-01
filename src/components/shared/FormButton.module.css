@@ -1,4 +1,4 @@
-.button-primary {
+.buttonPrimary {
     margin-top: 1em;
     margin-bottom: 1em;
     display: block;
@@ -23,7 +23,7 @@
     
 }
 
-.button-primary:hover {
+.buttonPrimary:hover {
     color:#fff;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;

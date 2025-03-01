@@ -1,23 +1,16 @@
-import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter as Router } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import AppRoutes from "./routes/AppRoutes";
 
-import LoginPage from './authPages/LoginPage';
-import RegisterPage from './authPages/RegisterPage';
-import ChatPage from './chatPages/ChatPage';
-
-function App() {
+const App = () => {
   return (
-    <Router>
-      <Routes>
-
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-
-        {/*TODO Those below should not be public routes */}
-        <Route path='/chat' element={<ChatPage />} /> 
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppRoutes />
+      </Router>
+    </AuthProvider>
   );
-}
+};
 
 export default App;

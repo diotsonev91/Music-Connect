@@ -4,7 +4,7 @@ export default function FormButton({ buttonText, isFormValid }) {
   return (
       <button 
           type="submit" 
-          className={`${styles.button-primary} ${!isFormValid ? styles.disabled : ''}`}
+          className={`${styles.buttonPrimary} ${!isFormValid ? styles.disabled : ''}`}
           disabled={!isFormValid} 
       >
           {buttonText}
