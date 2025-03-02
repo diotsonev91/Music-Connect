@@ -1,0 +1,172 @@
+/* Navbar Styles */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css");
+
+.navbar {
+  border-left: 5px solid gray;
+  border-right: 5px solid gray;
+  width: 100%;
+
+  padding: 10px 10px 10px 10px;
+  transition: 0.3s ease-out;
+
+  /* Ensures blur works */
+  backdrop-filter: blur(10px) brightness(0.8);
+  -webkit-backdrop-filter: blur(15px) brightness(6.8);
+
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 16px;
+  /* Gradient overlay + Image */
+  background: url("/header.png");
+  background-size: cover;
+  background-position-y: 22em;
+  background-position-x: 17em;
+}
+
+/* Add Font Awesome Icons Before Each Link */
+.navLinks li .musicBefore::before {
+  /* Songs & Playlists */
+
+  content: "\f001"; /* Font Awesome Music Icon */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+.navLinks li .chatBefore::before {
+  /* Chat  */
+
+  content: "\f086"; /* Font Awesome Comments Icon */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+.navLinks li .blogBefore::before {
+  /* Forum */
+
+  content: "\f27a"; /* Font Awesome Forum / Newspaper Icon */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+.navLinks li .profileBefore::before {
+  /* My Profile */
+
+  content: "\f007"; /* Font Awesome User Icon */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+.navLinks li .loginBefore::before {
+  /* Login Icon */
+  content: "\f2f6"; /* Font Awesome Sign-In Icon */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+.navLinks li .registerBefore::before {
+  /* Register Icon */
+  content: "\f234";
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+/* Common Before Icon Styling */
+.navLinks li span::before {
+  position: absolute;
+  left: 20%;
+  bottom: 0%;
+  font-size: 35px;
+  color: #e5eaeed0;
+  transition: transform 0.3s ease, color 0.3s ease;
+  z-index: -1;
+}
+
+/* Container for Flex Layout */
+.container {
+  max-width: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  gap: 14em;
+  flex-basis: 2em;
+}
+
+/* Logo Styles */
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  font-size: 26px;
+  font-weight: bolder;
+  text-align: center;
+  width: 1em;
+  aspect-ratio: 1/1;
+
+  background: url("/logo3.png");
+  background-size: cover;
+  border-radius: 10%;
+  background-position-y: 31.5em;
+  background-color: rgba(0, 0, 0, 0.596);
+  flex-basis: 15%;
+}
+
+/* Nav Links (Aligned Right) */
+.navLinks {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin-left: auto;
+  align-self: start;
+  align-items: center;
+}
+
+/* Nav Links <li> with Gradient Borders */
+.navLinks li {
+  padding: 0 16px 2em 16px;
+  position: relative;
+  background-color: rgba(31, 46, 68, 0.37);
+  backdrop-filter: blur(8px) brightness(0.8);
+  border: 6px solid rgba(158, 219, 186, 0.356);
+  border-bottom: none;
+  border-right: none;
+
+  border-top-left-radius: 22px;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 22px;
+  border-bottom-left-radius: 4px;
+}
+
+.navLinks li:hover {
+  background-color: rgba(65, 88, 124, 0.699);
+}
+
+.navLinks li:hover span::before {
+  bottom: 30%;
+  transition: bottom 0.3s ease;
+}
+
+/* Nav Links <a> */
+.navLinks li span {
+  padding-bottom: 1em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  text-decoration: none;
+  color: #f1f1f1;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding-left: 0.1em;
+  transition: border-bottom 0.1s;
+  text-align: center;
+}
+
+.navLinks li:hover span {
+  margin-bottom: -2em;
+  padding-top: 2em;
+  transition: all 0.3s ease;
+}

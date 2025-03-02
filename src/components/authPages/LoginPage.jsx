@@ -1,6 +1,6 @@
 import React from "react";
-import FormBox from "../shared/FormBox";
-import { useAuth } from "../../contexts/AuthContext"; 
+import FormBox from "../shared/Form/FormBox";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function LoginPage() {
   const { login } = useAuth();
