@@ -70,8 +70,18 @@
   font-weight: 900;
 }
 
+.navLinks li .logoutBefore::before {
+  /* Logout Icon */
+  content: "\f2f5"; /* Unicode for Font Awesome logout icon */
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+  margin-right: 8px; /* Adjust spacing between icon and text */
+}
+
+
 /* Common Before Icon Styling */
-.navLinks li span::before {
+.navLinks li span::before,
+.navLinks li button::before  {
   position: absolute;
   left: 20%;
   bottom: 0%;
@@ -80,6 +90,8 @@
   transition: transform 0.3s ease, color 0.3s ease;
   z-index: -1;
 }
+
+
 
 /* Container for Flex Layout */
 .container {
@@ -150,6 +162,7 @@
 
 /* Nav Links <a> */
 .navLinks li span {
+  cursor: pointer;
   padding-bottom: 1em;
   display: flex;
   align-items: center;
@@ -169,4 +182,13 @@
   margin-bottom: -2em;
   padding-top: 2em;
   transition: all 0.3s ease;
+}
+
+.navLinks li button {
+  background: none;
+  cursor: pointer;
+  padding-bottom: 0.5em;
+  text-transform: uppercase;
+  border: none;
+  font-size:16px;
 }

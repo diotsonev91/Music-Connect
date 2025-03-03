@@ -1,0 +1,61 @@
+.commentsContainer {
+  width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background: #f9f9f9;
+    border-radius: 5px;
+  }
+  
+  .commentsContainer h3 {
+    color:#000000;
+  }
+  .commentList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .commentItem {
+    margin-bottom: 5px;
+    color:#000000;
+  }
+  
+  .timestamp {
+    cursor: pointer;
+    color: blue;
+    font-weight: bold;
+  }
+  
+  .inputField {
+    width: 80%;
+    padding: 8px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .commentButton {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  .commentButton:hover {
+    opacity: 0.8;
+  }
+  
+  .highlightPlaceholder::placeholder {
+    color: yellow;
+    font-weight: bold;
+  }
+
+
+  .commentList p {
+   
+    display: inline;
+    border: 1px solid gray;
+    padding:0.1em;
+    color:rgb(43, 43, 21);
+  }
