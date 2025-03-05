@@ -3,14 +3,18 @@ import WavesurferPlayer from "@wavesurfer/react";
 import { useComments } from "../../../contexts/TrackCommentContext"; // Import comments context
 import styles from "./WaveformPlayer.module.css";
 
-const WaveformPlayer = ({ trackId, audioUrl, onTimestampClick, showComments, containerSize = "small" }) => {
-  const { comments } = useComments(); // Get comments for the track
+
+const WaveformPlayer = ({ trackId, audioUrl, onTimestampClick = () => {}, showComments = false, containerSize = "small" }) => {
+  
+  const { comments = {} } = showComments ? useComments() : { comments: {} }; 
+  
+  
   const [wavesurfer, setWavesurfer] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
 
-  console.log("Track ID in WaveformPlayer:", trackId);
-console.log("Comments for track:", trackId, comments);
+//   console.log("Track ID in WaveformPlayer:", trackId);
+//  console.log("Comments for track:", trackId, comments);
 
   const onReady = (ws) => {
     setWavesurfer(ws);
@@ -45,7 +49,7 @@ console.log("Comments for track:", trackId, comments);
     return () => clearInterval(interval); // Cleanup when unmounting
   }, [wavesurfer, isPlaying]);
 
-  console.log("Comments for track:", trackId, comments[trackId]); // Debugging log
+  //console.log("Comments for track:", trackId, comments[trackId]); // Debugging log
 
   return (
     <div className={`${styles.waveformContainer} ${styles[containerSize]}`}>
