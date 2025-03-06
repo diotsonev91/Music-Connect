@@ -13,6 +13,7 @@ import MusicPage from "../components/musicPages/MusicPage";
 import TrackPage from "../components/musicPages/TrackPage";
 import { TrackCommentProvider } from "../contexts/TrackCommentContext"; 
 import PlaylistPage from "../components/musicPages/PlaylistPage";
+import BlogsPage from "../components/blogPages/BlogsPage";
 
 const AppRoutes = () => {
   return (
@@ -23,6 +24,7 @@ const AppRoutes = () => {
         <Route path="blog" element={<BlogMain />} />
         <Route path="music" element={<MusicPage />} />
         <Route path="playlist" element={<PlaylistPage />} />
+        <Route path="blogs/:category" element={<BlogsPage />} />
         <Route
             path="/track/:id"
             element={
