@@ -1,12 +1,22 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook, faPenNib, faCalendarAlt, faEye } from "@fortawesome/free-solid-svg-icons";
 import styles from "./BlogCard.module.css";
 
 const BlogCard = ({ blog }) => {
+
+  const navigate = useNavigate();
+
   const avatarSrc = blog.avatar || "/default_avatar.png";
   const blogImg = blog.image || "/header.png"
+
+
+  const handleReadMore = () => {
+    navigate(`/blog/${blog.id}`, { state: blog });
+  };
+
 
   return (
     <motion.div 
@@ -24,7 +34,7 @@ const BlogCard = ({ blog }) => {
             <p className={styles.publisher}><FontAwesomeIcon icon={faPenNib} /> By {blog.publisher}</p>
             <p className={styles.date}><FontAwesomeIcon icon={faCalendarAlt} /> Posted on {blog.datePosted}</p>
             <p className={styles.stats}><FontAwesomeIcon icon={faEye} /> {blog.views} views • {blog.replies} replies</p>
-            <button className={styles.readMore}>Read More</button>
+            <button className={styles.readMore} onClick={handleReadMore}>Read More</button>
           </div>
         </div>
       </div>

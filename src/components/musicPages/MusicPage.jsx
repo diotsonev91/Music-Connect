@@ -14,6 +14,7 @@ import ethnicImage from "/ethnic.png";
 import classicalImage from "/classical.png";
 import acousticImage from "/acoustic.png";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const genres = [
   { name: "Hip Hop", icon: <FaMicrophone />, image: hipHopImage },
@@ -25,7 +26,13 @@ const genres = [
 ];
 
 export default function MusicPage() {
+  const navigate = useNavigate(); 
   const { user, logout } = useAuth();
+
+  const handleGenreClick = (genreName) => {
+    navigate(`/playlist/${genreName.toLowerCase()}`); 
+  };
+
   return (
     <div className={styles.mainContainer}>
       {user ? (
@@ -53,7 +60,9 @@ export default function MusicPage() {
         <div className={styles.container}>
           <div className={styles.cardsList}>
             {genres.map((genre, index) => (
-              <div key={index} className={styles.card}>
+              <div key={index} className={styles.card}
+              onClick={() => handleGenreClick(genre.name)}
+              >
                 <div className={styles.cardImage}>
                   <img src={genre.image} alt={genre.name} />
                 </div>

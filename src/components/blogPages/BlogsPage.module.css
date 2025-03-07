@@ -59,32 +59,4 @@
     gap: 20px;
   }
   
-  .blogItem, .eventBlogItem {
-    background: #1e1e1e;
-    border-radius: 8px;
-    display: flex;
-    gap: 15px;
-    padding: 15px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  .avatar, .eventImage {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
-  
-  .readMoreButton {
-    background: #f50;
-    border: none;
-    color: #fff;
-    padding: 8px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .readMoreButton:hover {
-    background: #d42e00;
-  }
   
