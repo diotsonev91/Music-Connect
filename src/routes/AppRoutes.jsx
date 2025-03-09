@@ -15,6 +15,11 @@ import { TrackCommentProvider } from "../contexts/TrackCommentContext";
 import PlaylistPage from "../components/musicPages/PlaylistPage";
 import BlogsPage from "../components/blogPages/BlogsPage";
 import BlogDetails from "../components/blogPages/BlogDetails";
+import PostBlog from "../components/blogPages/PostBlog";
+import EditBlog from "../components/blogPages/EditBlog";
+import UploadTrack from "../components/musicPages/UploadTrack";
+import EditTrack from "../components/musicPages/EditTrack";
+
 const AppRoutes = () => {
   return (
     <Routes>
@@ -25,15 +30,39 @@ const AppRoutes = () => {
         <Route path="music" element={<MusicPage />} />
         <Route path="playlist/:genre" element={<PlaylistPage />} />
         <Route path="blogs/:category" element={<BlogsPage />} />
+
+        {/* ✅ Separate Route for Blog Details */}
         <Route path="blog/:id" element={<BlogDetails />} />
+        
+        {/* ✅ Separate Route for Editing Blog */}
         <Route
-            path="/track/:id"
-            element={
-              <TrackCommentProvider>
-                <TrackPage />
-              </TrackCommentProvider>
-            }
-          />
+          path="blog/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditBlog />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ✅ Separate Route for Track Details */}
+        <Route
+          path="track/:id"
+          element={
+            <TrackCommentProvider>
+              <TrackPage />
+            </TrackCommentProvider>
+          }
+        />
+
+        {/* ✅ Separate Route for Editing Track */}
+        <Route
+          path="track/:id/edit"
+          element={
+            <ProtectedRoute>
+              <EditTrack />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Private routes inside Layout */}
         <Route
@@ -52,8 +81,24 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="blog_post"
+          element={
+            <ProtectedRoute>
+              <PostBlog />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="track/upload"
+          element={
+            <ProtectedRoute>
+              <UploadTrack />
+            </ProtectedRoute>
+          }
+        />
       </Route>
-
+      
       {/* Auth pages without Layout */}
       <Route
         path="login"

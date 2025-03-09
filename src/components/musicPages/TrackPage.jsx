@@ -4,7 +4,7 @@ import WaveformPlayer from "./shared/WaveformPlayer";
 import CommentsSection from "./CommentsSection";
 import styles from "./TrackPage.module.css";
 
-const TrackPage = () => {
+const TrackPage = ({ showComments = true }) => {
   const { id } = useParams(); // Get track ID from URL
 
   const demoTrack = "/chillSample.mp3";
@@ -30,7 +30,7 @@ const TrackPage = () => {
           audioUrl={demoTrack}
           trackId={id}
           onTimestampClick={(time) => setSelectedTimestamp(time)} 
-           showComments={true}
+           showComments={showComments}
             containerSize="large" />
         </div>
 
@@ -41,7 +41,8 @@ const TrackPage = () => {
       </div>
 
       {/* Author Section */}
-      <div className={styles.authorInfo}>
+      {showComments && 
+      <>      <div className={styles.authorInfo}>
         <img src={author.avatar} alt="Author Avatar" className={styles.authorAvatar} />
         <span>{author.name}</span>
         <a href={author.profileUrl} className={styles.profileButton}>
@@ -50,10 +51,13 @@ const TrackPage = () => {
       </div>
 
       {/* Comments Section with Track ID */}
-      <CommentsSection trackId={id}
+       <CommentsSection trackId={id}
        selectedTimestamp={selectedTimestamp}
        resetTimestamp={() => setSelectedTimestamp(null)} 
        />
+       </>
+
+      }
     </div>
   );
 };

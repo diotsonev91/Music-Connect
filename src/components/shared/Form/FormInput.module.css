@@ -1,6 +1,6 @@
 
 
-label {
+.label {
     display: block;
     font-weight: bold;
     padding-bottom: 0.4em;
@@ -32,6 +32,7 @@ label {
     background: rgba(42, 157, 144, 0.801);
 }
 
+
 .input:focus{
     border-color: #eecf43;
     box-shadow: 0 0 8px rgba(67, 97, 238, 0.3);
@@ -40,11 +41,18 @@ label {
 
 /* Field Styling */
 .field {
-    margin-top: 1em;
-    padding-bottom: 1em;
     display: flex;
     flex-direction: column;
     position: relative;
+}
+
+.fieldDefault{
+    margin-top: 1em;
+    padding-bottom: 1em;
+}
+
+.fieldBlog{
+  
 }
 
 .field .icon {
@@ -57,7 +65,7 @@ label {
     transition: color 0.3s;
 }
 
-.field label {
+.label {
     order: -1;
     position: absolute;
     top: 1em;
@@ -69,15 +77,15 @@ label {
 }
 
 /* Smooth floating label */
-.field input:focus ~ label,
-.field input:not(:placeholder-shown) ~ label {
+.field input:focus ~ .label,
+.field input:not(:placeholder-shown) ~ .label {
     transform: translateY(-2.5em);
     font-size: 1em;
     color: #ffffff;
 }
 
 /* Required asterisk */
-.field input:required ~ label::after {
+.field input:required ~ .label::after {
     content: '*';
     color: #e63946;
     margin-left: 0.3em;
@@ -87,17 +95,17 @@ label {
 
 /* Validation Colors */
 .input-invalid ~ .icon,
-.input-invalid ~ label {
+.input-invalid ~ .label {
     color: #f56b76;
 }
 
 .field input:focus ~ .icon,
-.field input:focus ~ label {
+.field input:focus ~ .label {
     color: #fdfdff;
 }
 
 .input-valid ~ .icon,
-.input-valid ~ label {
+.input-valid ~ .label {
     color: #2a9d8f;
 }
 
@@ -124,6 +132,18 @@ label {
     background-color: #423030;
 }
 
+.blogInput,
+.blogForm select,
+.blogForm textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
 
 
 @media only screen and (max-width: 800px) {

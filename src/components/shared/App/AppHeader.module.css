@@ -192,3 +192,15 @@
   border: none;
   font-size:16px;
 }
+
+.themeToggle {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.themeToggle:hover {
+  transform: scale(1.1);
+}

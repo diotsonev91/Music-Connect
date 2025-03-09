@@ -1,0 +1,157 @@
+/* Import global styles */
+@import "../../App.css"; /* Adjust path if needed */
+
+/* Wrapper */
+.wrapper {
+    max-width: 1400px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: var(--bg-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Title */
+.title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Labels */
+.label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+/* Field Container */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1.5em;
+}
+
+/* Form Structure */
+.trackForm {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Form Rows */
+.row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.row-horizontal {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* File Upload Buttons */
+.file-upload-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Upload Buttons */
+.fileUploadButton {
+    background-color: var(--button-bg);
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+}
+
+.fileUploadButton:hover {
+    background-color: var(--button-hover);
+}
+
+/* Previews */
+.previewContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.previewImage {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: 10px;
+}
+
+/* Audio Preview */
+audio {
+    width: 100%;
+    max-width: 300px;
+}
+
+/* Submit Button */
+.button {
+    background-color: var(--button-bg);
+    color: white;
+    padding: 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.button:hover {
+    background-color: var(--button-hover);
+}
+
+/* Playlist Button */
+.playlistButton {
+    background-color: var(--button-bg);
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+}
+
+.playlistButton:hover {
+    background-color: var(--button-hover);
+}
+
+/* Message */
+.message {
+    margin-top: 15px;
+    font-weight: bold;
+    color: var(--message-color);
+}

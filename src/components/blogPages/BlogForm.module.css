@@ -1,0 +1,117 @@
+/* Import global styles */
+@import "../../App.css"; /* Adjust path if needed */
+
+/* Wrapper */
+.wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px;
+    background-color: var(--bg-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+.label{
+ 
+    font-size: 1rem;
+}
+
+.title {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: start;
+    align-items: start;
+    margin:auto;
+}
+
+.field {
+    display: flex;
+    gap:10px;
+    height:4em;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Title */
+.title {
+    font-size: 2rem;
+    margin-bottom: 1em;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.blogTitle {
+    gap:10px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+
+/* Form */
+.blogForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.row,
+.row2 {
+    
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: space-between;
+    align-items: start; /* ✅ Ensures both inputs align properly */
+    flex-basis: 5em;
+
+}
+
+.select { 
+    flex: 1; /* ✅ Make both elements take equal space */
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+   
+}
+
+.select {
+    flex: 1; /* ✅ Ensure it matches the FormInput width */
+    min-width: 0; /* ✅ Prevents extra spacing */
+    max-width: 100%; /* ✅ Prevents it from stretching too much */
+}
+
+/* Image Preview */
+.previewImage {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 1em;
+}
+
+/* Submit Button */
+.button {
+    background-color: var(--button-bg);
+    color: white;
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.button:hover {
+    background-color: var(--button-hover);
+}
+
+/* Message */
+.message {
+    margin-top: 15px;
+    font-weight: bold;
+    color: var(--message-color);
+}

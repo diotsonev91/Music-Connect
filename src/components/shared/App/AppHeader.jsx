@@ -2,10 +2,13 @@ import React from "react";
 import styles from "./AppHeader.module.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
+import { useTheme } from "../../../contexts/ThemeContext"; // Import ThemeContext
 
 const AppHeader = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { darkMode, setDarkMode } = useTheme(); // Get theme state
+
 
   const handleLogout = async () => {
     await logout();
@@ -87,6 +90,16 @@ const AppHeader = () => {
               </li>
             </>
           )}
+           {/* Theme Toggle Button */}
+           <li>
+            <button
+              onClick={() => setDarkMode(!darkMode)}
+              className={styles.themeToggle}
+              title="Toggle Dark Mode"
+            >
+              {darkMode ? "🌙" : "☀️"}
+            </button>
+          </li>
         </ul>
       </div>
     </nav>
