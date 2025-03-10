@@ -1,45 +1,77 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../../firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
-import { useParams } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import { fetchTrack, updateTrack } from "../../services/firebaseTrackService";
+import { uploadFile } from "../../services/firebaseStorage";
 import TrackForm from "./TrackForm";
+import TrackPage from "./TrackPage";
+import { useParams } from "react-router-dom";
 
-const EditTrack = () => {
-  const { trackId } = useParams(); // ✅ Get track ID from URL
-  const [existingTrack, setExistingTrack] = useState(null);
-  const [loading, setLoading] = useState(true);
+const EditTrack = ({ onSubmitSuccess }) => {
+  const { id } = useParams();
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [trackData, setTrackData] = useState(null);
+  const [trackImageURL, setTrackImageURL] = useState("");
+  const [backgroundImageURL, setBackgroundImageURL] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const fetchTrack = async () => {
-      try {
-        const trackRef = doc(db, "tracks", trackId);
-        const trackSnap = await getDoc(trackRef);
-
-        if (trackSnap.exists()) {
-          setExistingTrack({ id: trackSnap.id, ...trackSnap.data() });
-        } else {
-          console.error("Track not found");
-        }
-      } catch (error) {
-        console.error("Error fetching track:", error);
-      } finally {
-        setLoading(false);
+    const loadTrack = async () => {
+      const data = await fetchTrack(id);
+      if (data) {
+        setTrackData(data);
+        setTrackImageURL(data.trackImageUrl || "");
+        setBackgroundImageURL(data.backgroundImageUrl || "");
       }
     };
+    loadTrack();
+  }, [id]);
 
-    fetchTrack();
-  }, [trackId]);
+  const handleSubmit = async (formData) => {
+    if (!user) {
+      setMessage("User not logged in.");
+      return;
+    }
 
-  if (loading) return <p>Loading track details...</p>;
-  if (!existingTrack) return <p>Track not found.</p>;
+    setLoading(true);
+    try {
+      const trackFileUrl = formData.trackFile ? await uploadFile(formData.trackFile, "tracks") : formData.trackFileUrl;
+      const trackImageUrl = formData.trackImage ? await uploadFile(formData.trackImage, "track_images") : formData.trackImageUrl;
+      const backgroundImageUrl = formData.backgroundImage ? await uploadFile(formData.backgroundImage, "background_images") : formData.backgroundImageUrl;
 
-  return (
+      await updateTrack(id, { ...formData, trackFileUrl, trackImageUrl, backgroundImageUrl });
+
+      setMessage("Track updated successfully!");
+      onSubmitSuccess && onSubmitSuccess();
+    } catch (error) {
+      setMessage("Error: " + error.message);
+    }
+    setLoading(false);
+  };
+
+  return trackData ? (
     <div>
       <h1>Edit Track</h1>
-      <TrackForm existingTrack={existingTrack} onSubmitSuccess={() => console.log("Track updated successfully!")} />
+
+      {/* ✅ Render TrackPage with preview images */}
+      <TrackPage 
+        showComments={false} 
+        trackImageURL={trackImageURL} 
+        backgroundImageURL={backgroundImageURL} 
+      />
+
+      {/* ✅ Pass preview handlers & existing track data to TrackForm */}
+      <TrackForm 
+        initialData={trackData} 
+        onSubmit={handleSubmit} 
+        loading={loading} 
+        setTrackImageURL={setTrackImageURL} 
+        setBackgroundImageURL={setBackgroundImageURL} 
+      />
+
+      {message && <p>{message}</p>}
     </div>
-  );
+  ) : <p>Loading...</p>;
 };
 
 export default EditTrack;
- 

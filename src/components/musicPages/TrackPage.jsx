@@ -4,12 +4,13 @@ import WaveformPlayer from "./shared/WaveformPlayer";
 import CommentsSection from "./CommentsSection";
 import styles from "./TrackPage.module.css";
 
-const TrackPage = ({ showComments = true }) => {
+const TrackPage = ({ showComments = true, trackImageURL = "", backgroundImageURL = "" }) => {
+
   const { id } = useParams(); // Get track ID from URL
 
-  const demoTrack = "/chillSample.mp3";
-  const trackImage = "/test_hiphop.webp";
-  const backgroundImage = "/header.png";
+  const demoTrack =  "/chillSample.mp3";
+  const trackImage = trackImageURL || "/test_hiphop.webp";
+  const backgroundImage = backgroundImageURL || "/header.png";
   const author = {
     name: "John Doe",
     avatar: "/default_avatar.png",
