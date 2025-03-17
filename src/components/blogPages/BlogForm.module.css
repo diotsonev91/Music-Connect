@@ -105,6 +105,13 @@
     transition: 0.3s;
 }
 
+.button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #ccc; /* Gray out the button */
+    color: rebeccapurple;
+  }
+
 .button:hover {
     background-color: var(--button-hover);
 }

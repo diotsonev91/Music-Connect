@@ -27,12 +27,14 @@ export const deleteFile = async (fileUrl) => {
  * @returns {Promise<string>} - URL of uploaded file
  */
 export const uploadFile = async (file, path, oldFileUrl = null) => {
-  if (!file) return oldFileUrl; // Return the old URL if no new file is uploaded
+  if (!file) return oldFileUrl; // ✅ Return old URL if no new file is uploaded
 
-  // Delete old file if it exists
-  if (oldFileUrl) await deleteFile(oldFileUrl);
+  // ✅ Only delete old file when updating an existing post
+  if (oldFileUrl && oldFileUrl.startsWith("https://")) {
+    await deleteFile(oldFileUrl);
+  }
 
-  // Upload new file
+  // ✅ Upload new file
   const fileRef = ref(storage, `${path}/${Date.now()}_${file.name}`);
   const uploadTask = uploadBytesResumable(fileRef, file);
 

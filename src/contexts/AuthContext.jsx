@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginUser, registerUser, logoutUser, listenForAuthChanges } from "../services/firebaseAuth";
-import { saveUser } from "../services/firebaseFirestore"; // ✅ Firestore service
+import { addDocument } from "../services/firebaseFirestore";
 
 const AuthContext = createContext();
 
@@ -8,57 +8,39 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Listen for auth state changes (from firebaseAuth.js)
+  // ✅ Listen for Firebase auth state changes
   useEffect(() => {
     const unsubscribe = listenForAuthChanges((currentUser) => {
-      setUser(currentUser); // ✅ Updates React state
+      setUser(currentUser);
       setLoading(false);
-      console.log("Auth State Changed: ", currentUser);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // ✅ Login function (uses service)
+  // ✅ Login function (no try/catch, handled in components)
   const login = async (email, password) => {
-    try {
-      if (!email || !password) throw new Error("Email and Password are required!");
-      const userCredential = await loginUser(email, password);
-      setUser(userCredential.user);
-      return { success: true, user: userCredential.user };
-    } catch (error) {
-      console.error("Login Error:", error.message);
-      return { success: false, error: error.message };
-    }
+    const userCredential = await loginUser(email, password);
+    setUser(userCredential.user);
+    return userCredential.user;
   };
 
-  // ✅ Register function (uses service)
+  // ✅ Register function (no try/catch, handled in components)
   const register = async (email, password) => {
-    try {
-      if (!email || !password) throw new Error("Email and Password are required!");
+    const userCredential = await registerUser(email, password);
+    const user = userCredential.user;
 
-      const userCredential = await registerUser(email, password);
-      const user = userCredential.user;
+    // ✅ Store user info in Firestore
+    await addDocument("users", { uid: user.uid, email: user.email, createdAt: new Date() });
 
-      // ✅ Store user info in Firestore
-      await saveUser(user.uid, { email: user.email, createdAt: new Date() });
-
-      setUser(user);
-      return { success: true, user };
-    } catch (error) {
-      console.error("Registration Error:", error.message);
-      return { success: false, error: error.message };
-    }
+    setUser(user);
+    return user;
   };
 
-  // ✅ Logout function (uses service)
+  // ✅ Logout function
   const logout = async () => {
-    try {
-      await logoutUser();
-      setUser(null); // Ensure state updates
-    } catch (error) {
-      console.error("Logout Error:", error.message);
-    }
+    await logoutUser();
+    setUser(null);
   };
 
   return (
@@ -68,5 +50,5 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// ✅ Custom hook to use AuthContext
+// ✅ Custom hook for easy access to AuthContext
 export const useAuth = () => useContext(AuthContext);

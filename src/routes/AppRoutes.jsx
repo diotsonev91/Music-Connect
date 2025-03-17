@@ -28,7 +28,7 @@ const AppRoutes = () => {
         <Route index element={<HomePage />} />
         <Route path="blog" element={<BlogMain />} />
         <Route path="music" element={<MusicPage />} />
-        <Route path="playlist/:genre" element={<PlaylistPage />} />
+        <Route path="playlist/:playlistTitle" element={<PlaylistPage />} />
         <Route path="blogs/:category" element={<BlogsPage />} />
 
         {/* ✅ Separate Route for Blog Details */}

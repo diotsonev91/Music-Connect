@@ -1,34 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { createBlogPost } from "../../services/firebaseBlogService";
-import { uploadFile } from "../../services/firebaseStorage";
+import useBlogMutation from "../../hooks/useBlogMutation";
 import BlogForm from "./BlogForm";
 
 const PostBlog = ({ onSubmitSuccess }) => {
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const { saveOrUpdateBlog, isLoading, error, message } = useBlogMutation();
 
   const handleSubmit = async (formData) => {
-    if (!user) {
-      setMessage("User not logged in.");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const imageUrl = formData.image ? await uploadFile(formData.image, "blog_images") : formData.imageUrl;
-      await createBlogPost({ ...formData, imageUrl, author: { uid: user.uid, email: user.email, displayName: user.displayName || "Anonymous" } });
-
-      setMessage("Blog post created successfully!");
+    if (!user) return;
+    const result = await saveOrUpdateBlog(formData, user);
+    if (result.success) {
       onSubmitSuccess && onSubmitSuccess();
-    } catch (error) {
-      setMessage("Error: " + error.message);
     }
-    setLoading(false);
   };
 
-  return <BlogForm onSubmit={handleSubmit} loading={loading} />;
+  return (
+    <div>
+      <h1>Create a New Blog Post</h1>
+      <BlogForm onSubmit={handleSubmit} loading={isLoading} />
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {message && <p>{message}</p>}
+    </div>
+  );
 };
 
 export default PostBlog;

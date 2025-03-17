@@ -10,14 +10,16 @@ const BlogCard = ({ blog }) => {
   const navigate = useNavigate();
 
   const avatarSrc = blog.avatar || "/default_avatar.png";
-  const blogImg = blog.image || "/header.png"
+  const blogImg = blog.imageUrl || "/header.png"
 
-
+  console.log("BLOG: ", blog)
   const handleReadMore = () => {
     navigate(`/blog/${blog.id}`, { state: blog });
   };
 
-
+  const createdAtDate = blog.createdAt?.seconds
+  ? new Date(blog.createdAt.seconds * 1000).toLocaleDateString("en-GB")
+  : "Loading...";
   return (
     <motion.div 
       whileHover={{ scale: 1.05 }} 
@@ -31,8 +33,8 @@ const BlogCard = ({ blog }) => {
           <div className={styles.info}>
             <h3 className={styles.title}>{blog.title}</h3>
             <p className={styles.category}><FontAwesomeIcon icon={faBook} /> Category: {blog.category}</p>
-            <p className={styles.publisher}><FontAwesomeIcon icon={faPenNib} /> By {blog.publisher}</p>
-            <p className={styles.date}><FontAwesomeIcon icon={faCalendarAlt} /> Posted on {blog.datePosted}</p>
+            <p className={styles.publisher}><FontAwesomeIcon icon={faPenNib} /> By {blog.author.displayName}</p>
+            <p className={styles.date}><FontAwesomeIcon icon={faCalendarAlt} /> Posted on {createdAtDate}</p>
             <p className={styles.stats}><FontAwesomeIcon icon={faEye} /> {blog.views} views • {blog.replies} replies</p>
             <button className={styles.readMore} onClick={handleReadMore}>Read More</button>
           </div>

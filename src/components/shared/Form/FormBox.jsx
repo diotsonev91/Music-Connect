@@ -3,14 +3,13 @@ import styles from "./FormBox.module.css";
 import FormInput from "./FormInput";
 import FormButton from "./FormButton";
 
-export default function FormBox({ formType, onSubmit }) {
+export default function FormBox({ formType, onSubmit, isLoading, error }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errors, setErrors] = useState({ email: "", password: "", confirmPassword: "" });
     const [isFormValid, setIsFormValid] = useState(false);
 
-    
     const validateEmail = (email) => {
         if (!email) return "Email is required";
         if (!email.includes("@")) return "Invalid email format";
@@ -23,33 +22,31 @@ export default function FormBox({ formType, onSubmit }) {
         return "";
     };
 
-    //TODO see ho to fix when typing first  the confirm password and then the password
+    // ✅ Fix: Check confirm password validation correctly
     const validateConfirmPassword = (confirmPassword) => {
-        if (confirmPassword.length < 6){ 
-          return "Password must be at least 6 characters"
-        }
-         
+        if (!confirmPassword) return "Confirm Password is required";
+        if (confirmPassword.length < 6) return "Password must be at least 6 characters";
         if (formType === "register" && confirmPassword !== password) return "Passwords do not match";
         return "";
     };
 
-   
+    // ✅ Recalculate errors when input changes
     useEffect(() => {
         setErrors({
             email: validateEmail(email),
             password: validatePassword(password),
-            confirmPassword: validateConfirmPassword(confirmPassword),
+            confirmPassword: formType === "register" ? validateConfirmPassword(confirmPassword) : "",
         });
     }, [email, password, confirmPassword, formType]);
 
-    
+    // ✅ Check if form is valid
     useEffect(() => {
         setIsFormValid(
             !errors.email && !errors.password && (!errors.confirmPassword || formType !== "register")
         );
     }, [errors, email, password, confirmPassword, formType]);
 
- 
+    // ✅ Handle form submission
     const handleSubmit = (event) => {
         event.preventDefault();
         if (isFormValid) {
@@ -79,11 +76,9 @@ export default function FormBox({ formType, onSubmit }) {
                     placeholder="Enter your password"
                     isRequired={true}
                     errorText={errors.password}
-                    helperText="Minimum 6 characters and maximum 12 characters"
+                    helperText="Minimum 6 characters"
                     validate={validatePassword}
                 />
-
-            
                 {formType === "register" && (
                     <FormInput
                         value={confirmPassword}
@@ -97,7 +92,14 @@ export default function FormBox({ formType, onSubmit }) {
                     />
                 )}
 
-                <FormButton buttonText={formType === "register" ? "Sign Up" : "Login"} isFormValid={isFormValid} />
+                {/* ✅ Show error message from Firebase auth */}
+                {error && <p className={styles.error}>{error}</p>}
+
+                <FormButton 
+                    buttonText={formType === "register" ? "Sign Up" : "Login"} 
+                    isFormValid={isFormValid} 
+                    isLoading={isLoading} 
+                />
             </form>
         </div>
     );

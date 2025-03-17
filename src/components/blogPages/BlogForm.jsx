@@ -32,12 +32,12 @@ const BlogForm = ({ initialData = {}, onSubmit, loading }) => {
   // 🔹 Validation functions
   const validateTitle = (value) => {
     if (value.length < 4) return "Title must be at least 4 characters.";
-    if (value.length > 20) return "Title must be at most 20 characters.";
+    if (value.length > 50) return "Title must be at most 50 characters.";
     return "";
   };
 
   const validateContent = (value) => {
-    if (value.length < 20) return "Content must be at least 20 characters.";
+    if (value.length < 30) return "Content must be at least 30 characters.";
     return "";
   };
 
@@ -106,11 +106,19 @@ const BlogForm = ({ initialData = {}, onSubmit, loading }) => {
           formType="blog"
         />
 
-        <FileUploadButton
-          accept="image/*"
-          buttonText="Upload Image"
-          onFileSelect={(file) => handleChange("image", file)}
-        />
+<FileUploadButton
+  accept="image/*"
+  buttonText="Upload Image"
+  onFileSelect={(file) => {
+    handleChange("image", file);
+    
+    // ✅ Generate preview URL for the selected image
+    if (file) {
+      const imagePreviewUrl = URL.createObjectURL(file);
+      handleChange("imageUrl", imagePreviewUrl);
+    }
+  }}
+/>
         {formData.imageUrl && <img src={formData.imageUrl} alt="Preview" className={styles.previewImage} />}
 
         <button type="submit" className={styles.button} disabled={loading}>

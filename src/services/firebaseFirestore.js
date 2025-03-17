@@ -1,15 +1,29 @@
 import { db } from "./firebaseConfig";
-import { doc, setDoc, updateDoc, deleteDoc, collection, getDocs, getDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc, deleteDoc, collection, getDocs, getDoc, addDoc,serverTimestamp } from "firebase/firestore";
 
 /**
- * Saves a new user in Firestore (Creates or Updates)
- * @param {string} userId - User ID
- * @param {object} userData - User data
- * @returns {Promise<void>}
+ * Adds a new document to a Firestore collection
+ * @param {string} collectionName - Firestore collection name
+ * @param {object} data - Document data
+ * @returns {Promise<string>} - Document ID of the new document
  */
-export const saveUser = async (userId, userData) => {
-  const userRef = doc(db, "users", userId);
-  await setDoc(userRef, userData, { merge: true }); // ✅ Merge existing data
+export const addDocument = async (collectionName, data) => {
+  console.log("🔥 Firestore Payload Before Sending:", JSON.stringify(data, null, 2));
+
+  try {
+    // ✅ Force Firestore to use the correct path
+    const docRef = doc(collection(db, collectionName)); // Generates an ID
+    await setDoc(docRef, {
+      ...data,
+      createdAt: serverTimestamp(), // ✅ Ensure Firestore handles timestamps properly
+    });
+
+    console.log("✅ Document successfully written! ID:", docRef.id);
+    return docRef.id;
+  } catch (error) {
+    console.error("❌ Firestore Write Error:", error);
+    throw error;
+  }
 };
 
 /**

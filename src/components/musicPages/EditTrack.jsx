@@ -1,74 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { fetchTrack, updateTrack } from "../../services/firebaseTrackService";
-import { uploadFile } from "../../services/firebaseStorage";
-import TrackForm from "./TrackForm";
-import TrackPage from "./TrackPage";
+import useTrackMutation from "../../hooks/useTrackMutation"; // ✅ Use our custom hook
 import { useParams } from "react-router-dom";
+import TrackForm from "./TrackForm";
+import TrackView from "./shared/TrackView";
 
 const EditTrack = ({ onSubmitSuccess }) => {
-  const { id } = useParams();
-  const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [trackData, setTrackData] = useState(null);
-  const [trackImageURL, setTrackImageURL] = useState("");
-  const [backgroundImageURL, setBackgroundImageURL] = useState("");
-  const [message, setMessage] = useState("");
+  const { id } = useParams(); // ✅ Get track ID from URL
+  const { user } = useAuth(); // ✅ Get user from AuthContext
+  const { saveOrUpdateTrack, fetchTrackById, isLoading, error, message } = useTrackMutation(); // ✅ Use mutation hook
 
+  // ✅ Store the full track object
+  const [trackData, setTrackData] = useState(null);
+
+  // ✅ Fetch track by ID first
   useEffect(() => {
     const loadTrack = async () => {
-      const data = await fetchTrack(id);
-      if (data) {
-        setTrackData(data);
-        setTrackImageURL(data.trackImageUrl || "");
-        setBackgroundImageURL(data.backgroundImageUrl || "");
+      const track = await fetchTrackById(id); // ✅ Fetch the track by ID
+      if (track) {
+        setTrackData(track);
       }
     };
     loadTrack();
   }, [id]);
 
+  // ✅ Handle form submission
   const handleSubmit = async (formData) => {
-    if (!user) {
-      setMessage("User not logged in.");
-      return;
-    }
+    if (!user) return;
 
-    setLoading(true);
-    try {
-      const trackFileUrl = formData.trackFile ? await uploadFile(formData.trackFile, "tracks") : formData.trackFileUrl;
-      const trackImageUrl = formData.trackImage ? await uploadFile(formData.trackImage, "track_images") : formData.trackImageUrl;
-      const backgroundImageUrl = formData.backgroundImage ? await uploadFile(formData.backgroundImage, "background_images") : formData.backgroundImageUrl;
-
-      await updateTrack(id, { ...formData, trackFileUrl, trackImageUrl, backgroundImageUrl });
-
-      setMessage("Track updated successfully!");
+    const result = await saveOrUpdateTrack(formData, user, id);
+    if (result.success) {
       onSubmitSuccess && onSubmitSuccess();
-    } catch (error) {
-      setMessage("Error: " + error.message);
     }
-    setLoading(false);
   };
 
   return trackData ? (
     <div>
       <h1>Edit Track</h1>
 
-      {/* ✅ Render TrackPage with preview images */}
-      <TrackPage 
-        showComments={false} 
-        trackImageURL={trackImageURL} 
-        backgroundImageURL={backgroundImageURL} 
-      />
+      {/* ✅ Render TrackPage with Full Track Data */}
+      <TrackView track={trackData} />
 
-      {/* ✅ Pass preview handlers & existing track data to TrackForm */}
+      {/* ✅ Pass Full Track Data to Form */}
       <TrackForm 
         initialData={trackData} 
         onSubmit={handleSubmit} 
-        loading={loading} 
-        setTrackImageURL={setTrackImageURL} 
-        setBackgroundImageURL={setBackgroundImageURL} 
+        loading={isLoading} 
+        setTrackData={setTrackData} // ✅ Update trackData dynamically
       />
 
+      {error && <p style={{ color: "red" }}>{error}</p>}
       {message && <p>{message}</p>}
     </div>
   ) : <p>Loading...</p>;

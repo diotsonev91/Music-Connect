@@ -1,64 +1,54 @@
 import React, { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { createTrack } from "../../services/firebaseTrackService";
-import { uploadFile } from "../../services/firebaseStorage";
+import useTrackMutation from "../../hooks/useTrackMutation"; // ✅ Use our custom hook
 import TrackForm from "./TrackForm";
-import TrackPage from "./TrackPage";
+import TrackView from "./shared/TrackView";
 
 const UploadTrack = ({ onSubmitSuccess }) => {
-  const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [trackImageURL, setTrackImageURL] = useState("");
-  const [backgroundImageURL, setBackgroundImageURL] = useState("");
-  const [message, setMessage] = useState("");
+  const { user } = useAuth(); // ✅ Get user from AuthContext
+  const { saveOrUpdateTrack, isLoading, error, message } = useTrackMutation(); // ✅ Use our mutation hook
 
+  // ✅ Store the full track object
+  const [trackData, setTrackData] = useState({
+    trackName: "",
+    genre: "",
+    trackFile: null,
+    trackFileUrl: "",
+    trackImage: null,
+    trackImageUrl: "",
+    backgroundImage: null,
+    backgroundImageUrl: "",
+    author: user
+      ? { uid: user.uid, email: user.email, displayName: user.displayName || "Anonymous" }
+      : {},
+  });
+
+  // ✅ Handle form submission
   const handleSubmit = async (formData) => {
-    if (!user) {
-      setMessage("User not logged in.");
-      return;
-    }
+    if (!user) return; // ✅ Prevent upload if user is not logged in
 
-    setLoading(true);
-    try {
-      const trackFileUrl = formData.trackFile ? await uploadFile(formData.trackFile, "tracks") : formData.trackFileUrl;
-      const trackImageUrl = formData.trackImage ? await uploadFile(formData.trackImage, "track_images") : formData.trackImageUrl;
-      const backgroundImageUrl = formData.backgroundImage ? await uploadFile(formData.backgroundImage, "background_images") : formData.backgroundImageUrl;
-
-      await createTrack({
-        ...formData,
-        trackFileUrl,
-        trackImageUrl,
-        backgroundImageUrl,
-        author: { uid: user.uid, email: user.email, displayName: user.displayName || "Anonymous" },
-      });
-
-      setMessage("Track uploaded successfully!");
+    const result = await saveOrUpdateTrack(formData, user);
+    if (result.success) {
       onSubmitSuccess && onSubmitSuccess();
-    } catch (error) {
-      setMessage("Error: " + error.message);
-    }
-    setLoading(false);
+    } 
   };
 
   return (
     <div>
       <h1>Upload a New Track</h1>
 
-      {/* ✅ Render TrackPage with preview images */}
-      <TrackPage 
-        showComments={false} 
-        trackImageURL={trackImageURL} 
-        backgroundImageURL={backgroundImageURL} 
+      {/* ✅ Show Preview with Full Track Object */}
+      <TrackView track={trackData}/>
+
+      {/* ✅ Pass track state to TrackForm */}
+      <TrackForm 
+        initialData={trackData} 
+        onSubmit={handleSubmit} 
+        loading={isLoading} 
+        setTrackData={setTrackData} // ✅ Update trackData on input changes
       />
 
-      {/* ✅ Pass preview handlers to TrackForm */}
-      <TrackForm 
-        onSubmit={handleSubmit} 
-        loading={loading} 
-        setTrackImageURL={setTrackImageURL} 
-        setBackgroundImageURL={setBackgroundImageURL} 
-      />
-      
+      {error && <p style={{ color: "red" }}>{error}</p>}
       {message && <p>{message}</p>}
     </div>
   );

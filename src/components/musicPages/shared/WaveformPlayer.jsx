@@ -4,7 +4,7 @@ import { useComments } from "../../../contexts/TrackCommentContext"; // Import c
 import styles from "./WaveformPlayer.module.css";
 
 
-const WaveformPlayer = ({ trackId, audioUrl, onTimestampClick = () => {}, showComments = false, containerSize = "small" }) => {
+const WaveformPlayer = ({ trackId, audioUrl, onTimestampClick = () => {}, showComments = false, containerSize = "small" , showPlayButton= true}) => {
   
   const { comments = {} } = showComments ? useComments() : { comments: {} }; 
   
@@ -91,10 +91,11 @@ const WaveformPlayer = ({ trackId, audioUrl, onTimestampClick = () => {}, showCo
       })}
   </div>
 )}
-
+      {showPlayButton && 
       <button onClick={handlePlayPause} className={styles.playButton}>
         {isPlaying ? "Pause" : "Play"}
       </button>
+      }
 
       {showComments && (
         <button onClick={handleAddComment} className={styles.commentButton}>

@@ -1,45 +1,59 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
-import { fetchBlogPost, updateBlogPost } from "../../services/firebaseBlogService";
-import { uploadFile } from "../../services/firebaseStorage";
+import useBlogMutation from "../../hooks/useBlogMutation";
 import BlogForm from "./BlogForm";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const EditBlog = ({ onSubmitSuccess }) => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const { saveOrUpdateBlog, deleteBlogPost, getBlog, isLoading, error, message } = useBlogMutation();
   const [blogData, setBlogData] = useState(null);
 
+  // ✅ Fetch existing blog data
   useEffect(() => {
     const loadBlog = async () => {
-      const data = await fetchBlogPost(id);
+      const data = await getBlog(id);
       if (data) setBlogData(data);
     };
     loadBlog();
   }, [id]);
 
   const handleSubmit = async (formData) => {
-    if (!user) {
-      setMessage("User not logged in.");
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const imageUrl = formData.image ? await uploadFile(formData.image, "blog_images") : formData.imageUrl;
-      await updateBlogPost(id, { ...formData, imageUrl });
-
-      setMessage("Blog updated successfully!");
+    if (!user) return;
+    const result = await saveOrUpdateBlog(formData, user, id);
+    if (result.success) {
       onSubmitSuccess && onSubmitSuccess();
-    } catch (error) {
-      setMessage("Error: " + error.message);
     }
-    setLoading(false);
   };
 
-  return blogData ? <BlogForm initialData={blogData} onSubmit={handleSubmit} loading={loading} /> : <p>Loading...</p>;
+  const handleDelete = async () => {
+    if (!user) return;
+    
+    const confirmDelete = window.confirm("Are you sure you want to delete this blog?");
+    if (!confirmDelete) return;
+
+    const result = await deleteBlogPost(id, blogData.imageUrl);
+    if (result.success) {
+      alert("Blog deleted successfully!");
+      navigate("/blogs"); // Redirect after deletion
+    }
+  };
+
+  return blogData ? (
+    <div>
+      <h1>Edit Blog Post</h1>
+      <BlogForm initialData={blogData} onSubmit={handleSubmit} loading={isLoading} />
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {message && <p>{message}</p>}
+
+      {/* ✅ Delete Button */}
+      <button onClick={handleDelete} style={{ background: "red", color: "white", marginTop: "20px" }}>
+        Delete Blog
+      </button>
+    </div>
+  ) : <p>Loading...</p>;
 };
 
 export default EditBlog;

@@ -19,7 +19,7 @@ const TrackForm = ({ initialData = {}, onSubmit, loading, setTrackImageURL, setB
   // ✅ Store user-edited form data
   const [formData, setFormData] = useState({
     trackName: "",
-    genre: "Hip Hop",
+    genre: "",
     trackFile: null,
     trackFileUrl: "",
     trackImage: null,

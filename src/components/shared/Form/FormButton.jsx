@@ -1,13 +1,15 @@
-import styles from "./FormButton.module.css"
+import styles from "./FormButton.module.css";
 
-export default function FormButton({ buttonText, isFormValid }) {
+export default function FormButton({ buttonText, isFormValid, isLoading }) {
   return (
       <button 
           type="submit" 
-          className={`${styles.buttonPrimary} ${!isFormValid ? styles.disabled : ''}`}
-          disabled={!isFormValid} 
+          className={`${styles.buttonPrimary} 
+                      ${!isFormValid || isLoading ? styles.disabled : ""}`} 
+          disabled={!isFormValid || isLoading}
       >
-          {buttonText}
+          {isLoading ? "Processing..." : buttonText}
       </button>
   );
 }
+ 

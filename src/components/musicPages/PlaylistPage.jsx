@@ -1,50 +1,36 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // For navigation
-import WaveformPlayer from "./shared/WaveformPlayer"; // Import your existing player
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams, useLocation } from "react-router-dom"; // For navigation
+import useTrackMutation from "../../hooks/useTrackMutation"; // Import hook
+import WaveformPlayer from "./shared/WaveformPlayer"; // Import player
 import styles from "./PlaylistPage.module.css"; // Import styles
 import defaultImage from "/logo3.png"; // Default image
 import { FaHeart, FaShareAlt, FaEye, FaComment } from "react-icons/fa"; // Import icons
 
-const PlaylistPage = ({ playlistTitle = "Test Playlist UI" }) => {
+const PlaylistPage = () => {
+  const { playlistTitle } = useParams();
   const navigate = useNavigate();
-  console.log("Playlist Title:", playlistTitle);
+  const location = useLocation();
+  const { fetchTracksByPlaylist, isLoading, error } = useTrackMutation();
+  const [tracks, setTracks] = useState([]);
 
-  // Test data
-  const [tracks, setTracks] = useState([
-    { 
-      trackId: "1", 
-      title: "Track One", 
-      audioUrl: "/chillSample.mp3",
-      imageUrl: "/test_hiphop.webp",
-      likes: 10,
-      views: 120,
-      comments: 5
-    },
-    { 
-      trackId: "2", 
-      title: "Track Two", 
-      audioUrl: "/chillSample.mp3",
-      imageUrl: "/test_hiphop.webp",
-      likes: 8,
-      views: 95,
-      comments: 2
-    },
-    { 
-      trackId: "3", 
-      title: "Track Three", 
-      audioUrl: "/chillSample.mp3",
-      imageUrl: "/test_hiphop.webp",
-      likes: 15,
-      views: 180,
-      comments: 7
-    },
-  ]);
+  useEffect(() => {
+    const loadTracks = async () => {
+      const data = await fetchTracksByPlaylist(playlistTitle);
+      if (data) {
+        setTracks(data);
+      }
+    };
+
+    if (playlistTitle) {
+      loadTracks();
+    }
+  }, [location.key]);
 
   // Handle like button
   const handleLike = (trackId) => {
     setTracks((prevTracks) =>
       prevTracks.map((track) =>
-        track.trackId === trackId ? { ...track, likes: track.likes + 1 } : track
+        track.id === trackId ? { ...track, likes: (track.likes || 0) + 1 } : track
       )
     );
   };
@@ -60,51 +46,48 @@ const PlaylistPage = ({ playlistTitle = "Test Playlist UI" }) => {
     <div className={styles.playlistContainer}>
       <h2 className={styles.playlistTitle}>{playlistTitle}</h2>
 
-      {tracks.map((track) => (
-        <div key={track.trackId} className={styles.trackItem}>
-          {/* Clickable Track Title */}
-          <h3 
-            className={styles.trackTitle} 
-            onClick={() => navigate(`/track/${track.trackId}`)}
-          >
-            {track.title}
-          </h3>
+      {isLoading ? (
+        <p>Loading tracks...</p>
+      ) : error ? (
+        <p className={styles.error}>Error: {error.message}</p>
+      ) : tracks.length === 0 ? (
+        <p className={styles.noTracks}>No tracks found in this playlist.</p>
+      ) : (
+        tracks.map((track) => (
+          <div key={track.id} className={styles.trackItem}>
+            {/* Clickable Track Title */}
+            <h3 className={styles.trackTitle} onClick={() => navigate(`/track/${track.id}`)}>
+              {track.title}
+            </h3>
 
-          <div className={styles.trackContent}>
-            {/* Waveform Player */}
-            <WaveformPlayer 
-              trackId={track.trackId} 
-              audioUrl={track.audioUrl} 
-              showComments={false} 
-            />
+            <div className={styles.trackContent}>
+              {/* Waveform Player */}
+              <WaveformPlayer trackId={track.id} audioUrl={track.trackFileUrl} showComments={false} />
 
-            {/* Track Image */}
-            <div className={styles.trackImageBox}>
-              <img 
-                src={track.imageUrl || defaultImage} 
-                alt={track.title} 
-                className={styles.trackImage} 
-              />
+              {/* Track Image */}
+              <div className={styles.trackImageBox}>
+                <img src={track.trackImageUrl || defaultImage} alt={track.title} className={styles.trackImage} />
+              </div>
+            </div>
+
+            {/* Track Actions - Like, Share, Views, Comments */}
+            <div className={styles.trackActions}>
+              <button className={styles.actionButton} onClick={() => handleLike(track.id)}>
+                <FaHeart /> {track.likes || 0}
+              </button>
+              <button className={styles.actionButton} onClick={() => handleShare(track.id)}>
+                <FaShareAlt />
+              </button>
+              <span className={styles.trackStats}>
+                <FaEye /> {track.views || 0}
+              </span>
+              <span className={styles.trackStats}>
+                <FaComment /> {track.comments || 0}
+              </span>
             </div>
           </div>
-
-          {/* Track Actions - Like, Share, Views, Comments */}
-          <div className={styles.trackActions}>
-            <button className={styles.actionButton} onClick={() => handleLike(track.trackId)}>
-              <FaHeart /> {track.likes}
-            </button>
-            <button className={styles.actionButton} onClick={() => handleShare(track.trackId)}>
-              <FaShareAlt />
-            </button>
-            <span className={styles.trackStats}>
-              <FaEye /> {track.views}
-            </span>
-            <span className={styles.trackStats}>
-              <FaComment /> {track.comments}
-            </span>
-          </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 };
