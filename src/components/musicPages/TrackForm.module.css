@@ -5,12 +5,25 @@
 .wrapper {
     max-width: 1400px;
     margin: 40px auto;
-    padding: 30px;
+   
     background-color: var(--bg-color);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     text-align: center;
+
 }
+
+.wrapper2{
+    padding:2em;
+}
+
+
+  .audioRequired {
+    display: flex;
+    align-items: flex-start;
+    color: rgb(255, 60, 0);
+    white-space: nowrap; /* Avoid wrapping */
+  }
 
 /* Title */
 .title {
@@ -21,15 +34,7 @@
     text-align: center;
 }
 
-/* Labels */
-.label {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-color);
-    display: block;
-    text-align: left;
-    margin-bottom: 5px;
-}
+/* Labels *
 
 /* Field Container */
 .field {
@@ -62,13 +67,14 @@
 }
 
 .select {
-    width: 100%;
+    width: 40%;
     padding: 10px;
     border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 1rem;
     background-color: var(--bg-color);
     color: var(--text-color);
+    margin-bottom: 2em;
 }
 
 /* File Upload Buttons */
@@ -80,7 +86,7 @@
 }
 
 /* Upload Buttons */
-.fileUploadButton {
+.submitButton {
     background-color: var(--button-bg);
     color: white;
     padding: 12px;
@@ -92,8 +98,13 @@
     width: 100%;
 }
 
-.fileUploadButton:hover {
+.submitButton:hover {
     background-color: var(--button-hover);
+}
+
+.submitButton:disabled {
+    cursor:not-allowed;
+    background: gray;
 }
 
 /* Previews */
@@ -103,6 +114,12 @@
     align-items: center;
     gap: 15px;
     margin-top: 15px;
+}
+
+.trackNameField {
+    background: rgba(67, 38, 172, 0.582);
+    padding:0.9em;
+    border-radius: 12px;
 }
 
 .previewImage {
@@ -118,21 +135,6 @@ audio {
     max-width: 300px;
 }
 
-/* Submit Button */
-.button {
-    background-color: var(--button-bg);
-    color: white;
-    padding: 12px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.button:hover {
-    background-color: var(--button-hover);
-}
 
 /* Playlist Button */
 .playlistButton {

@@ -5,7 +5,7 @@
     font-weight: bold;
     padding-bottom: 0.4em;
     transition: all 0.3s ease-in-out;
-    color: #333;
+    color: #050505;
 }
 
 .input {
@@ -35,7 +35,7 @@
 
 .input:focus{
     border-color: #eecf43;
-    box-shadow: 0 0 8px rgba(67, 97, 238, 0.3);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
     background: white;
 }
 
@@ -81,7 +81,7 @@
 .field input:not(:placeholder-shown) ~ .label {
     transform: translateY(-2.5em);
     font-size: 1em;
-    color: #ffffff;
+    color: #000000;
 }
 
 /* Required asterisk */
@@ -101,7 +101,7 @@
 
 .field input:focus ~ .icon,
 .field input:focus ~ .label {
-    color: #fdfdff;
+    color: #000000;
 }
 
 .input-valid ~ .icon,
@@ -121,7 +121,7 @@
     font-size: 0.85em;
     opacity: 0.7;
     padding: 0.1em 0 0.2em 0;
-    color: #ffffff;
+    color: #0a0909;
     backdrop-filter: blur(3px) brightness(1.4);
     font-weight: 600;
 }

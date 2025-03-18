@@ -27,7 +27,7 @@ const TrackView = ({ track}) => {
         {/* Track Image Section */}
         <div className={styles.trackImageContainer}>
           <img 
-            src={track.trackImageUrl || "/test_hiphop.webp"} 
+            src={track.trackImageUrl || "/logo3.png"} 
             alt="Track Cover" 
             className={styles.trackImage} 
           />

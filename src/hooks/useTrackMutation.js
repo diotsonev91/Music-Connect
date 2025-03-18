@@ -17,22 +17,38 @@ export default function useTrackMutation() {
       setMessage("User not logged in.");
       return { success: false, error: "User not logged in." };
     }
-
+    console.log("FORMDATA INSIDE saveOrUpdateTrack  ", formData)
     try {
-      // ✅ Upload files (or reuse existing URLs)
-      const trackFileUrl = formData.trackFile ? await upload(formData.trackFile, "tracks") : formData.trackFileUrl;
-      const trackImageUrl = formData.trackImage ? await upload(formData.trackImage, "track_images") : formData.trackImageUrl;
-      const backgroundImageUrl = formData.backgroundImage ? await upload(formData.backgroundImage, "background_images") : formData.backgroundImageUrl;
-
+      // ✅ Upload only if it's a File, else reuse existing URL (and avoid blob:)
+      let trackFileUrl = formData.trackFileUrl;
+      if (formData.trackFile instanceof File) {
+        trackFileUrl = await upload(formData.trackFile, "tracks", formData.trackFileUrl);
+      }
+  
+      let trackImageUrl = formData.trackImageUrl;
+      if (formData.trackImage instanceof File) {
+        trackImageUrl = await upload(formData.trackImage, "track_images", formData.trackImageUrl);
+      }
+  
+      let backgroundImageUrl = formData.backgroundImageUrl;
+      if (formData.backgroundImage instanceof File) {
+        backgroundImageUrl = await upload(formData.backgroundImage, "background_images", formData.backgroundImageUrl);
+      }
+  
       const trackData = {
-        ...formData,
+        trackName: formData.trackName,
+        genre: formData.genre,
         trackFileUrl,
         trackImageUrl,
         backgroundImageUrl,
-        author: { uid: user.uid, email: user.email, displayName: user.displayName || "Anonymous" },
+        author: {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName || "Anonymous",
+        },
         createdAt: new Date(),
       };
-
+  
       if (trackId) {
         await update({ id: trackId, ...trackData });
         setMessage("Track updated successfully!");
@@ -40,7 +56,7 @@ export default function useTrackMutation() {
         await saveTrack(trackData);
         setMessage("Track uploaded successfully!");
       }
-
+  
       return { success: true };
     } catch (error) {
       setMessage("Error: " + error.message);
@@ -52,7 +68,10 @@ export default function useTrackMutation() {
   const fetchTracksByPlaylist = async (playlistTitle) => {
     try {
       const allTracks = await fetchTracks();
-      return allTracks.filter((track) => track.playlist === playlistTitle);
+      return allTracks.filter(
+        (track) => track.genre?.toLowerCase() === playlistTitle.toLowerCase()
+      );
+      
     } catch (error) {
       setMessage("Error fetching tracks: " + error.message);
       return [];

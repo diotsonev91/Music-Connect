@@ -24,14 +24,11 @@ const UploadTrack = ({ onSubmitSuccess }) => {
   });
 
   // ✅ Handle form submission
-  const handleSubmit = async (formData) => {
-    if (!user) return; // ✅ Prevent upload if user is not logged in
-
-    const result = await saveOrUpdateTrack(formData, user);
-    if (result.success) {
-      onSubmitSuccess && onSubmitSuccess();
-    } 
+  const handleSubmit = async () => {
+    console.log("✅ FULL trackData at submit: ", trackData);
+    const result = await saveOrUpdateTrack(trackData, user);  // ✅ Use full trackData
   };
+  
 
   return (
     <div>

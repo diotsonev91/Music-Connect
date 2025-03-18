@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./TrackForm.module.css";
 import FileUploadButton from "../shared/App/FileUploadButton";
-import FormInput from "../shared/Form/FormInput"; 
+import FormInput from "../shared/Form/FormInput";
 
 const genres = [
   { name: "Hip Hop" },
@@ -12,99 +12,126 @@ const genres = [
   { name: "Acoustic" }
 ];
 
-const TrackForm = ({ initialData = {}, onSubmit, loading, setTrackImageURL, setBackgroundImageURL }) => {
-  // ✅ Store original data separately
-  const [originalData, setOriginalData] = useState(initialData);
-  
-  // ✅ Store user-edited form data
-  const [formData, setFormData] = useState({
-    trackName: "",
-    genre: "",
-    trackFile: null,
-    trackFileUrl: "",
-    trackImage: null,
-    trackImageUrl: "",
-    backgroundImage: null,
-    backgroundImageUrl: "",
-  });
+export default function TrackForm({ trackData = {}, onSubmit, loading, setTrackData }) {
+  const [errors, setErrors] = useState({ trackName: "", trackFile: "", genre: "" });
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [trackName, setTrackName] = useState(trackData.trackName || "");
+  const [trackFileUrl, setTrackFileUrl] = useState(trackData.trackFileUrl || "");
+  const [genre, setGenre] = useState("Select Genre");
 
-  // ✅ Update `formData` only when `initialData` changes
+  // ✅ Validation functions
+  const validateTrackName = (name) => {
+    if (!name) return "Track Name is required";
+    if (name.trim().length < 4) return "Track name must be at least 4 characters";
+    return "";
+  };
+
+  const validateTrackFile = () => {
+    if (!trackFileUrl) return "Track audio file is required";
+    return "";
+  };
+
+  const validateGenre = (selectedGenre) => {
+    if (selectedGenre === "Select Genre") return "Please select a genre";
+    return "";
+  };
+
+  // ✅ Sync states and validate
   useEffect(() => {
-    if (JSON.stringify(initialData) !== JSON.stringify(originalData)) {
-      setFormData({
-        trackName: initialData.trackName || "",
-        genre: initialData.genre || "Hip Hop",
-        trackFileUrl: initialData.trackFileUrl || "",
-        trackImageUrl: initialData.trackImageUrl || "",
-        backgroundImageUrl: initialData.backgroundImageUrl || "",
-        trackFile: null,
-        trackImage: null,
-        backgroundImage: null,
-      });
+    setTrackData((prev) => ({
+      ...prev,
+      trackName,
+      genre: genre !== "Select Genre" ? genre : "",
+    }));
 
-      // ✅ Update previews in parent components
-      if (setTrackImageURL) setTrackImageURL(initialData.trackImageUrl || "");
-      if (setBackgroundImageURL) setBackgroundImageURL(initialData.backgroundImageUrl || "");
+    setErrors({
+      trackName: validateTrackName(trackName),
+      trackFile: validateTrackFile(),
+      genre: validateGenre(genre),
+    });
+  }, [trackName, trackFileUrl, genre]);
 
-      // ✅ Sync original data to prevent unnecessary updates
-      setOriginalData(initialData);
-    }
-  }, [initialData]);
+  // ✅ Determine form validity
+  useEffect(() => {
+    setIsFormValid(!errors.trackName && !errors.trackFile && !errors.genre);
+  }, [errors]);
 
-  // 🔹 Handle file selection
   const handleFileSelect = (file, type) => {
     if (file) {
       const fileURL = URL.createObjectURL(file);
-      setFormData((prev) => ({ ...prev, [type]: file, [`${type}Url`]: fileURL }));
-
-      if (type === "trackImage" && setTrackImageURL) setTrackImageURL(fileURL);
-      if (type === "backgroundImage" && setBackgroundImageURL) setBackgroundImageURL(fileURL);
+      setTrackData((prev) => ({ ...prev, [type]: file, [`${type}Url`]: fileURL }));
+      if (type === "trackFile") setTrackFileUrl(fileURL);
     }
   };
 
-  // 🔹 Handle form submission
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+  
+    if (isFormValid) onSubmit();
   };
+  
 
   return (
     <div className={styles.wrapper}>
       <form onSubmit={handleSubmit} className={styles.trackForm}>
         {/* Track Name */}
-        <FormInput
-          value={formData.trackName}
-          setValue={(value) => setFormData((prev) => ({ ...prev, trackName: value }))}
+        <div className={styles.trackNameField}>       
+           <FormInput
+          value={trackName}
+          setValue={setTrackName}
           label="Track Name"
+          placeholder="track name"
           type="text"
           isRequired={true}
+          errorText={errors.trackName}
           helperText="Track name should be between 4-30 characters."
+          validate={validateTrackName}
         />
+        </div>
 
-        {/* Genre Selection */}
-        <select 
-          className={styles.select} 
-          value={formData.genre} 
-          onChange={(e) => setFormData((prev) => ({ ...prev, genre: e.target.value }))}
+        <div className={styles.wrapper2}>
+
+        {/* Genre */}
+        {errors.genre && <span className={styles.audioRequired}>{errors.genre}</span>}
+        <select
+          className={styles.select}
+          value={genre}
+          onChange={(e) => setGenre(e.target.value)}
         >
+          <option value="Select Genre" disabled>Select Genre</option>
           {genres.map((genre) => (
-            <option key={genre.name} value={genre.name}>
-              {genre.name}
-            </option>
+            <option key={genre.name} value={genre.name}>{genre.name}</option>
           ))}
         </select>
+     
 
-        {/* File Uploads */}
-        <FileUploadButton accept="audio/*" buttonText="Upload Track" onFileSelect={(file) => handleFileSelect(file, "trackFile")} />
-        <FileUploadButton accept="image/*" buttonText="Track Image" onFileSelect={(file) => handleFileSelect(file, "trackImage")} />
-        <FileUploadButton accept="image/*" buttonText="Background" onFileSelect={(file) => handleFileSelect(file, "backgroundImage")} />
+        {/* File Upload */}
+        {errors.trackFile && <span className={styles.audioRequired}>{errors.trackFile}</span>}
+          <FileUploadButton
+            accept="audio/*"
+            buttonText="Upload Track"
+            onFileSelect={(file) => handleFileSelect(file, "trackFile")}
+          />
+          
+        
 
-        <button type="submit" className={styles.button} disabled={loading}>
-          {loading ? "Submitting..." : initialData?.trackName ? "Update Track" : "Upload Track"}
+        <FileUploadButton
+          accept="image/*"
+          buttonText="Track Image"
+          onFileSelect={(file) => handleFileSelect(file, "trackImage")}
+        />
+        <FileUploadButton
+          accept="image/*"
+          buttonText="Background"
+          onFileSelect={(file) => handleFileSelect(file, "backgroundImage")}
+        />
+
+        <button type="submit" className={styles.submitButton} disabled={loading || !isFormValid}>
+          {loading ? "Submitting..." : trackData?.trackName ? "Update Track" : "Upload Track"}
         </button>
+        </div>
       </form>
     </div>
   );
-};
-
-export default TrackForm;
+}

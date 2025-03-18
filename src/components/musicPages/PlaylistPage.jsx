@@ -14,9 +14,12 @@ const PlaylistPage = () => {
   const [tracks, setTracks] = useState([]);
 
   useEffect(() => {
+    console.log("USE EFFECT INSIDE PLAYLIST TRIGGERED")
+    console.log(playlistTitle)
     const loadTracks = async () => {
       const data = await fetchTracksByPlaylist(playlistTitle);
       if (data) {
+        console.log("TRACK DATA IN PLAYLIST:",data)
         setTracks(data);
       }
     };
@@ -42,6 +45,8 @@ const PlaylistPage = () => {
     alert("Link copied to clipboard!");
   };
 
+  
+
   return (
     <div className={styles.playlistContainer}>
       <h2 className={styles.playlistTitle}>{playlistTitle}</h2>
@@ -57,16 +62,16 @@ const PlaylistPage = () => {
           <div key={track.id} className={styles.trackItem}>
             {/* Clickable Track Title */}
             <h3 className={styles.trackTitle} onClick={() => navigate(`/track/${track.id}`)}>
-              {track.title}
+              {track.trackName}
             </h3>
 
             <div className={styles.trackContent}>
               {/* Waveform Player */}
-              <WaveformPlayer trackId={track.id} audioUrl={track.trackFileUrl} showComments={false} />
+              <WaveformPlayer trackId={track.id} audioUrl={track.trackFileUrl} showComments={false}/>
 
               {/* Track Image */}
               <div className={styles.trackImageBox}>
-                <img src={track.trackImageUrl || defaultImage} alt={track.title} className={styles.trackImage} />
+                <img src={track.trackImageUrl || defaultImage} alt={track.trackName} className={styles.trackImage} />
               </div>
             </div>
 

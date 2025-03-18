@@ -55,6 +55,7 @@ const WaveformPlayer = ({ trackId, audioUrl, onTimestampClick = () => {}, showCo
     <div className={`${styles.waveformContainer} ${styles[containerSize]}`}>
       <WavesurferPlayer
         url={audioUrl}
+        backend="MediaElement" 
         height={120}
         barWidth={3}
         waveColor="#ccc"
