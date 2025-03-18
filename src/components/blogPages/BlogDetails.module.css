@@ -2,15 +2,15 @@
     max-width: 1400px;
     margin: 2em auto;
     padding: 20px;
-    background: #1e1e1e;
+    background: #e0e0e0 ;
     border-radius: 10px;
-    color: #fff;
+    color: #c2c2c2;
   }
   
   .blogCard {
     display: flex;
     flex-direction: column;
-    background: #2a2a2a;
+    background: #ffffff ;
     border-radius: 10px;
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -27,6 +27,7 @@
     display: flex;
     align-items: center;
     margin-top: 10px;
+    
   }
   
   .avatar {
@@ -43,11 +44,13 @@
   .title {
     font-size: 1.5rem;
     font-weight: bold;
+    font-style: italic;
+
   }
   
   .category, .publisher, .date, .stats {
     font-size: 0.9rem;
-    color: #bbb;
+    color: #313131;
     margin-bottom: 4px;
     display: flex;
     align-items: center;
@@ -58,11 +61,17 @@
     margin-top: 20px;
     font-size: 1rem;
     line-height: 1.6;
+    background-color: white;
+    border-radius: 8px;
+    padding:5em;
   }
   
   /* Comments Section */
   .commentsSection {
+    background-color: #1e1e1e;
     margin-top: 30px;
+    padding:1em;
+    border-radius: 8px;
   }
   
   .commentsList {

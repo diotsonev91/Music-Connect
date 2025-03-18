@@ -2,6 +2,9 @@ import { useState } from "react";
 import useMutation from "./useMutation";
 import { uploadFile, deleteFile } from "../services/firebaseStorage";
 import { addDocument, updateDocument, fetchDocument, fetchCollection, deleteDocument } from "../services/firebaseFirestore";
+import { db } from "../services/firebaseConfig";
+import { collection, query, where, getDocs } from "firebase/firestore";
+
 
 export default function useBlogMutation() {
   const { mutate: upload, isLoading: isUploading, error: uploadError } = useMutation(uploadFile);
@@ -90,6 +93,19 @@ export default function useBlogMutation() {
     }
   };
 
+
+  const getUserBlogs = async (userId) => {
+    try {
+      const q = query(collection(db, "blogs"), where("author.uid", "==", userId));
+      const snapshot = await getDocs(q);
+      const userBlogs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      return userBlogs;
+    } catch (error) {
+      setMessage("Error fetching user's blogs: " + error.message);
+      return [];
+    }
+  };
+
   const isLoading = isUploading || isSaving || isUpdating || isFetching || isFetchingAll || isDeleting || isDeletingImage;
 
   return {
@@ -97,6 +113,7 @@ export default function useBlogMutation() {
     getBlog: fetchBlog,
     getAllBlogPosts: fetchBlogs,
     deleteBlogPost: deleteBlog,
+    getUserBlogs,
     isLoading,
     error: uploadError || saveError || updateError || fetchError || fetchAllError || deleteBlogError || deleteImgError,
     message,

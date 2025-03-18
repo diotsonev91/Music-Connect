@@ -6,25 +6,30 @@ import styles from "./PlaylistPage.module.css"; // Import styles
 import defaultImage from "/logo3.png"; // Default image
 import { FaHeart, FaShareAlt, FaEye, FaComment } from "react-icons/fa"; // Import icons
 
-const PlaylistPage = () => {
+const PlaylistPage = ({  userId = "" }) => {
   const { playlistTitle } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { fetchTracksByPlaylist, isLoading, error } = useTrackMutation();
+  const { fetchTracksByPlaylist, fetchTracksByUser, isLoading, error } = useTrackMutation();
   const [tracks, setTracks] = useState([]);
 
   useEffect(() => {
-    console.log("USE EFFECT INSIDE PLAYLIST TRIGGERED")
-    console.log(playlistTitle)
     const loadTracks = async () => {
-      const data = await fetchTracksByPlaylist(playlistTitle);
-      if (data) {
-        console.log("TRACK DATA IN PLAYLIST:",data)
-        setTracks(data);
+      try {
+        let data = [];
+        if (userId) {
+          data = await fetchTracksByUser(userId);
+        } else {
+          data = await fetchTracksByPlaylist(playlistTitle);
+          console.log("fetvched by playlist", data)
+        }
+        if (data) setTracks(data);
+      } catch (err) {
+        console.error("Error loading tracks:", err);
       }
     };
 
-    if (playlistTitle) {
+    if (playlistTitle || userId) {
       loadTracks();
     }
   }, [location.key]);

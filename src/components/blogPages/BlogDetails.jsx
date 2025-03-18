@@ -1,28 +1,38 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom"; // ✅ Get blog from navigation state
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook, faPenNib, faCalendarAlt, faEye, faComment } from "@fortawesome/free-solid-svg-icons";
+import useBlogMutation from "../../hooks/useBlogMutation";
 import styles from "./BlogDetails.module.css";
 
 const BlogDetails = () => {
-  const location = useLocation();
-  const blog = location.state; // ✅ Get blog from navigation state
+  const { id } = useParams(); // ✅ Get the blog ID from the URL
+  const { getBlog } = useBlogMutation();
+  const [blog, setBlog] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("");
 
-  // Handle case where no blog is found (e.g., direct URL access)
+  // ✅ Fetch the blog on mount
+  useEffect(() => {
+    const fetchBlog = async () => {
+      const blogData = await getBlog(id);
+      if (blogData) {
+        setBlog(blogData);
+        setComments(blogData.comments || []);
+      }
+    };
+    fetchBlog();
+  }, [id, getBlog]);
+
   if (!blog) {
-    return <p className={styles.error}>Error: Blog not found.</p>;
+    return <p className={styles.error}>Loading blog or blog not found.</p>;
   }
 
   const avatarSrc = blog.avatar || "/default_avatar.png";
-  const blogImg = blog.image || "/header.png";
+  const blogImg = blog.imageUrl || "/header.png";
 
-  // State to manage comments
-  const [comments, setComments] = useState(blog.comments || []);
-  const [newComment, setNewComment] = useState("");
-
-  // Function to handle comment submission
   const handleAddComment = () => {
-    if (newComment.trim() === "") return; // Prevent empty comments
+    if (newComment.trim() === "") return;
     const updatedComments = [...comments, { text: newComment, date: new Date().toLocaleString() }];
     setComments(updatedComments);
     setNewComment("");
@@ -31,27 +41,23 @@ const BlogDetails = () => {
   return (
     <div className={styles.blogContainer}>
       <div className={styles.blogCard}>
-        {/* Blog Image */}
         <img src={blogImg} alt={blog.title} className={styles.image} />
 
-        {/* Blog Details */}
         <div className={styles.details}>
           <img src={avatarSrc} alt="avatar" className={styles.avatar} />
           <div className={styles.info}>
             <h2 className={styles.title}>{blog.title}</h2>
             <p className={styles.category}><FontAwesomeIcon icon={faBook} /> {blog.category}</p>
-            <p className={styles.publisher}><FontAwesomeIcon icon={faPenNib} /> By {blog.publisher}</p>
-            <p className={styles.date}><FontAwesomeIcon icon={faCalendarAlt} /> Posted on {blog.datePosted}</p>
-            <p className={styles.stats}><FontAwesomeIcon icon={faEye} /> {blog.views} views • {blog.replies} replies</p>
+            <p className={styles.publisher}><FontAwesomeIcon icon={faPenNib} /> By {blog.author?.displayName || "Unknown"}</p>
+            <p className={styles.date}><FontAwesomeIcon icon={faCalendarAlt} /> Posted on {new Date(blog.createdAt?.seconds * 1000).toLocaleDateString()}</p>
+            <p className={styles.stats}><FontAwesomeIcon icon={faEye} /> {blog.views || 0} views • {comments.length} comments</p>
           </div>
         </div>
 
-        {/* Blog Content */}
         <div className={styles.content}>
           <p>{blog.content}</p>
         </div>
 
-        {/* Comments Section */}
         <div className={styles.commentsSection}>
           <h3><FontAwesomeIcon icon={faComment} /> Comments</h3>
           {comments.length === 0 ? (
@@ -67,7 +73,6 @@ const BlogDetails = () => {
             </ul>
           )}
 
-          {/* Add Comment Form */}
           <div className={styles.addComment}>
             <textarea 
               className={styles.commentInput}

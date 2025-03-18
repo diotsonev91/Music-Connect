@@ -55,7 +55,7 @@ const AppHeader = () => {
             <>
               <li>
                 <span
-                  onClick={() => navigate("/myProfile")}
+                  onClick={() => navigate("/profile")}
                   className={`${styles.navItem} ${styles.profileBefore}`}
                 >
                   prof

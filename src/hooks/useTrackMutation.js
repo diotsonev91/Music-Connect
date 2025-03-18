@@ -1,14 +1,16 @@
 import { useState } from "react";
+import { db } from "../services/firebaseConfig";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import useMutation from "./useMutation";
 import { uploadFile, deleteFile } from "../services/firebaseStorage";
-import { addDocument, updateDocument, deleteDocument, fetchCollection, fetchDocument } from "../services/firebaseFirestore";
+import { addDocument, updateDocument, deleteDocument } from "../services/firebaseFirestore";
 
 export default function useTrackMutation() {
   const { mutate: upload, isLoading: isUploading, error: uploadError } = useMutation(uploadFile);
   const { mutate: saveTrack, isLoading: isSaving, error: saveError } = useMutation((data) => addDocument("tracks", data));
   const { mutate: update, isLoading: isUpdating, error: updateError } = useMutation((data) => updateDocument("tracks", data.id, data));
   const { mutate: removeTrack, isLoading: isDeleting, error: deleteError } = useMutation((id) => deleteDocument("tracks", id));
-  const { mutate: fetchTracks, isLoading: isFetching, error: fetchError } = useMutation(() => fetchCollection("tracks"));
+
   const [message, setMessage] = useState("");
 
   // ✅ Upload or Update a Track
@@ -17,27 +19,26 @@ export default function useTrackMutation() {
       setMessage("User not logged in.");
       return { success: false, error: "User not logged in." };
     }
-    console.log("FORMDATA INSIDE saveOrUpdateTrack  ", formData)
+
     try {
-      // ✅ Upload only if it's a File, else reuse existing URL (and avoid blob:)
       let trackFileUrl = formData.trackFileUrl;
       if (formData.trackFile instanceof File) {
         trackFileUrl = await upload(formData.trackFile, "tracks", formData.trackFileUrl);
       }
-  
+
       let trackImageUrl = formData.trackImageUrl;
       if (formData.trackImage instanceof File) {
         trackImageUrl = await upload(formData.trackImage, "track_images", formData.trackImageUrl);
       }
-  
+
       let backgroundImageUrl = formData.backgroundImageUrl;
       if (formData.backgroundImage instanceof File) {
         backgroundImageUrl = await upload(formData.backgroundImage, "background_images", formData.backgroundImageUrl);
       }
-  
+
       const trackData = {
         trackName: formData.trackName,
-        genre: formData.genre,
+        genre: formData.genre.toLowerCase(),
         trackFileUrl,
         trackImageUrl,
         backgroundImageUrl,
@@ -48,7 +49,7 @@ export default function useTrackMutation() {
         },
         createdAt: new Date(),
       };
-  
+
       if (trackId) {
         await update({ id: trackId, ...trackData });
         setMessage("Track updated successfully!");
@@ -56,7 +57,7 @@ export default function useTrackMutation() {
         await saveTrack(trackData);
         setMessage("Track uploaded successfully!");
       }
-  
+
       return { success: true };
     } catch (error) {
       setMessage("Error: " + error.message);
@@ -64,16 +65,32 @@ export default function useTrackMutation() {
     }
   };
 
-  // ✅ Fetch tracks by playlist title
+  // ✅ Fetch tracks by playlist (genre)
   const fetchTracksByPlaylist = async (playlistTitle) => {
     try {
-      const allTracks = await fetchTracks();
-      return allTracks.filter(
-        (track) => track.genre?.toLowerCase() === playlistTitle.toLowerCase()
+      const q = query(
+        collection(db, "tracks"),
+        where("genre", "==", playlistTitle)
       );
-      
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
-      setMessage("Error fetching tracks: " + error.message);
+      setMessage("Error fetching tracks by playlist: " + error.message);
+      return [];
+    }
+  };
+
+  // ✅ Fetch tracks by user ID
+  const fetchTracksByUser = async (userId) => {
+    try {
+      const q = query(
+        collection(db, "tracks"),
+        where("author.uid", "==", userId)
+      );
+      const snapshot = await getDocs(q);
+      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+      setMessage("Error fetching user tracks: " + error.message);
       return [];
     }
   };
@@ -81,7 +98,9 @@ export default function useTrackMutation() {
   // ✅ Fetch a single track by ID
   const fetchTrackById = async (trackId) => {
     try {
-      return await fetchDocument("tracks", trackId);
+      const docRef = doc(db, "tracks", trackId);
+      const docSnap = await getDoc(docRef);
+      return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
     } catch (error) {
       setMessage("Error fetching track: " + error.message);
       return null;
@@ -107,10 +126,11 @@ export default function useTrackMutation() {
   return {
     saveOrUpdateTrack,
     fetchTracksByPlaylist,
-    fetchTrackById, // ✅ New method
+    fetchTracksByUser,
+    fetchTrackById,
     deleteTrackWithFiles,
-    isLoading: isUploading || isSaving || isUpdating || isFetching || isDeleting,
-    error: uploadError || saveError || updateError || deleteError || fetchError,
+    isLoading: isUploading || isSaving || isUpdating || isDeleting,
+    error: uploadError || saveError || updateError || deleteError,
     message,
   };
 }

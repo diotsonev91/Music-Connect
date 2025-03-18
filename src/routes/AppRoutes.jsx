@@ -5,7 +5,7 @@ import PublicRoute from "./PublicRoute";
 import Layout from "../components/shared/App/Layout";
 import LoginPage from "../components/authPages/LoginPage";
 import RegisterPage from "../components/authPages/RegisterPage";
-import MyProfile from "../components/profilePages/MyProfilePage";
+import ProfilePage from "../components/profilePages/ProfilePage";
 import ChatPage from "../components/chatPages/ChatPage";
 import HomePage from "../components/homePages/HomePage";
 import BlogMain from "../components/blogPages/BlogMain";
@@ -66,10 +66,10 @@ const AppRoutes = () => {
 
         {/* Private routes inside Layout */}
         <Route
-          path="myProfile"
+          path="profile"
           element={
             <ProtectedRoute>
-              <MyProfile />
+              <ProfilePage />
             </ProtectedRoute>
           }
         />
