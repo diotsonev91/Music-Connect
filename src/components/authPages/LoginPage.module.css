@@ -1,0 +1,10 @@
+.wrapper {
+    height: 100vh; /* full viewport height */
+    display: flex;
+    align-items: center;   /* vertical center */
+    justify-content: center; /* horizontal center */
+    background-image: url('/auth_background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}

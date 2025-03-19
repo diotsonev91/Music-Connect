@@ -64,6 +64,13 @@ const AppRoutes = () => {
           }
         />
 
+
+          <Route
+          path="profile/:uid"
+          element={
+              <ProfilePage />
+          }
+        />
         {/* Private routes inside Layout */}
         <Route
           path="profile"

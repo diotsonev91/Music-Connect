@@ -12,7 +12,7 @@ const PublicRoute = ({ children }) => {
   }
 
   if (user && (location.pathname === "/login" || location.pathname === "/register")) {
-    return <Navigate to="/myProfile" />;
+    return <Navigate to="/profile" />;
   }
 
   return children;

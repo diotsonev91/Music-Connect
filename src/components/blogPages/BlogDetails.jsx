@@ -4,42 +4,140 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook, faPenNib, faCalendarAlt, faEye, faComment } from "@fortawesome/free-solid-svg-icons";
 import useBlogMutation from "../../hooks/useBlogMutation";
 import styles from "./BlogDetails.module.css";
+import { useAuth } from "../../contexts/AuthContext";
+import { useUserProfile } from "../../hooks/useUserProfile"; 
+import Modal from "../shared/App/Modal";
+import ConfirmPopup from "../shared/App/ConfirmPopup";
 
 const BlogDetails = () => {
   const { id } = useParams(); // ✅ Get the blog ID from the URL
-  const { getBlog } = useBlogMutation();
+  const { user} = useAuth();
+  const { getBlog, postCommentToBlog, fetchBlogComments,editCommentOfBlog,deleteCommentOfBlog } = useBlogMutation();
   const [blog, setBlog] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
+  const {  fetchProfileField } = useUserProfile();
+  const [displayName, setDisplayName] = useState();
+
+  //modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editText, setEditText] = useState("");
+  const [editCommentId, setEditCommentId] = useState(null);
+  //popup
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
+  
 
   // ✅ Fetch the blog on mount
   useEffect(() => {
     const fetchBlog = async () => {
       const blogData = await getBlog(id);
+      
       if (blogData) {
         setBlog(blogData);
-        setComments(blogData.comments || []);
+        const commentsFetch = await fetchBlogComments(id); 
+        console.log(commentsFetch)
+        console.log(id)
+        setComments(commentsFetch || []);
+        
       }
     };
     fetchBlog();
-  }, [id, getBlog]);
+  }, [id]);
 
+  useEffect(() => {
+    const fetchUserDetails = async ()=> {
+    if (user?.uid) {
+      const profile = await fetchProfileField(user.uid);
+      
+      setDisplayName(profile?.displayName || "Anonymous");
+    }
+  }
+  fetchUserDetails();
+  },[])
+
+  
   if (!blog) {
     return <p className={styles.error}>Loading blog or blog not found.</p>;
   }
 
   const avatarSrc = blog.avatar || "/default_avatar.png";
   const blogImg = blog.imageUrl || "/header.png";
+  
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim() === "") return;
-    const updatedComments = [...comments, { text: newComment, date: new Date().toLocaleString() }];
-    setComments(updatedComments);
-    setNewComment("");
+    
+    const commentObj = {
+      text: newComment,
+      date: new Date().toLocaleString(),
+      author: displayName || "Anonymous" ,
+      authorId: user.uid,
+
+
+    };
+
+    // ✅ Add to Firestore
+    const result = await postCommentToBlog(id, commentObj);
+    if (result.success) {
+      // ✅ Update local UI after successful Firestore save
+      setComments((prev) => [...prev, commentObj]);
+      setNewComment("");
+    } else {
+      alert("Failed to post comment");
+    }
+  };
+
+  const handleEditComment = async (commentId, updatedText) => {
+    const updatedComment = {
+      text: updatedText,
+      date: new Date().toLocaleString(),
+      author: displayName || "Anonymous",
+      authorId: user.uid,
+    };
+    const result = await editCommentOfBlog(id, commentId, updatedComment);
+    if (result.success) {
+      setComments((prev) =>
+        prev.map((c) => (c.id === commentId ? { ...c, ...updatedComment } : c))
+      );
+    } else {
+      alert("Failed to edit comment");
+    }
+  };
+  const confirmDeleteComment = (commentId) => {
+    setCommentToDelete(commentId);
+    setShowConfirm(true);
+  };
+  
+  const handleConfirmDelete = async () => {
+    const result = await deleteCommentOfBlog(id, commentToDelete);
+    if (result.success) {
+      setComments((prev) => prev.filter((c) => c.id !== commentToDelete));
+    } else {
+      alert("Failed to delete comment");
+    }
+    setShowConfirm(false);
+  };
+
+  const openEditModal = (comment) => {
+    setEditText(comment.text);
+    setEditCommentId(comment.id);
+    setIsModalOpen(true);
+  };
+  
+  const handleEditSave = async () => {
+    await handleEditComment(editCommentId, editText);
+    setIsModalOpen(false);
   };
 
   return (
     <div className={styles.blogContainer}>
+                      <ConfirmPopup
+  isOpen={showConfirm}
+  onClose={() => setShowConfirm(false)}
+  onConfirm={handleConfirmDelete}
+  message="Are you sure you want to delete this comment?" 
+/>
       <div className={styles.blogCard}>
         <img src={blogImg} alt={blog.title} className={styles.image} />
 
@@ -64,11 +162,40 @@ const BlogDetails = () => {
             <p className={styles.noComments}>No comments yet. Be the first to comment!</p>
           ) : (
             <ul className={styles.commentsList}>
-              {comments.map((comment, index) => (
-                <li key={index} className={styles.comment}>
-                  <p>{comment.text}</p>
-                  <span className={styles.commentDate}>{comment.date}</span>
-                </li>
+            {comments.map((comment, index) => (
+  <li key={comment.id} className={styles.comment}>
+    <p>{comment.text}</p>
+    <div className={styles.commentDiv}>
+      <span className={styles.commentDate}>{comment.date}</span>
+      {comment.authorId === user.uid ? (
+        <div>
+          <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+  <h3>Edit Comment</h3>
+  <textarea 
+    value={editText}
+    onChange={(e) => setEditText(e.target.value)}
+    rows={4}
+    style={{ width: "100%" }}
+  />
+  <button onClick={handleEditSave}>Save</button>
+      </Modal>
+
+          <span>by: me</span>
+          <span
+          className={styles.editComment}
+         onClick={() => openEditModal(comment)}
+            >edit</span>
+          <span
+            className={styles.deleteComment}
+            onClick={() => confirmDeleteComment(comment.id)}
+          >delete</span>
+
+        </div>
+      ) : (
+        <span>by: {comment.author}</span>
+      )}
+        </div>
+          </li>
               ))}
             </ul>
           )}

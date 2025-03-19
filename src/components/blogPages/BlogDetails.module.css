@@ -64,6 +64,7 @@
     background-color: white;
     border-radius: 8px;
     padding:5em;
+    color:#1e1e1e;
   }
   
   /* Comments Section */
@@ -74,12 +75,29 @@
     border-radius: 8px;
   }
   
+.commentDiv {
+  display: flex;
+  justify-content: space-between;
+}
+
+.editComment {
+  color:#ad5400;
+  display: inline-block;
+  padding: 0 1em;
+  cursor: pointer;
+}
+
+.deleteComment {
+  color:rgb(196, 67, 67);
+  cursor: pointer;
+}
   .commentsList {
     list-style: none;
     padding: 0;
   }
   
   .comment {
+    color: white;
     background: #333;
     padding: 10px;
     border-radius: 8px;

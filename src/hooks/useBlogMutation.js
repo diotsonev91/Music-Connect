@@ -2,6 +2,7 @@ import { useState } from "react";
 import useMutation from "./useMutation";
 import { uploadFile, deleteFile } from "../services/firebaseStorage";
 import { addDocument, updateDocument, fetchDocument, fetchCollection, deleteDocument } from "../services/firebaseFirestore";
+
 import { db } from "../services/firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
 
@@ -94,6 +95,38 @@ export default function useBlogMutation() {
   };
 
 
+
+  const postCommentToBlog = async (blogId, commentData) => {
+    try {
+      const path = `blogs/${blogId}/comments`;
+      await addDocument(path, {
+        ...commentData,
+        createdAt: new Date(),
+      });
+      setMessage("Comment added successfully!");
+      return { success: true };
+    } catch (error) {
+      setMessage("Error adding comment: " + error.message);
+      return { success: false, error: error.message };
+    }
+  };
+
+  // ✅ Edit a comment using your generic updateDocument
+  const editCommentOfBlog = async (blogId, commentId, updatedCommentData) => {
+    try {
+      const path = `blogs/${blogId}/comments`;
+      await updateDocument(path, commentId, {
+        ...updatedCommentData,
+        updatedAt: new Date(),
+      });
+      setMessage("Comment updated successfully!");
+      return { success: true };
+    } catch (error) {
+      setMessage("Error updating comment: " + error.message);
+      return { success: false, error: error.message };
+    }
+  };
+
   const getUserBlogs = async (userId) => {
     try {
       const q = query(collection(db, "blogs"), where("author.uid", "==", userId));
@@ -108,12 +141,40 @@ export default function useBlogMutation() {
 
   const isLoading = isUploading || isSaving || isUpdating || isFetching || isFetchingAll || isDeleting || isDeletingImage;
 
+  const fetchBlogComments = async (blogId) => {
+    try {
+      const commentsRef = collection(db, "blogs", blogId, "comments");
+      const snapshot = await getDocs(commentsRef);
+      const comments = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      return comments;
+    } catch (error) {
+      setMessage("Error fetching blog comments: " + error.message);
+      return [];
+    }
+  };
+
+  const deleteCommentOfBlog = async (blogId, commentId) => {
+    try {
+      const path = `blogs/${blogId}/comments`;
+      await deleteDocument(path, commentId);
+      setMessage("Comment deleted successfully!");
+      return { success: true };
+    } catch (error) {
+      setMessage("Error deleting comment: " + error.message);
+      return { success: false, error: error.message };
+    }
+  };
+  
   return {
     saveOrUpdateBlog,
     getBlog: fetchBlog,
     getAllBlogPosts: fetchBlogs,
     deleteBlogPost: deleteBlog,
     getUserBlogs,
+    deleteCommentOfBlog,
+    fetchBlogComments, 
+    postCommentToBlog,   
+    editCommentOfBlog,
     isLoading,
     error: uploadError || saveError || updateError || fetchError || fetchAllError || deleteBlogError || deleteImgError,
     message,

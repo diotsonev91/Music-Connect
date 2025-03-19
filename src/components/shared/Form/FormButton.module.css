@@ -6,7 +6,7 @@
     border: 3px solid rgba(42, 51, 70, 0.959);
     border-left: none;
     border-right: none;
-    background: linear-gradient(90deg, #2832559f , #385a86, #46abd3c9);
+    background: linear-gradient(90deg, #5f178f98 , #385a86, #46abd349);
     color: #e0d9d9;
     font-weight:bolder;
     font-size:large;
@@ -27,7 +27,7 @@
     color:#fff;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
-    background: linear-gradient(90deg,#46abd3c9, #385a86, #46558b9f);
+    background: linear-gradient(90deg,#6b068ac9, #385a86, #46558b9f);
     
     border: none;
    
@@ -37,6 +37,7 @@
 }
 
 .disabled {
+    background: linear-gradient(90deg,#a9c1cac9, #697381, #46558b9f);
     opacity: 0.6;
     cursor: not-allowed;
   }
