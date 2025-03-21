@@ -10,23 +10,31 @@ export const useComments = () => useContext(TrackCommentContext);
 export const TrackCommentProvider = ({ children }) => {
   const [comments, setComments] = useState({}); 
 
- 
+  // ✅ Add a single comment
   const addComment = (trackId, time, commentData) => {
     setComments((prevComments) => {
       const newComments = {
         ...prevComments,
         [trackId]: [
           ...(prevComments[trackId] || []),
-          { time: parseFloat(time), text: commentData.text, date: commentData.date }, 
+          { time: parseFloat(time), ...commentData },
         ],
       };
-      
       console.log("Updated Comments:", newComments); 
       return newComments;
     });
-};
+  };
+
+  // ✅ Replace all comments for a specific track (prevents duplicates)
+  const setCommentsForTrack = (trackId, commentsArray) => {
+    setComments((prevComments) => ({
+      ...prevComments,
+      [trackId]: commentsArray,
+    }));
+  };
+
   return (
-    <TrackCommentContext.Provider value={{ comments, addComment }}>
+    <TrackCommentContext.Provider value={{ comments, addComment, setCommentsForTrack }}>
       {children}
     </TrackCommentContext.Provider>
   );

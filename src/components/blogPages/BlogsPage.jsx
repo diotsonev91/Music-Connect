@@ -7,7 +7,7 @@ import useBlogMutation from "../../hooks/useBlogMutation";
 
 const BlogsPage = () => {
   const { category } = useParams(); // Get category from URL
-  const { getAllBlogPosts, isLoading, error } = useBlogMutation();
+  const { getAllBlogPosts, isLoading, error,fetchBlogViews, fetchBlogComments } = useBlogMutation();
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const blogsPerPage = 12;
@@ -17,10 +17,27 @@ const BlogsPage = () => {
   useEffect(() => {
     const fetchBlogs = async () => {
       const blogData = await getAllBlogPosts();
-      if (blogData) setBlogs(blogData);
+  
+      if (blogData && blogData.length > 0) {
+        // Fetch views and comments count for each blog in parallel
+        const blogsWithCounts = await Promise.all(
+          blogData.map(async (blog) => {
+            const views = await fetchBlogViews(blog.id);
+            const comments = await fetchBlogComments(blog.id);
+            return {
+              ...blog,
+              views: views || 0,
+              replies: comments.length || 0,
+            };
+          })
+        );
+        setBlogs(blogsWithCounts);
+      }
     };
+  
     fetchBlogs();
-  }, []); // ✅ No dependencies → Runs only on mount
+  }, []);
+  // ✅ No dependencies → Runs only on mount
 
   // Filter blogs by category
   const filteredBlogs = blogs.filter((blog) => blog.category === category);
@@ -58,7 +75,7 @@ const BlogsPage = () => {
         <p className={styles.error}>Error: {error.message}</p>
       ) : currentBlogs.length === 0 ? (
         <p className={styles.noBlogs}>No blogs available for this category.</p>
-      ) : (
+      ) : ( 
         <div className={styles.blogList}>
           {currentBlogs.map((blog) =>
             blog.category === "events" ? (

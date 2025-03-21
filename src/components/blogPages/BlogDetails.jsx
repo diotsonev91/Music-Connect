@@ -12,7 +12,7 @@ import ConfirmPopup from "../shared/App/ConfirmPopup";
 const BlogDetails = () => {
   const { id } = useParams(); // ✅ Get the blog ID from the URL
   const { user} = useAuth();
-  const { getBlog, postCommentToBlog, fetchBlogComments,editCommentOfBlog,deleteCommentOfBlog } = useBlogMutation();
+  const { getBlog, postCommentToBlog, fetchBlogComments,editCommentOfBlog,deleteCommentOfBlog, trackUserView, fetchBlogViews } = useBlogMutation();
   const [blog, setBlog] = useState(null);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
@@ -39,6 +39,13 @@ const BlogDetails = () => {
         console.log(commentsFetch)
         console.log(id)
         setComments(commentsFetch || []);
+
+        if (user?.uid && user.uid !== blogData.author.uid) {
+          await trackUserView(id, user.uid);  // ✅ Log view if not author
+        }
+  
+        const totalViews = await fetchBlogViews(id);
+        setBlog((prev) => ({ ...prev, uniqueViews: totalViews }));
         
       }
     };
@@ -148,7 +155,7 @@ const BlogDetails = () => {
             <p className={styles.category}><FontAwesomeIcon icon={faBook} /> {blog.category}</p>
             <p className={styles.publisher}><FontAwesomeIcon icon={faPenNib} /> By {blog.author?.displayName || "Unknown"}</p>
             <p className={styles.date}><FontAwesomeIcon icon={faCalendarAlt} /> Posted on {new Date(blog.createdAt?.seconds * 1000).toLocaleDateString()}</p>
-            <p className={styles.stats}><FontAwesomeIcon icon={faEye} /> {blog.views || 0} views • {comments.length} comments</p>
+            <p className={styles.stats}><FontAwesomeIcon icon={faEye} /> {blog.uniqueViews || 0} views • {comments.length} comments</p>
           </div>
         </div>
 

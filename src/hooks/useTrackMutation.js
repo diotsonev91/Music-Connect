@@ -3,7 +3,7 @@ import { db } from "../services/firebaseConfig";
 import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
 import useMutation from "./useMutation";
 import { uploadFile, deleteFile } from "../services/firebaseStorage";
-import { addDocument, updateDocument, deleteDocument } from "../services/firebaseFirestore";
+import { addDocument, updateDocument, deleteDocument, setDocument, fetchDocument, fetchCollection } from "../services/firebaseFirestore";
 
 export default function useTrackMutation() {
   const { mutate: upload, isLoading: isUploading, error: uploadError } = useMutation(uploadFile);
@@ -123,12 +123,151 @@ export default function useTrackMutation() {
     }
   };
 
+  // Track a user view on a track
+const trackUserViewOnTrack = async (trackId, userId) => {
+  try {
+    const viewPath = `tracks/${trackId}/views`;
+    const viewDoc = await fetchDocument(viewPath, userId); // Check if viewed
+    if (!viewDoc) {
+      await setDocument(viewPath, userId, { viewedAt: new Date() });
+    }
+  } catch (error) {
+    setMessage("Error tracking track view: " + error.message);
+  }
+};
+
+// Fetch total views of a track
+const fetchTrackViews = async (trackId) => {
+  try {
+    const views = await fetchCollection(`tracks/${trackId}/views`);
+    return views.length;
+  } catch (error) {
+    setMessage("Error fetching track views: " + error.message);
+    return 0;
+  }
+};
+
+
+   // ✅ Add a comment to a specific track
+   const addCommentToTrack = async (trackId, user, commentText, time = null) => {
+    if (!user?.uid) return { success: false, error: "User not logged in" };
+  
+    try {
+      const commentData = {
+        text: commentText,
+        time, // optional timestamp for audio
+        author: {
+          uid: user.uid,
+          displayName: user.displayName || "Anonymous",
+          email: user.email || "",
+        },
+        createdAt: new Date(),
+      };
+  
+      await addDocument(`tracks/${trackId}/comments`, commentData);
+      setMessage("Comment added successfully!");
+      return { success: true };
+    } catch (error) {
+      setMessage("Error adding comment: " + error.message);
+      return { success: false, error: error.message };
+    }
+  };
+
+ // ✅ Edit Comment
+const updateCommentOnTrack = async (trackId, commentId, updatedData) => {
+  try {
+    await updateDocument(`tracks/${trackId}/comments`, commentId, {
+      ...updatedData,
+      updatedAt: new Date(),
+    });
+    setMessage("Comment updated successfully!");
+    return { success: true };
+  } catch (error) {
+    setMessage("Error updating comment: " + error.message);
+    return { success: false, error: error.message };
+  }
+};
+
+// ✅ Delete Comment
+const deleteCommentFromTrack = async (trackId, commentId) => {
+  try {
+    await deleteDocument(`tracks/${trackId}/comments`, commentId);
+    setMessage("Comment deleted successfully!");
+    return { success: true };
+  } catch (error) {
+    setMessage("Error deleting comment: " + error.message);
+    return { success: false, error: error.message };
+  }
+};
+
+// ✅ Fetch Comments
+const fetchTrackComments = async (trackId) => {
+  try {
+    const comments = await fetchCollection(`tracks/${trackId}/comments`);
+    return comments;
+  } catch (error) {
+    setMessage("Error fetching comments: " + error.message);
+    return [];
+  }
+};
+
+// ✅ Toggle Like / Unlike Track
+const toggleTrackLike = async (trackId, user) => {
+  if (!user?.uid) return { success: false, error: "User not logged in" };
+
+  const likePath = `tracks/${trackId}/likes`;
+  try {
+    // ✅ Check if user already liked
+    const existingLike = await fetchDocument(likePath, user.uid);
+
+    if (existingLike) {
+      // ✅ Unlike
+      await deleteDocument(likePath, user.uid);
+      setMessage("Like removed");
+      return { success: true, action: "unliked" };
+    } else {
+      // ✅ Like
+      await setDocument(likePath, user.uid, {
+        likedAt: new Date(),
+        userId: user.uid,
+        displayName: user.displayName || "Anonymous",
+      });
+      setMessage("Track liked!");
+      return { success: true, action: "liked" };
+    }
+  } catch (error) {
+    setMessage("Error toggling like: " + error.message);
+    return { success: false, error: error.message };
+  }
+};
+
+// ✅ Fetch number of likes
+const fetchTrackLikes = async (trackId) => {
+  try {
+    const likes = await fetchCollection(`tracks/${trackId}/likes`);
+    return likes.length;
+  } catch (error) {
+    setMessage("Error fetching likes: " + error.message);
+    return 0;
+  }
+};
+
+
+
   return {
     saveOrUpdateTrack,
     fetchTracksByPlaylist,
     fetchTracksByUser,
     fetchTrackById,
+    addCommentToTrack,  
+    updateCommentOnTrack,
+    deleteCommentFromTrack,   
+    fetchTrackComments,  
     deleteTrackWithFiles,
+    toggleTrackLike,
+    trackUserViewOnTrack,
+  fetchTrackViews,
+    fetchTrackLikes,
     isLoading: isUploading || isSaving || isUpdating || isDeleting,
     error: uploadError || saveError || updateError || deleteError,
     message,

@@ -5,13 +5,17 @@ import WaveformPlayer from "./shared/WaveformPlayer"; // Import player
 import styles from "./PlaylistPage.module.css"; // Import styles
 import defaultImage from "/logo3.png"; // Default image
 import { FaHeart, FaShareAlt, FaEye, FaComment } from "react-icons/fa"; // Import icons
+import { useAuth } from "../../contexts/AuthContext";
 
 const PlaylistPage = ({  userId = "" }) => {
   const { playlistTitle } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { fetchTracksByPlaylist, fetchTracksByUser, isLoading, error } = useTrackMutation();
+  const { fetchTracksByPlaylist, fetchTracksByUser, toggleTrackLike, fetchTrackLikes,   fetchTrackViews, 
+  trackUserViewOnTrack, fetchTrackComments, isLoading, error } = useTrackMutation();
   const [tracks, setTracks] = useState([]);
+  const { user} = useAuth();
+  
 
   useEffect(() => {
     const loadTracks = async () => {
@@ -23,7 +27,23 @@ const PlaylistPage = ({  userId = "" }) => {
           data = await fetchTracksByPlaylist(playlistTitle);
           console.log("fetvched by playlist", data)
         }
-        if (data) setTracks(data);
+        if (data){
+          const tracksWithStats = await Promise.all(
+            data.map(async (track) => {
+              const likesCount = await fetchTrackLikes(track.id);
+              const comments = await fetchTrackComments(track.id);
+              const viewsCount = await fetchTrackViews(track.id);
+              return {
+                ...track,
+                likes: likesCount,
+                commentsCount: comments.length,
+                views: viewsCount
+              };
+            })
+          );
+          setTracks(tracksWithStats);
+        }
+           
       } catch (err) {
         console.error("Error loading tracks:", err);
       }
@@ -35,14 +55,24 @@ const PlaylistPage = ({  userId = "" }) => {
   }, [location.key]);
 
   // Handle like button
-  const handleLike = (trackId) => {
-    setTracks((prevTracks) =>
-      prevTracks.map((track) =>
-        track.id === trackId ? { ...track, likes: (track.likes || 0) + 1 } : track
-      )
+  const handleLikeClick = async (trackId) => {
+    const result = await toggleTrackLike(trackId, user);
+  if (result.success) {
+    const updatedLikes = await fetchTrackLikes(trackId);
+    setTracks(prev =>
+      prev.map(t => t.id === trackId ? { ...t, likes: updatedLikes } : t)
     );
+  } else {
+    console.error(result.error);
+  }
   };
 
+  const handleTrackClick = async (trackId) => {
+    if (user?.uid) {
+      await trackUserViewOnTrack(trackId, user.uid);
+    }
+    navigate(`/track/${trackId}`);
+  };
   // Handle share button
   const handleShare = (trackId) => {
     const shareUrl = `${window.location.origin}/track/${trackId}`;
@@ -66,9 +96,9 @@ const PlaylistPage = ({  userId = "" }) => {
         tracks.map((track) => (
           <div key={track.id} className={styles.trackItem}>
             {/* Clickable Track Title */}
-            <h3 className={styles.trackTitle} onClick={() => navigate(`/track/${track.id}`)}>
-              {track.trackName}
-            </h3>
+            <h3 className={styles.trackTitle} onClick={() => handleTrackClick(track.id)}>
+                {track.trackName}
+                </h3>
 
             <div className={styles.trackContent}>
               {/* Waveform Player */}
@@ -82,7 +112,7 @@ const PlaylistPage = ({  userId = "" }) => {
 
             {/* Track Actions - Like, Share, Views, Comments */}
             <div className={styles.trackActions}>
-              <button className={styles.actionButton} onClick={() => handleLike(track.id)}>
+              <button className={styles.actionButton} onClick={() => handleLikeClick(track.id)}>
                 <FaHeart /> {track.likes || 0}
               </button>
               <button className={styles.actionButton} onClick={() => handleShare(track.id)}>
@@ -92,7 +122,7 @@ const PlaylistPage = ({  userId = "" }) => {
                 <FaEye /> {track.views || 0}
               </span>
               <span className={styles.trackStats}>
-                <FaComment /> {track.comments || 0}
+                <FaComment /> {track.commentsCount || 0}
               </span>
             </div>
           </div>

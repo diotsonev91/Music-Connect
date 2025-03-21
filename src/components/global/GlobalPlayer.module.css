@@ -1,0 +1,46 @@
+.globalPlayer {
+    margin-top: -3em;
+    padding: 0.2rem;
+    width:100%;
+    background: #030303af;
+    align-items: center;
+    border-top: 2px solid #333;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .playPauseBtn {
+    background-color: #f97316;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 999px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background-color 0.3s;
+  }
+  
+  .playPauseBtn:hover {
+    background-color: #ea580c;
+  }
+  
+  .volumeContainer {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .volumeContainer label {
+    color: #fff;
+  }
+  
+  .volumeContainer input[type="range"] {
+    width: 200px;
+  }
+  
+  .trackControl {
+
+    display: flex;
+    justify-content: space-between;
+  }

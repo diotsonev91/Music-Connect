@@ -69,3 +69,15 @@ export const fetchDocument = async (collectionName, docId) => {
   const docSnap = await getDoc(docRef);
   return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
 };
+
+/**
+ * Sets a document with a specific ID in a Firestore collection (creates or overwrites).
+ * @param {string} collectionPath - Firestore collection path (e.g., "blogs/blogId/views")
+ * @param {string} docId - The document ID to set (e.g., userId)
+ * @param {object} data - Document data to write
+ * @returns {Promise<void>}
+ */
+export const setDocument = async (collectionPath, docId, data) => {
+  const docRef = doc(db, collectionPath, docId);
+  await setDoc(docRef, data);
+};

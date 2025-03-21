@@ -3,7 +3,7 @@ import styles from "./AppHeader.module.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useTheme } from "../../../contexts/ThemeContext"; // Import ThemeContext
-
+import GlobalWaveformPlayer from "../../global/GlobalWaveformPlayer";
 const AppHeader = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const AppHeader = () => {
   };
 
   return (
-    <nav className={styles.navbar}>
+    <>    <nav className={styles.navbar}>
       <div className={styles.container}>
         {/* Logo */}
         <h1 className={styles.logo} onClick={() => navigate("/")}>
@@ -103,6 +103,9 @@ const AppHeader = () => {
         </ul>
       </div>
     </nav>
+    <GlobalWaveformPlayer /> 
+    </>
+
   );
 };
 

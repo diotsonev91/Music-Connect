@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useMutation from "./useMutation";
 import { uploadFile, deleteFile } from "../services/firebaseStorage";
-import { addDocument, updateDocument, fetchDocument, fetchCollection, deleteDocument } from "../services/firebaseFirestore";
+import { addDocument, updateDocument, fetchDocument, fetchCollection, deleteDocument , setDocument } from "../services/firebaseFirestore";
 
 import { db } from "../services/firebaseConfig";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -57,6 +57,31 @@ export default function useBlogMutation() {
     } catch (error) {
       setMessage("Error: " + error.message);
       return { success: false, error: error.message };
+    }
+  };
+  
+  const trackUserView = async (blogId, userId) => {
+    try {
+      const viewPath = `blogs/${blogId}/views`;
+      const viewDoc = await fetchDocument(viewPath, userId);  // still use fetchDocument to check
+  
+      if (!viewDoc) {
+        // ✅ Guarantees the document is created/overwritten with userId as the document ID
+        await setDocument(viewPath, userId, { viewedAt: new Date() });
+      }
+    } catch (error) {
+      setMessage("Error tracking blog view: " + error.message);
+    }
+  };
+
+  const fetchBlogViews = async (blogId) => {
+    try {
+      const viewsPath = `blogs/${blogId}/views`;
+      const views = await fetchCollection(viewsPath); // Fetch all view documents
+      return views.length;
+    } catch (error) {
+      setMessage("Error fetching blog views: " + error.message);
+      return 0;
     }
   };
   
@@ -174,6 +199,8 @@ export default function useBlogMutation() {
     deleteCommentOfBlog,
     fetchBlogComments, 
     postCommentToBlog,   
+    trackUserView,        
+    fetchBlogViews,
     editCommentOfBlog,
     isLoading,
     error: uploadError || saveError || updateError || fetchError || fetchAllError || deleteBlogError || deleteImgError,
