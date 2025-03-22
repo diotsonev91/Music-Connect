@@ -1,3 +1,5 @@
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../services/firebaseConfig";
 import { updateDocument, fetchDocument } from  "../services/firebaseFirestore";
 import { uploadFile } from "../services/firebaseStorage";
 
@@ -13,6 +15,22 @@ export const useUserProfile = () => {
     } catch (error) {
       console.error("❌ Failed to update motto:", error);
       return { success: false, error };
+    }
+  };
+
+
+  const searchUserByEmail = async (email) => {
+    try {
+      const q = query(collection(db, USERS_COLLECTION), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      if (querySnapshot.empty) return null;
+
+      const userDoc = querySnapshot.docs[0];
+      console.log("✅ Found user by email:", userDoc.data());
+      return { id: userDoc.id, ...userDoc.data() };
+    } catch (error) {
+      console.error("❌ Failed to search user by email:", error);
+      return null;
     }
   };
 
@@ -95,5 +113,6 @@ export const useUserProfile = () => {
     fetchMotto,
     fetchProfileField,
     fetchUserById,
+    searchUserByEmail, 
   };
 };

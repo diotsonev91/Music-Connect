@@ -1,0 +1,80 @@
+/* Houdini property for --progress */
+@property --progress {
+    syntax: "<percentage>";
+    inherits: true;
+    initial-value: 0%;
+  }
+  
+  :root {
+    --c1: #6eccee;
+    --c2: #f672ca;
+    --c3: #fdb428;
+    --c4: #b9f;
+  }
+  
+  @keyframes progress {
+    from {
+      --progress: 0%;
+    }
+    to {
+      --progress: 100%;
+    }
+  }
+  
+  .container {
+    filter: drop-shadow(0 0 0.8vmin rgba(0, 0, 0, 0));
+    position: absolute;
+    left:50em;
+    top:42em;
+    width: 40vmin;
+    aspect-ratio: 1;
+  }
+  
+  .container::after {
+    content: "wait a while";
+    font-weight: bold;
+    position: absolute;
+    font-size: 2.5vmin;
+    inset: 0;
+    color: white;
+    display: grid;
+    place-items: center;
+  }
+  
+  .circle {
+    --progress: 60%;
+  
+    @supports (background: paint(houdini)) {
+      --progress: 0%;
+    }
+  
+    background: conic-gradient(
+        at center,
+        var(--c1) var(--progress),
+        transparent var(--progress),
+        var(--c2) calc(var(--progress) + 20%),
+        var(--c3) calc(var(--progress) + 30%),
+        var(--c3) calc(var(--progress) + 50%),
+        transparent,
+        transparent,
+        transparent,
+        transparent
+      );
+  
+    animation: progress 4s linear infinite;
+    border-radius: 50%;
+    mask: radial-gradient(circle at center, transparent 65%, black 65%);
+    position: absolute;
+    inset: 0;
+  }
+  
+  .circle:nth-child(2) {
+    inset: 4vmin;
+    animation-delay: 1s;
+  }
+  
+  .circle:nth-child(3) {
+    inset: 8vmin;
+    animation-delay: 0.5s;
+  }
+  

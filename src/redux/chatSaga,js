@@ -1,0 +1,103 @@
+import { call, put, takeEvery } from 'redux-saga/effects';
+import { collection, addDoc, query, orderBy, onSnapshot, getDocs } from 'firebase/firestore';
+import { eventChannel } from 'redux-saga';
+import { db } from "../services/firebaseConfig";
+import { take } from 'redux-saga/effects';
+import { 
+  fetchMessages, 
+  setMessagesForChat, 
+  sendMessage, 
+  setError, 
+  fetchChats, 
+  setChats 
+} from './chatSlice';
+
+// 🔥 Chat List Fetch
+function* fetchChatsSaga() {
+  try {
+    const querySnapshot = yield call(getDocs, collection(db, "chats"));
+    const chats = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    yield put(setChats(chats));
+  } catch (err) {
+    yield put(setError(err.message));
+  }
+}
+
+// 🔥 Real-time Messages Fetch (based on selected chatId)
+function* fetchMessagesSaga(action) {
+    try {
+      const chatId = action.payload;
+      console.log('🔥 fetchMessagesSaga triggered for chatId:', chatId);
+  
+      const q = query(
+        collection(db, `chats/${chatId}/messages`),
+        orderBy("timestamp")
+      );
+      console.log('✅ Firestore query created:', q);
+  
+      const channel = yield call(createFirebaseChannel, q);
+      console.log('✅ Firebase channel created, listening for messages...');
+  
+      while (true) {
+        const snapshot = yield take(channel); // ✅ Correct way to pull from channel
+        console.log('📥 Firestore snapshot received. Number of docs:', snapshot.docs.length);
+  
+        const msgs = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            // ✅ Safe serialize: Convert Firestore Timestamp to millis (number)
+            timestamp: data.timestamp?.toMillis ? data.timestamp.toMillis() : null
+          };
+        });
+  
+        console.log('✅ Messages mapped and serialized:', msgs);
+  
+        yield put(setMessagesForChat({ chatId, messages: msgs }));
+        console.log('✅ Dispatched setMessagesForChat for chatId:', chatId);
+      }
+    } catch (err) {
+      console.error('❌ Error in fetchMessagesSaga:', err);
+      yield put(setError(err.message));
+    }
+  }
+
+// 🔥 Real-time Channel Creator
+function createFirebaseChannel(query) {
+  return eventChannel((emit) => {
+    const unsubscribe = onSnapshot(query, (snapshot) => emit(snapshot));
+    return () => unsubscribe();
+  });
+}
+
+// 🔥 Send Message (dynamic chatId)
+function* sendMessageSaga(action) {
+    try {
+      const { chatId, text, senderId, image } = action.payload;
+      console.log('🔥 Saga SEND triggered:', chatId, text, senderId, image);
+  
+      const messageData = {
+        text: text || "",      // Default to empty if not sent
+        senderId,
+        timestamp: new Date(),
+      };
+  
+      // ✅ Add image if exists
+      if (image) {
+        messageData.image = image;
+      }
+  
+      yield call(addDoc, collection(db, `chats/${chatId}/messages`), messageData);
+    } catch (err) {
+      yield put(setError(err.message));
+    }
+  }
+  
+
+// 🔥 Watcher
+export default function* chatSaga() {
+  yield takeEvery(fetchChats.type, fetchChatsSaga);       // Fetch chat rooms
+  yield takeEvery(fetchMessages.type, fetchMessagesSaga); // Listen to messages in a chat
+  yield takeEvery(sendMessage.type, sendMessageSaga);
+}
