@@ -4,7 +4,7 @@ const chatSlice = createSlice({
   name: 'chat',
   initialState: {
     chatList: [],
-    messagesByChat: {},  // ✅ Store messages per chat ID
+    messagesByChat: {},
     error: null,
   },
   reducers: {
@@ -12,21 +12,20 @@ const chatSlice = createSlice({
     setChats: (state, action) => {
       state.chatList = action.payload;
     },
-
     fetchMessages: () => {},
-    sendMessage: (state, action) => {},
-
-    // ✅ NEW reducer - sets messages per chat
+    sendMessage: () => {}, 
     setMessagesForChat: (state, action) => {
       const { chatId, messages } = action.payload;
       state.messagesByChat[chatId] = messages;
     },
-
     setError: (state, action) => {
       state.error = action.payload;
     },
+    setMessagesAsRead: () => {}, 
+    createOrGetPrivateChat: () => {},
   },
 });
+
 
 export const { 
   fetchChats, 
@@ -34,7 +33,9 @@ export const {
   fetchMessages, 
   sendMessage, 
   setMessagesForChat, 
-  setError 
+  setError ,
+  setMessagesAsRead,
+  createOrGetPrivateChat,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

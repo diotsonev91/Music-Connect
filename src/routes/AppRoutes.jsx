@@ -88,6 +88,14 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+                <Route
+          path="chat/:chatId"
+          element={
+            <ProtectedRoute>
+              <ChatPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="blog_post"
           element={

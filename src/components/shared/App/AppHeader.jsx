@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useTheme } from "../../../contexts/ThemeContext"; // Import ThemeContext
 import GlobalWaveformPlayer from "../../global/GlobalWaveformPlayer";
+import NotificationIcon from "../../notifications/NotificationIcon";
 const AppHeader = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -68,6 +69,9 @@ const AppHeader = () => {
                 >
                   logout
                 </button>
+              </li>
+              <li>
+                <NotificationIcon/>
               </li>
             </>
           ) : (

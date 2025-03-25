@@ -1,0 +1,48 @@
+.dropdown {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: rgb(14, 13, 13);
+    border: 1px solid #ccc;
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    z-index: 100;
+     
+  }
+  
+  .item {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    color:black;
+  }
+  
+  .item:hover {
+    background-color: #faf7f7;
+  }
+  
+  .unread {
+    background-color: #ffffff;
+  }
+  
+  .read {
+    background-color: #c5c7c5;
+  }
+  
+  .unread::before {
+    content: "🔴";
+    margin-right: 8px;
+  }
+  
+  .read::before {
+    content: "✔️";
+    color: green;
+    margin-right: 8px;
+  }
+
+
+  .timestamp {
+    color:black;
+  }
