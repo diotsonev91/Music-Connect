@@ -19,12 +19,12 @@ const PlaylistPage = ({  userId = "" }) => {
 
   useEffect(() => {
     const loadTracks = async () => {
-      try {
+      try { 
         let data = [];
         if (userId) {
           data = await fetchTracksByUser(userId);
         } else {
-          data = await fetchTracksByPlaylist(playlistTitle);
+          data = await fetchTracksByPlaylist(playlistTitle, user);
           console.log("fetvched by playlist", data)
         }
         if (data){

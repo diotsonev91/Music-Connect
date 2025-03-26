@@ -59,3 +59,12 @@ p, ul, ol {
   padding-bottom: 1.5em;
 }
 
+
+html.dark-theme {
+  --bg-color: rgb(20, 20, 20);
+  --text-color: #ffffff;
+  --border-color: #555;
+  --button-bg: #e75480;
+  --button-hover: #ff7f9f;
+  --message-color: lightgreen;
+}

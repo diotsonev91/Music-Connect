@@ -9,6 +9,7 @@ import NotificationPoller from "./components/notifications/NotificationPoller";
 
 const App = () => {
   return (
+
     <Provider store={store}>
     <ThemeProvider>
     <AuthProvider>
@@ -19,6 +20,7 @@ const App = () => {
     </AuthProvider>
     </ThemeProvider>
     </Provider>
+   
   );
 };
 

@@ -1,0 +1,135 @@
+.footerWrapper {
+    display: grid;
+    grid-template-rows: 1fr 10rem auto;
+    grid-template-areas: "main" "." "footer";
+    overflow-x: hidden;
+    
+    
+  }
+  
+  .footer {
+    z-index: 1;
+    --footer-background: #141412;
+    display: grid;
+    position: relative;
+    grid-area: footer;
+    min-height: 12rem;
+  }
+  
+  .bubbles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1rem;
+    background: var(--footer-background);
+    filter: url("#blob");
+  }
+  
+  .bubble {
+    position: absolute;
+    left: var(--position, 50%);
+    background: var(--footer-background);
+    border-radius: 100%;
+    animation: bubble-size var(--time, 4s) ease-in infinite var(--delay, 0s),
+      bubble-move var(--time, 4s) ease-in infinite var(--delay, 0s);
+    transform: translate(-50%, 100%);
+  }
+  .content {
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    grid-gap: 4rem;
+    padding: 2rem;
+    min-height: 35rem;
+    margin-top: -2em;
+    align-items: start;
+   
+    background: url("/image_footer.png") center bottom no-repeat;
+    background-size: cover;
+    background-position: center calc(42% + 2px); 
+    backdrop-filter: blur(50px) brightness(5.8);
+    -webkit-backdrop-filter: blur(10px) brightness(5.8);
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 16px;
+  }
+  .content a,
+  .content p {
+    color: #f5f7fa;
+    background-color: black;
+    display: inline-block;
+    padding: 0.5em;
+    
+    text-decoration: none;
+  }
+  
+  .content b {
+    color: white;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .content p {
+    margin: 0;
+    font-size: 0.75rem;
+  }
+  
+  .content > div {
+    display: flex;
+    flex-direction: column;
+    justify-content:end;
+  }
+  
+  .content > div > div {
+    margin: 0.25rem 0;
+  }
+  
+  .content > div > div > * {
+    margin-right: 0.5rem;
+  }
+  
+  .image {
+    align-self: center;
+    width: 4rem;
+    height: 4rem;
+    margin: 0.25rem 0;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .logo {
+   align-self: end;
+   justify-self: end;
+  
+  }
+
+  .logo p {
+    font-size: 18px;
+    margin-top: 5em;
+  }
+  .svg {
+    position: fixed;
+    top: 100vh;
+  }
+  
+  @keyframes bubble-size {
+    0%,
+    75% {
+      width: var(--size, 4rem);
+      height: var(--size, 4rem);
+    }
+    100% {
+      width: 0rem;
+      height: 0rem;
+    }
+  }
+  
+  @keyframes bubble-move {
+    0% {
+      bottom: -4rem;
+    }
+    100% {
+      bottom: var(--distance, 10rem);
+    }
+  }

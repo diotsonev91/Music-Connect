@@ -1,7 +1,18 @@
 .chatPage {
-    display: flex;
-    height: 100vh;
+  display: flex;
+  height: 100vh;
+  margin-top: 2em;
+  border: 2px solid rgba(128, 128, 128, 0.3); /* Light gray border */
+  border-radius: 12px;
+  overflow: hidden;
 
-  }
-
+  /* 🔥 Modern Shadow Effect */
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.1), 
+    0 6px 20px rgba(0, 0, 0, 0.1), 
+    inset 0 0 10px rgba(255, 255, 255, 0.05);
   
+  backdrop-filter: blur(5px); /* Optional: adds a modern glass look */
+  background: rgba(255, 255, 255, 0.05); /* Optional: for semi-transparency */
+
+}

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { db } from "../services/firebaseConfig";
-import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc,  orderBy, limit } from "firebase/firestore";
 import useMutation from "./useMutation";
 import { uploadFile, deleteFile } from "../services/firebaseStorage";
 import { addDocument, updateDocument, deleteDocument, setDocument, fetchDocument, fetchCollection } from "../services/firebaseFirestore";
@@ -66,16 +66,45 @@ export default function useTrackMutation() {
   };
 
   // ✅ Fetch tracks by playlist (genre)
-  const fetchTracksByPlaylist = async (playlistTitle) => {
+  const fetchTracksByPlaylist = async (playlistTitle, user) => {
     try {
-      const q = query(
-        collection(db, "tracks"),
-        where("genre", "==", playlistTitle)
-      );
+      let q;
+  
+      // 🧡 Fetch liked tracks by current user
+      if (playlistTitle === "myPlaylist" && user?.uid) {
+        const likedTracksSnapshot = await getDocs(collection(db, "tracks"));
+        const likedTracks = [];
+  
+        for (const docSnap of likedTracksSnapshot.docs) {
+          const likeDoc = await getDoc(doc(db, `tracks/${docSnap.id}/likes`, user.uid));
+          if (likeDoc.exists()) {
+            likedTracks.push({ id: docSnap.id, ...docSnap.data() });
+          }
+        }
+  
+        return likedTracks;
+      }
+  
+      //  Fetch uploaded tracks by current user
+      if (playlistTitle === "myUploads" && user?.uid) {
+        q = query(collection(db, "tracks"), where("author.uid", "==", user.uid));
+      }
+  
+      //  Fetch newest tracks (latest 5)
+      else if (playlistTitle === "newTracks") {
+        q = query(collection(db, "tracks"), orderBy("createdAt", "desc"), limit(15));
+      }
+  
+      // Fetch by genre
+      else {
+        q = query(collection(db, "tracks"), where("genre", "==", playlistTitle));
+      }
+  
       const snapshot = await getDocs(q);
       return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  
     } catch (error) {
-      setMessage("Error fetching tracks by playlist: " + error.message);
+      setMessage("Error fetching tracks: " + error.message);
       return [];
     }
   };

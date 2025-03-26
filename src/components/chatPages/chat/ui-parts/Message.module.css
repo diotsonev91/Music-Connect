@@ -121,3 +121,9 @@
 .fullscreenImage:hover {
     transform: scale(1.05);
 }
+
+.readTick {
+    color: #00c851; /* WhatsApp green */
+    margin-left: 6px;
+    font-size: 0.85em;
+  }

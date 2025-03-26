@@ -1,8 +1,9 @@
 import React from "react";
 import styles from "./Message.module.css";
 import { useState } from "react";
-const Message = ({ text, isSender, timeSent, avatar, image }) => {
+const Message = ({ text, isSender, timeSent, avatar, image , readBy = [], userId }) => {
     const [isImageOpen, setIsImageOpen] = useState(false);
+    const isReadByOthers = isSender && readBy.some(uid => uid !== userId);
 
   return (
     <>
@@ -31,7 +32,10 @@ const Message = ({ text, isSender, timeSent, avatar, image }) => {
       {/* Message Content */}
       <div className={styles.messageBubble}>
         <p>{text}</p>
-        <span className={`${styles.timestamp} ${isSender ? styles.senderTimestamp : ""}`}>{timeSent}</span>
+        <span className={`${styles.timestamp} ${isSender ? styles.senderTimestamp : ""}`}>
+          {timeSent}
+          {isReadByOthers && <span className={styles.readTick}>✔✔</span>}
+          </span>
       </div>
 
         {/* Fullscreen Image Modal */}

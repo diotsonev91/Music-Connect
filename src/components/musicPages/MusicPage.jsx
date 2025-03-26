@@ -27,24 +27,43 @@ const genres = [
 
 export default function MusicPage() {
   const navigate = useNavigate(); 
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   const handleGenreClick = (genreName) => {
     navigate(`/playlist/${genreName.toLowerCase()}`); 
   };
 
+  const handleRedirect = (playlist) => {
+    navigate(`/playlist/${playlist}`);
+  };
+
   return (
     <div className={styles.mainContainer}>
+       <div className={styles.customPlaylistsWrapper}>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className={styles.backgroundVideo}
+        >
+          <source src="/background_video.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       {user ? (
+       
         <div className={styles.customPlaylists}>
-          <div className={styles.favorite}>
-            <p>My Playlist</p>
+          <div className={styles.myUploads} onClick={() => handleRedirect("bestRated")}>
+            <p>Best Rated</p>
           </div>
-          <div className={styles.newOnes}>
+          <div className={styles.newOnes} onClick={() => handleRedirect("newTracks")}>
             <p>New tracks</p>
           </div>
-          <div className={styles.myUploads}>
+          <div className={styles.myUploads} onClick={() => handleRedirect("myUploads")}>
             <p>My Uploads</p>
+          </div>
+          <div className={styles.favorite} onClick={() => handleRedirect("myPlaylist")}>
+            <p>My Playlist</p>
           </div>
         </div>
       ) : (
@@ -56,12 +75,15 @@ export default function MusicPage() {
           </p>
         </>
       )}
+
       <div className={styles.background}>
         <div className={styles.container}>
           <div className={styles.cardsList}>
             {genres.map((genre, index) => (
-              <div key={index} className={styles.card}
-              onClick={() => handleGenreClick(genre.name)}
+              <div
+                key={index}
+                className={styles.card}
+                onClick={() => handleGenreClick(genre.name)}
               >
                 <div className={styles.cardImage}>
                   <img src={genre.image} alt={genre.name} />
@@ -75,7 +97,7 @@ export default function MusicPage() {
           </div>
         </div>
       </div>
+      </div>
     </div>
   );
 }
-

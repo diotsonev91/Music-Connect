@@ -66,18 +66,27 @@ function* sendMessageSaga(action) {
       text: text || "",
       senderId,
       timestamp: serverTimestamp(),
-      readBy: [] // ✅ Ensure it's an array from the start
+      readBy: []
     };
 
     if (image) {
       messageData.image = image;
     }
 
+    // ✅ Add the new message
     yield call(addDoc, collection(db, `chats/${chatId}/messages`), messageData);
+
+    // ✅ Update lastMessage in the chat document
+    const chatRef = doc(db, "chats", chatId);
+    yield call(updateDoc, chatRef, {
+      lastMessage: text || "📷 Image sent" 
+    });
+
   } catch (err) {
     yield put(setError(err.message));
   }
 }
+
 
 // 🔥 Mark messages as read saga
 function* setMessagesAsReadSaga(action) {

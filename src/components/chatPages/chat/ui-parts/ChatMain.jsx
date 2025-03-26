@@ -51,6 +51,8 @@ const ChatMain = ({ selectedChat, messages, chatUserAvatar }) => {
                 timeSent={new Date(msg.timestamp).toLocaleTimeString()}
                 avatar={msg.senderId !== user.uid ? chatUserAvatar : ''}
                 image={msg.image}
+                readBy={msg.readBy}
+                userId={user.uid}
               />
             </div>
           ))
