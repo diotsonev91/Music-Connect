@@ -1,7 +1,43 @@
 import React from "react";
+import { useState } from "react";
 import styles from "./AppFooter.module.css";
+import ConfirmPopup from "./ConfirmPopup";
+import { useAuth } from "../../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const AppFooter = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [showConfirm, setShowConfirm] = useState(false); 
+
+  const handleLink = (path) => {
+    navigate(path);
+  }; 
+  
+  const handleLogout = () => {
+    setShowConfirm(true); // ⬅️ open confirm popup
+  };
+  
+  const confirmLogout = async () => {
+    await logout();
+    navigate("/");
+    setShowConfirm(false);
+  };
+  
+  const cancelLogout = () => {
+    setShowConfirm(false);
+  };
+    
+  const handleSocial = (platform) => {
+    const urls = {
+      twitter: "https://twitter.com",
+      instagram: "https://instagram.com",
+      facebook: "https://facebook.com",
+      youtube: "https://youtube.com",
+    };
+    window.open(urls[platform], "_blank");
+  };
+
   return (
     <div className={styles.footerWrapper}>
       <div className={styles.footer}>
@@ -20,40 +56,49 @@ const AppFooter = () => {
             />
           ))}
         </div>
+
         <div className={styles.content}>
           <div>
             <div>
               <b>Discover</b>
-              <a href="#">Artists</a>
-              <a href="#">Genres</a>
-              <a href="#">Playlists</a>
+              <a onClick={() => handleLink("/artists")}>Artists</a>
+              <a onClick={() => handleLink("/music")}>Genres</a>
+              <a onClick={() => handleLink("/music")}>Playlists</a>
             </div>
+
             <div>
               <b>Account</b>
-              <a href="#">Profile</a>
-              <a href="#">Logout</a>
+              {user ? (
+                <>
+                  <a onClick={() => handleLink("/profile")}>Profile</a>
+                  <a onClick={() => handleLogout()}>Logout</a>
+                </>
+              ) : (
+                <a onClick={() => handleLink("/login")}>Login</a>
+              )}
             </div>
+
             <div>
               <b>Resources</b>
               <a href="#">Help Center</a>
               <a href="#">Community</a>
-
             </div>
+
             <div>
               <b>Connect</b>
-              <a href="#">Twitter</a>
-              <a href="#">Instagram</a>
-              <a href="#">Facebook</a>
-              <a href="#">YouTube</a>
+              <a onClick={() => handleSocial("twitter")}>Twitter</a>
+              <a onClick={() => handleSocial("instagram")}>Instagram</a>
+              <a onClick={() => handleSocial("facebook")}>Facebook</a>
+              <a onClick={() => handleSocial("youtube")}>YouTube</a>
             </div>
-      
           </div>
+
           <div className={styles.logo}>
-           
-           <p >© {new Date().getFullYear()} Music Connect</p>
-         </div>
+          <p >© {new Date().getFullYear()} Music Connect</p>
+          </div>
         </div>
       </div>
+
       <svg className={styles.svg}>
         <defs>
           <filter id="blob">
@@ -67,7 +112,13 @@ const AppFooter = () => {
           </filter>
         </defs>
       </svg>
-      </div>
+      <ConfirmPopup
+  isOpen={showConfirm}
+  onClose={cancelLogout}
+  onConfirm={confirmLogout}
+  message="Are you sure you want to logout?"
+/>
+    </div>
   );
 };
 

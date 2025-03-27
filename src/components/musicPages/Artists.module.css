@@ -1,0 +1,104 @@
+.artistsWrapper {
+  padding: 2rem;
+  color: #f9fafb;
+  min-height: 100vh;
+
+  background-image: 
+    linear-gradient(to top, rgba(81, 123, 214, 0.8), rgba(32, 66, 114, 0.8), rgba(3, 41, 95, 0.9)),
+    url('/artists_background.png');
+
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat;
+}
+  
+  .title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #e5e7eb;
+    font-weight: 600;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+.artistGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 2rem;
+  padding: 0 1rem;
+}
+  .artistCard {
+   
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .artistCardWrapper {
+    background-image: 
+    linear-gradient(to top, rgba(183, 81, 214, 0.842), rgba(81, 32, 114, 0.781), rgba(58, 3, 95, 0.767)),
+    url('/artists_background.png');
+
+  background-size:contain;
+  background-position: center;
+  background-repeat: no-repeat;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    
+  }
+  
+  .artistCardWrapper:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.1);
+  }
+  
+  .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 2px solid #3b82f6;
+  }
+  
+  .name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #f3f4f6;
+  }
+  
+  .motto {
+    font-size: 0.95rem;
+    color: #9ca3af;
+    font-style: italic;
+    margin-top: 0.3rem;
+    text-shadow: none;
+  }
+  
+.buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+  .buttons button {
+    margin: 0.3rem;
+    padding: 0.4rem 5.8rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #0078ff;
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  .buttons button:hover {
+    background-color: #005bb5;
+  }

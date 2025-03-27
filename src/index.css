@@ -35,6 +35,10 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --genres-bg: linear-gradient(to right, #f2f2f22f, #eaeaeaa6, #dcdcdc52);
+   --custom-playlists-bg: rgba(251, 255, 200, 0.753);
+   --underline-color: black; 
+   --header-bg: rgba(255, 255, 255, 0.253);
 }
 
 /* Apply to body */
@@ -67,4 +71,10 @@ html.dark-theme {
   --button-bg: #e75480;
   --button-hover: #ff7f9f;
   --message-color: lightgreen;
+  --playlist-border-color: white;
+  --popup-bg-color: #1e1e1e;
+  --genres-bg: linear-gradient(to right, #151422d7, #091616cb, #3a3838ab); 
+  --custom-playlists-bg: rgba(221, 207, 83, 0.233);
+  --underline-color: white;
+  --header-bg: rgba(221, 207, 83, 0.233);
 }

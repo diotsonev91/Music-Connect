@@ -51,10 +51,12 @@ export default function MusicPage() {
           Your browser does not support the video tag.
         </video>
       {user ? (
-       
+        <div className={styles.customPlaylistsWrapper}>
+          <p className={styles.customPlaylistsHeader}>Playlists</p> 
         <div className={styles.customPlaylists}>
-          <div className={styles.myUploads} onClick={() => handleRedirect("bestRated")}>
-            <p>Best Rated</p>
+          
+          <div className={styles.myUploads} onClick={() => handleRedirect("topRated")}>
+            <p>Top Rated</p>
           </div>
           <div className={styles.newOnes} onClick={() => handleRedirect("newTracks")}>
             <p>New tracks</p>
@@ -65,6 +67,10 @@ export default function MusicPage() {
           <div className={styles.favorite} onClick={() => handleRedirect("myPlaylist")}>
             <p>My Playlist</p>
           </div>
+          <div className={styles.favorite} onClick={() => navigate(`/artists`)}>
+            <p>Artists</p>
+          </div>
+        </div>
         </div>
       ) : (
         <>
@@ -75,7 +81,8 @@ export default function MusicPage() {
           </p>
         </>
       )}
-
+<div className={styles.genresWrapper}>
+<p className={styles.genresHeader}>Genres</p> 
       <div className={styles.background}>
         <div className={styles.container}>
           <div className={styles.cardsList}>
@@ -98,6 +105,7 @@ export default function MusicPage() {
         </div>
       </div>
       </div>
+    </div>
     </div>
   );
 }

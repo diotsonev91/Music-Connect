@@ -281,6 +281,30 @@ const fetchTrackLikes = async (trackId) => {
   }
 };
 
+const fetchTopRatedTracks = async () => {
+  try {
+    const tracksSnapshot = await getDocs(collection(db, "tracks"));
+    const tracksWithLikes = [];
+
+    for (const docSnap of tracksSnapshot.docs) {
+      const trackId = docSnap.id;
+      const likes = await fetchCollection(`tracks/${trackId}/likes`);
+      if (likes.length > 0) {
+        tracksWithLikes.push({
+          id: trackId,
+          ...docSnap.data(),
+          likesCount: likes.length,
+        });
+      }
+    }
+
+    // Sort tracks by likes in descending order
+    return tracksWithLikes.sort((a, b) => b.likesCount - a.likesCount);
+  } catch (error) {
+    setMessage("Error fetching top rated tracks: " + error.message);
+    return [];
+  }
+};
 
 
   return {
@@ -297,6 +321,7 @@ const fetchTrackLikes = async (trackId) => {
     trackUserViewOnTrack,
   fetchTrackViews,
     fetchTrackLikes,
+    fetchTopRatedTracks,
     isLoading: isUploading || isSaving || isUpdating || isDeleting,
     error: uploadError || saveError || updateError || deleteError,
     message,

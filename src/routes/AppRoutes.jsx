@@ -19,6 +19,7 @@ import PostBlog from "../components/blogPages/PostBlog";
 import EditBlog from "../components/blogPages/EditBlog";
 import UploadTrack from "../components/musicPages/UploadTrack";
 import EditTrack from "../components/musicPages/EditTrack";
+import Artists from "../components/musicPages/Artists";
 
 const AppRoutes = () => {
   return (
@@ -29,8 +30,9 @@ const AppRoutes = () => {
         <Route path="blog" element={<BlogMain />} />
         <Route path="music" element={<MusicPage />} />
         <Route path="playlist/:playlistTitle" element={<PlaylistPage />} />
+        <Route path="playlist" element={<PlaylistPage />} />
         <Route path="blogs/:category" element={<BlogsPage />} />
-
+        <Route path="artists" element={<Artists/>} />
         {/* ✅ Separate Route for Blog Details */}
         <Route path="blog/:id" element={<BlogDetails />} />
         

@@ -12,20 +12,51 @@ const PlaylistPage = ({  userId = "" }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { fetchTracksByPlaylist, fetchTracksByUser, toggleTrackLike, fetchTrackLikes,   fetchTrackViews, 
-  trackUserViewOnTrack, fetchTrackComments, isLoading, error } = useTrackMutation();
+  trackUserViewOnTrack, fetchTrackComments, fetchTopRatedTracks, isLoading, error } = useTrackMutation();
   const [tracks, setTracks] = useState([]);
   const { user} = useAuth();
-  
+  const searchParams = new URLSearchParams(location.search);
+  const userIdFromQuery = searchParams.get("userId");
+ 
+  const userName = searchParams.get("userName");
+
+  const effectiveUserId = userId || userIdFromQuery;
+  const [displayTitle, setDisplayTitle] = useState(() => {
+    return effectiveUserId && userName
+      ? `Songs by ${decodeURIComponent(userName)}`
+      : playlistTitle;
+  });
 
   useEffect(() => {
     const loadTracks = async () => {
-      try { 
+      try {  
         let data = [];
-        if (userId) {
-          data = await fetchTracksByUser(userId);
+        
+        if (effectiveUserId) {
+          data = await fetchTracksByUser(effectiveUserId);
         } else {
-          data = await fetchTracksByPlaylist(playlistTitle, user);
-          console.log("fetvched by playlist", data)
+          
+          if(playlistTitle == "topRated"){
+            data = await fetchTopRatedTracks();
+            setDisplayTitle("Top Rated Tracks");
+          }else {
+            data = await fetchTracksByPlaylist(playlistTitle, user);
+          
+            switch (playlistTitle) {
+              case "newTracks":
+                setDisplayTitle("New Tracks");
+                break;
+              case "myUploads":
+                setDisplayTitle("My Uploads");
+                break;
+              case "myPlaylist":
+                setDisplayTitle("Songs I Like");
+                break;
+              default:
+                setDisplayTitle(playlistTitle);
+            }
+          
+          }
         }
         if (data){
           const tracksWithStats = await Promise.all(
@@ -49,7 +80,7 @@ const PlaylistPage = ({  userId = "" }) => {
       }
     };
 
-    if (playlistTitle || userId) {
+    if (playlistTitle || effectiveUserId ) {
       loadTracks();
     }
   }, [location.key]);
@@ -84,7 +115,10 @@ const PlaylistPage = ({  userId = "" }) => {
 
   return (
     <div className={styles.playlistContainer}>
-      <h2 className={styles.playlistTitle}>{playlistTitle}</h2>
+      <h2 className={styles.playlistTitle}>
+    {displayTitle}
+</h2>
+
 
       {isLoading ? (
         <p>Loading tracks...</p>
