@@ -106,13 +106,21 @@
 
 .input-valid ~ .icon,
 .input-valid ~ .label {
-    color: #2a9d8f;
+    color: #32ad95;
 }
 
-.field input::placeholder {
-    color: transparent;
+/* Default placeholder style */
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #000000;
+  transition: color 0.3s ease;
 }
 
+/* Transparent placeholder style */
+.field.touched input::placeholder,
+.field.touched textarea::placeholder {
+  color: transparent;
+}
 
 
 .helper {
@@ -121,7 +129,7 @@
     font-size: 0.85em;
     opacity: 0.7;
     padding: 0.1em 0 0.2em 0;
-    color: #0a0909;
+    color: var(--text-color);
     backdrop-filter: blur(3px) brightness(1.4);
     font-weight: 600;
 }
@@ -141,8 +149,8 @@
     border: 1px solid var(--border-color);
     border-radius: 5px;
     font-size: 1rem;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    background-color: var(--bg-color-inverse);
+    
 }
 
 

@@ -10,7 +10,7 @@ const BlogsPage = () => {
   const { getAllBlogPosts, isLoading, error,fetchBlogViews, fetchBlogComments } = useBlogMutation();
   const [blogs, setBlogs] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const blogsPerPage = 12;
+  const blogsPerPage = 8;
   const [sortBy, setSortBy] = useState("title");
 
   // ✅ Fetch blogs only when the component mounts

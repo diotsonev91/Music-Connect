@@ -68,7 +68,7 @@ const BlogDetails = () => {
     return <p className={styles.error}>Loading blog or blog not found.</p>;
   }
 
-  const avatarSrc = blog.avatar || "/default_avatar.png";
+  const avatarSrc = blog.author?.avatar || "/default_avatar.png";
   const blogImg = blog.imageUrl || "/header.png";
   
 

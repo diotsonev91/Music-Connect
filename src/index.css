@@ -39,6 +39,12 @@ html {
    --custom-playlists-bg: rgba(251, 255, 200, 0.753);
    --underline-color: black; 
    --header-bg: rgba(255, 255, 255, 0.253);
+   --login-bg: rgba(255, 255, 255, 0.438);
+   --bg-color-inverse: #fcfcfc;
+   --dropdown-bg-color: #fff;
+   --custom-bloglist-bg: linear-gradient(to right, #012574e8, #345cb3a6, #beabf152);
+   --custom-bloglist-color-hover: #fff;
+   --color: black;
 }
 
 /* Apply to body */
@@ -66,6 +72,7 @@ p, ul, ol {
 
 html.dark-theme {
   --bg-color: rgb(20, 20, 20);
+  --bg-color-inverse: #ffffff;
   --text-color: #ffffff;
   --border-color: #555;
   --button-bg: #e75480;
@@ -77,4 +84,8 @@ html.dark-theme {
   --custom-playlists-bg: rgba(221, 207, 83, 0.233);
   --underline-color: white;
   --header-bg: rgba(221, 207, 83, 0.233);
+  --login-bg: rgba(0, 0, 0, 0.6);
+  --dropdown-bg-color: #f5ec71;
+  --custom-bloglist-bg: #41551b;
+  --color: white;
 }

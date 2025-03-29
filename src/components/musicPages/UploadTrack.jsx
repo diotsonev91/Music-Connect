@@ -3,8 +3,11 @@ import { useAuth } from "../../contexts/AuthContext";
 import useTrackMutation from "../../hooks/useTrackMutation"; // ✅ Use our custom hook
 import TrackForm from "./TrackForm";
 import TrackView from "./shared/TrackView";
+import styles from "./UploadTrack.module.css"; 
+import { useNavigate } from "react-router-dom";
 
 const UploadTrack = ({ onSubmitSuccess }) => {
+  const navigate = useNavigate(); 
   const { user } = useAuth(); // ✅ Get user from AuthContext
   const { saveOrUpdateTrack, isLoading, error, message } = useTrackMutation(); // ✅ Use our mutation hook
 
@@ -26,13 +29,17 @@ const UploadTrack = ({ onSubmitSuccess }) => {
   // ✅ Handle form submission
   const handleSubmit = async () => {
     console.log("✅ FULL trackData at submit: ", trackData);
-    const result = await saveOrUpdateTrack(trackData, user);  // ✅ Use full trackData
+    const result = await saveOrUpdateTrack(trackData, user);
+
+    if (result?.success && result?.id) {
+      navigate(`/track/${result.id}`); 
+    }
   };
   
 
   return (
     <div>
-      <h1>Upload a New Track</h1>
+      <h1 className={styles.headerClass}>Upload a New Track</h1>
 
       {/* ✅ Show Preview with Full Track Object */}
       <TrackView track={trackData}/>

@@ -3,10 +3,17 @@
     margin: 2rem auto;
     padding: 2rem;
     text-align: center;
-    background-color: #ffffff;  /* White background */
-    color: #333333;            /* Darker text for readability */
+    background-color: var(--bg-color);  /* White background */
+    color: var(--color);            /* Darker text for readability */
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position:relative;
+  }
+
+
+  .profileContainer h2,
+  .profileParagraph {
+    color: var(--color);   
   }
   .section_displayName {
     margin-top: 20px;
@@ -15,7 +22,8 @@
   }
   
   .displayNameInput {
-
+    color: #000000;
+    background: #ffffff;
     width: 50%;
     padding: 10px;
     border-radius: 8px;
@@ -39,7 +47,7 @@
 }
 
   .mottoInput {
-    width: 52%;
+    width: 53%;
     padding: 0.8rem;
     margin-top: 1rem;
     border-radius: 8px;
@@ -65,7 +73,10 @@
   }
   
   .logoutButton {
-    margin-top: 2rem;
+    position: absolute;
+    left:1em;
+    top:1em;
+  
     padding: 0.8rem 2rem;
     background-color: #e63946;
     color: #fff;
@@ -83,20 +94,20 @@
   h2 {
     font-size: 1.8rem;
     margin-bottom: 1rem;
-    color: #222;
+    color: var(--color); 
   }
   
   .profileContainer p {
     font-size: 1rem;
     margin: 0.5rem 0;
-    color: #444;
+    color: var(--color); 
   }
   
   label {
     display: block;
     margin-top: 1rem;
     font-weight: bold;
-    color: #333;
+    color: var(--color); 
   }
   
   .dropdownContainer {
@@ -104,13 +115,14 @@
   }
   
   .dropdownBtn {
-    background-color: #f1f1f1;
-    color: #333;
+    background: var(--custom-bloglist-bg);
+    
+    color: white; 
     padding: 0.8rem 1.5rem;
     border: 1px solid #ccc;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: bold; 
     width: 100%;
     margin-bottom: 1rem;
     transition: background-color 0.3s;
@@ -121,7 +133,7 @@
   }
   
   .dropdownContent {
-    background-color: #f9f9f9;
+    background-color: var(--dropdown-bg-color);
     padding: 1rem;
     border-radius: 8px;
     text-align: left;

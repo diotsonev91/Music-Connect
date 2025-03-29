@@ -23,7 +23,7 @@ const BlogForm = ({ initialData = {}, onSubmit, loading }) => {
   // ✅ State manages user input (No need for listening to `initialData`)
   const [formData, setFormData] = useState(defaultFormData);
   const [errors, setErrors] = useState({ title: "", content: "" });
-
+  
   // 🔹 Handle input changes
   const handleChange = (name, value) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -53,6 +53,14 @@ const BlogForm = ({ initialData = {}, onSubmit, loading }) => {
     }
 
     onSubmit(formData);
+  };
+
+  const handleRemoveImage = () => {
+    setFormData((prev) => ({
+      ...prev,
+      image: null,
+      imageUrl: "", 
+    }));
   };
 
   return (
@@ -105,10 +113,11 @@ const BlogForm = ({ initialData = {}, onSubmit, loading }) => {
           validate={validateContent}
           formType="blog"
         />
-
+<div className={styles.buttonsImage}>        
+{formData.imageUrl && <button className={styles.deleteImageBtn} onClick={handleRemoveImage}>❌</button>}
 <FileUploadButton
   accept="image/*"
-  buttonText="Upload Image"
+  buttonText={!formData.imageUrl ? "Upload Image" : "Replace Image"}
   onFileSelect={(file) => {
     handleChange("image", file);
     
@@ -119,6 +128,7 @@ const BlogForm = ({ initialData = {}, onSubmit, loading }) => {
     }
   }}
 />
+</div>
         {formData.imageUrl && <img src={formData.imageUrl} alt="Preview" className={styles.previewImage} />}
 
         <button type="submit" className={styles.button} disabled={loading}>

@@ -1,11 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { stopTrack } from "../../../redux/playerSlice"; // 👈 import your stopTrack action
 import WaveformPlayer from "./WaveformPlayer";
 import styles from "./TrackView.module.css";
 
-const TrackView = ({ track}) => {
-  console.log('TRACK', track)
+const TrackView = ({ track }) => {
+  const dispatch = useDispatch();
+  const { currentTrackId } = useSelector((state) => state.globalPlayer);
+
+  useEffect(() => {
+    // When navigating to this track, ensure no other track is playing
+    if (track?.id && currentTrackId && track.id !== currentTrackId) {
+      dispatch(stopTrack());
+    }
+  }, [track?.id]);
+
   if (!track) {
-    return <p>Loading track...</p>; // ✅ Handle case where track is not available
+    return <p>Loading track...</p>;
   }
 
   return (
@@ -20,7 +31,7 @@ const TrackView = ({ track}) => {
             audioUrl={track.trackFileUrl} 
             trackId={track.id || "preview"}
             containerSize="large" 
-            showPlayButton = {!!track.trackFile}
+            showPlayButton={!!track.trackFileUrl}
           />
         </div>
 

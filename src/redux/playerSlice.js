@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-
 const initialState = {
   currentTrackId: null,
   audioUrl: null,
   isPlaying: false,
-  progress: 0, // Progress between 0 - 1
+  progress: 0,
+  isReady: false, // ✅ NEW: indicates waveform is loaded & ready
 };
 
 const playerSlice = createSlice({
@@ -13,10 +13,17 @@ const playerSlice = createSlice({
   reducers: {
     playTrack(state, action) {
       const { trackId, audioUrl } = action.payload;
+    
+      const isSameTrack = state.currentTrackId === trackId;
+    
       state.currentTrackId = trackId;
       state.audioUrl = audioUrl;
       state.isPlaying = true;
-      state.progress = 0;
+    
+      // Only reset readiness if new track
+      if (!isSameTrack) {
+        state.isReady = false;
+      }
     },
     pauseTrack(state) {
       state.isPlaying = false;
@@ -29,12 +36,23 @@ const playerSlice = createSlice({
       state.currentTrackId = null;
       state.audioUrl = null;
       state.progress = 0;
+      state.isReady = false;
     },
     updateProgress(state, action) {
       state.progress = action.payload;
     },
+    setPlayerReady(state, action) {
+      state.isReady = true;
+    },
   },
 });
 
-export const { playTrack, pauseTrack, resumeTrack, stopTrack, updateProgress } = playerSlice.actions;
+export const {
+  playTrack,
+  pauseTrack,
+  resumeTrack,
+  stopTrack,
+  updateProgress,
+  setPlayerReady,
+} = playerSlice.actions;
 export default playerSlice.reducer;

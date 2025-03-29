@@ -13,6 +13,7 @@ export default function LoginPage() {
 
   return (
     <div className={styles.wrapper}>
+      <p className={styles.loginText}>LOGIN TO CONNECT</p>
       <FormBox formType="login" onSubmit={handleLogin} isLoading={isLoading} error={error} />
     </div>
   );

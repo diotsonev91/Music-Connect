@@ -70,3 +70,13 @@
 .readMore:hover {
     background-color: #ad5400; 
 }
+
+.authorLink {
+    color: #3498db;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .authorLink:hover {
+    color: #217dbb;
+  }

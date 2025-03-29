@@ -1,7 +1,7 @@
 import React, { useId } from "react";
 import styles from "./FileUploadButton.module.css";
 
-const FileUploadButton = ({ onFileSelect, accept = "image/*", buttonText = "Upload File" }) => {
+const FileUploadButton = ({ onFileSelect, accept = "image/*", buttonText = "Upload File" , width="normal"}) => {
   const uniqueId = useId(); // ✅ Generate a unique id for each instance
 
   const handleFileChange = (event) => {
@@ -9,6 +9,10 @@ const FileUploadButton = ({ onFileSelect, accept = "image/*", buttonText = "Uplo
       onFileSelect(event.target.files[0]); // Pass selected file to parent component
     }
   };
+
+  const labelClass = `${styles.fileUploadButton} ${
+    width !== "normal" ? styles.wide : ""
+  }`;
 
   return (
     <div>
@@ -19,7 +23,7 @@ const FileUploadButton = ({ onFileSelect, accept = "image/*", buttonText = "Uplo
         accept={accept} // ✅ Accept different file types correctly
         onChange={handleFileChange}
       />
-      <label htmlFor={`fileInput-${uniqueId}`} className={styles.fileUploadButton}>
+      <label htmlFor={`fileInput-${uniqueId}`} className={labelClass}>
         {buttonText}
       </label>
     </div>

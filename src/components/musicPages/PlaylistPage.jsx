@@ -17,7 +17,9 @@ const PlaylistPage = ({  userId = "" }) => {
   const { user} = useAuth();
   const searchParams = new URLSearchParams(location.search);
   const userIdFromQuery = searchParams.get("userId");
- 
+  const isCurrentUsersSongs = playlistTitle === "myUploads" || location.pathname === "/profile";
+
+
   const userName = searchParams.get("userName");
 
   const effectiveUserId = userId || userIdFromQuery;
@@ -136,7 +138,17 @@ const PlaylistPage = ({  userId = "" }) => {
 
             <div className={styles.trackContent}>
               {/* Waveform Player */}
-              <WaveformPlayer trackId={track.id} audioUrl={track.trackFileUrl} showComments={false}/>
+              {track.trackFileUrl && ( <WaveformPlayer trackId={track.id} audioUrl={track.trackFileUrl} showComments={false}> 
+                {isCurrentUsersSongs && (
+    <button
+      className={styles.editButton}
+      onClick={() => navigate(`/track/${track.id}/edit`)}
+    >
+      ✏️ Edit
+    </button>)}
+
+                 </WaveformPlayer>
+              )}
 
               {/* Track Image */}
               <div className={styles.trackImageBox}>

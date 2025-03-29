@@ -1,6 +1,8 @@
 .wrapper {
     height: 100vh; /* full viewport height */
     display: flex;
+   
+    
     align-items: center;   /* vertical center */
     justify-content: center; /* horizontal center */
     background-image: url('/auth_background.png');
@@ -8,3 +10,14 @@
     background-position: center;
     background-repeat: no-repeat;
 }
+
+.loginText{
+    margin: auto;
+    font-weight: 700;
+    font-size: 4em;
+    background-color:  var(--login-bg);
+    padding: 1em;
+    border-top-right-radius: 1250px;
+    border-bottom-right-radius: 1250px;
+}
+

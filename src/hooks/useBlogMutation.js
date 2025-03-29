@@ -41,19 +41,28 @@ export default function useBlogMutation() {
           uid: user.uid,
           email: user.email,
           displayName: user.displayName || "Anonymous",
+          avatar: user?.photoURL
         },
+
         createdAt: new Date(),
       };
+
+      let newId;
 
       if (blogId) {
         await updateBlog({ id: blogId, ...blogData });
         setMessage("Blog post updated successfully!");
+        newId = blogId;
       } else {
-        await saveBlog(blogData);
+        const savedBlogId = await saveBlog(blogData);
+        console.log("SAVED BLOG:  ", savedBlogId);
         setMessage("Blog post created successfully!");
+  
+        // Make sure saveBlog returns the new blog's ID
+        newId = savedBlogId || null;
       }
-
-      return { success: true };
+  
+      return { success: true, id: newId };
     } catch (error) {
       setMessage("Error: " + error.message);
       return { success: false, error: error.message };
@@ -194,7 +203,7 @@ export default function useBlogMutation() {
     saveOrUpdateBlog,
     getBlog: fetchBlog,
     getAllBlogPosts: fetchBlogs,
-    deleteBlogPost: deleteBlog,
+    deleteBlogPost: deleteBlogPost,
     getUserBlogs,
     deleteCommentOfBlog,
     fetchBlogComments, 

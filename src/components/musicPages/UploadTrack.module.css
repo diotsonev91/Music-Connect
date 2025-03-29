@@ -1,0 +1,8 @@
+.headerClass {
+    
+    margin: auto;
+    text-align: center;
+    padding-top: 1em;
+    color: var(--text-color);
+    background: var(--bg-color);
+}

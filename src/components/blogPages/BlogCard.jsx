@@ -9,7 +9,7 @@ const BlogCard = ({ blog }) => {
 
   const navigate = useNavigate();
 
-  const avatarSrc = blog.avatar || "/default_avatar.png";
+  const avatarSrc = blog.author?.avatar || "/default_avatar.png";
   const blogImg = blog.imageUrl || "/header.png"
 
   console.log("BLOG: ", blog)
@@ -33,7 +33,19 @@ const BlogCard = ({ blog }) => {
           <div className={styles.info}>
             <h3 className={styles.title}>{blog.title}</h3>
             <p className={styles.category}><FontAwesomeIcon icon={faBook} /> Category: {blog.category}</p>
-            <p className={styles.publisher}><FontAwesomeIcon icon={faPenNib} /> By {blog.author.displayName}</p>
+            <p className={styles.publisher}>
+  <FontAwesomeIcon icon={faPenNib} /> By{" "}
+  {blog.author.displayName !== "Anonymous" ? (
+    <span
+      className={styles.authorLink}
+      onClick={() => navigate(`/profile/${blog.author.uid}`)}
+    >
+      {blog.author.displayName}
+    </span>
+  ) : (
+    blog.author.displayName
+  )}
+</p>
             <p className={styles.date}><FontAwesomeIcon icon={faCalendarAlt} /> Posted on {createdAtDate}</p>
             <p className={styles.stats}><FontAwesomeIcon icon={faEye} /> {blog.views} views • {blog.replies} replies</p>
             <button className={styles.readMore} onClick={handleReadMore}>Read More</button>

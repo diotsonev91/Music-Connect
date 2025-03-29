@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginUser, registerUser, logoutUser, listenForAuthChanges } from "../services/firebaseAuth";
-import { addDocument } from "../services/firebaseFirestore";
+import { addDocument,setDocument } from "../services/firebaseFirestore";
 import { useUserProfile } from "../hooks/useUserProfile";
 
 const AuthContext = createContext();
@@ -46,8 +46,13 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password) => {
     const userCredential = await registerUser(email, password);
     const user = userCredential.user;
-    await addDocument("users", { uid: user.uid, email: user.email, createdAt: new Date() });
+    console.log("USER TO BE REGISTERED ",user)
+    await setDocument("users", user.uid, {
+      email: user.email,
+      createdAt: new Date(),
+    });
     await enrichUser(user);
+    console.log("REGISTER USER: ",user)
     return user;
   };
 

@@ -19,23 +19,23 @@ export default function useTrackMutation() {
       setMessage("User not logged in.");
       return { success: false, error: "User not logged in." };
     }
-
+  
     try {
       let trackFileUrl = formData.trackFileUrl;
       if (formData.trackFile instanceof File) {
         trackFileUrl = await upload(formData.trackFile, "tracks", formData.trackFileUrl);
       }
-
+  
       let trackImageUrl = formData.trackImageUrl;
       if (formData.trackImage instanceof File) {
         trackImageUrl = await upload(formData.trackImage, "track_images", formData.trackImageUrl);
       }
-
+  
       let backgroundImageUrl = formData.backgroundImageUrl;
       if (formData.backgroundImage instanceof File) {
         backgroundImageUrl = await upload(formData.backgroundImage, "background_images", formData.backgroundImageUrl);
       }
-
+  
       const trackData = {
         trackName: formData.trackName,
         genre: formData.genre.toLowerCase(),
@@ -49,21 +49,22 @@ export default function useTrackMutation() {
         },
         createdAt: new Date(),
       };
-
+  
       if (trackId) {
         await update({ id: trackId, ...trackData });
         setMessage("Track updated successfully!");
+        return { success: true, id: trackId }; // ✅ return the existing id
       } else {
-        await saveTrack(trackData);
+        const newTrackId = await saveTrack(trackData); // Make sure saveTrack returns the new ID
         setMessage("Track uploaded successfully!");
+        return { success: true, id: newTrackId }; // ✅ return the new id
       }
-
-      return { success: true };
     } catch (error) {
       setMessage("Error: " + error.message);
       return { success: false, error: error.message };
     }
   };
+  
 
   // ✅ Fetch tracks by playlist (genre)
   const fetchTracksByPlaylist = async (playlistTitle, user) => {

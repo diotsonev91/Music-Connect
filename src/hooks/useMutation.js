@@ -14,7 +14,12 @@ export default function useMutation(serviceFunction) {
       setData(result);
       return result;
     } catch (err) {
-      setError(err.message);
+      if(err = "Firebase: Error (auth/email-already-in-use)."){
+        setError("Email already in use");
+      }else{
+        setError(err.message);
+      }
+      
       console.error("Mutation error:", err);
     } finally {
       setIsLoading(false);

@@ -26,6 +26,7 @@ const ProfilePage = () => {
 
   const { updateMotto, updateAvatar, updateProfileField ,fetchAvatar, fetchMotto, fetchProfileField, fetchUserById } = useUserProfile();
 
+  const [reloadProfile, setReloadProfile] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -58,25 +59,34 @@ const ProfilePage = () => {
     };
   
     loadProfile();
-  }, []);
+  }, [reloadProfile, uid, user?.uid, isOwnProfile]);
   
 
   // ✅ Save Motto Handler
   const handleSaveMotto = async () => {
     if (!user?.uid || !motto) return;
     setLoading(true);
-    const res = await updateMotto(user.uid, motto); 
+    const res = await updateMotto(user.uid, motto);
     setLoading(false);
-    res.success ? alert("Motto saved!") : alert("Failed to save motto");
+    if (res.success) {
+      
+      setReloadProfile(prev => !prev); // 🔁 Trigger useEffect
+    } else {
+      alert("Failed to save motto");
+    }
   };
-
-
+  
   const handleSaveDisplayName = async () => {
     if (!user?.uid || !displayName.trim()) return;
     setLoading(true);
     const res = await updateProfileField(user.uid, { displayName });
     setLoading(false);
-    res.success ? alert("displayName saved!") : alert("Failed to save displayName");
+    if (res.success) {
+     
+      setReloadProfile(prev => !prev); // 🔁 Trigger useEffect
+    } else {
+      alert("Failed to save display name");
+    }
   };
   // ✅ Upload and Save Avatar
   const handleAvatarChange = async (file) => {
@@ -88,10 +98,10 @@ const ProfilePage = () => {
       setLoading(true);
       const result = await updateAvatar(user.uid, file, user.photoURL);
       if (result.success && result.avatarUrl) {
-        setAvatar(result.avatarUrl); // ✅ Replace preview with actual storage URL
+        setAvatar(result.avatarUrl); // 
       } else {
         alert("Failed to update avatar");
-        // Optional: Reset preview to old avatar if upload fails
+        
         setAvatar(user.photoURL || "/default_avatar.png");
       }
       setLoading(false);
@@ -123,14 +133,16 @@ const ProfilePage = () => {
   return (
     <div className={styles.profileContainer}>
       <h2>{isOwnProfile ? "👤 My Profile" : "🎵 Artist Profile"}</h2>
+      <button onClick={logout} className={styles.logoutButton}>Logout</button>
      
       <img src={avatar} alt="Profile" className={styles.avatar} />
-      <p><strong>Email:</strong> {currentUser?.email}</p>
-      <p><strong>UID:</strong> {currentUser?.uid || uid}</p>
+      
+      <p className={styles.profileParagraph}><strong>Email:</strong> {currentUser?.email}</p>
+      <p className={styles.profileParagraph}><strong>UID:</strong> {currentUser?.uid || uid}</p>
      
       <>
-      <p><strong>Display Name:</strong> {currentUser?.displayName ||   "N/A"} </p>
-      <p><strong>Motto:</strong> {currentUser?.motto ||  "N/A"} </p>
+      <p className={styles.profileParagraph}><strong>Display Name:</strong> {currentUser?.displayName ||   "N/A"} </p>
+      <p className={styles.profileParagraph}><strong>Motto:</strong> {currentUser?.motto ||  "N/A"} </p>
       </>
       
       {isOwnProfile && (
@@ -168,7 +180,7 @@ const ProfilePage = () => {
             placeholder="Share your musical motto..." 
             value={motto}
             onChange={(e) => setMotto(e.target.value)}
-            rows={3}
+            rows={7}
           />
 
           <button 
@@ -178,8 +190,9 @@ const ProfilePage = () => {
           >
           {loading ? "Saving..." : motto ? "Edit Motto" : "Save Motto"}
           </button>
+          
           </div>
-          <button onClick={logout} className={styles.logoutButton}>Logout</button>
+      
         </>
       )}
 

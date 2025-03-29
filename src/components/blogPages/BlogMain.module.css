@@ -75,3 +75,24 @@
 .button:hover {
   background-color: #ff1a1f;
 }
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.addButton {
+  padding: 0.6rem 1.2rem;
+  background-color: #1d72b8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.addButton:hover {
+  background-color: #155d8a;
+}

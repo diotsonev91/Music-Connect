@@ -40,7 +40,7 @@ const FormInput = ({
         formType === "blog" ? styles.blogInput : "",
     ].filter(Boolean).join(" ");
     return (
-        <div className={`${styles.field} ${formType !=="blog" ? styles.fieldDefault : styles.fieldBlog }`}>
+        <div className={`${styles.field} ${isTouched ? styles.touched : ""} ${formType !=="blog" ? styles.fieldDefault : styles.fieldBlog }`}>
             {type === "area" ? (
                 // ✅ Render <textarea> when type is "area"
                 <textarea

@@ -1,25 +1,58 @@
 .blogList {
+  color: var(--color);
     padding: 1rem;
-    background-color: #202020;
+    background-color: var(--bg-color);
     border-radius: 10px;
-    color: #fff;
+   
   }
   
   .blogItem {
+    color: var(--color);
     padding: 0.8rem;
-    background-color: #333;
+    background-color: var(--bg-color);
     margin-bottom: 0.5rem;
     border-radius: 6px;
+    border: 1px solid #0a0b5252;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    display: flex;
+    justify-content: space-between;
   }
   
   .blogItem:hover {
-    background-color: #444;
+    color: var(--custom-bloglist-color-hover);
+    background: var(--custom-bloglist-bg);
   }
-  
+
+    
   .noBlogs {
     color: #aaa; 
     font-style: italic;
   }
   
+  .actionButtons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .actionButtons button {
+    
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .actionButtons button:hover {
+    transform: scale(1.05) translateY(5.05px); 
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+ 
+  .editButton {
+    color: var( --underline-color);
+    background-color: rgba(245, 242, 79, 0.795);
+  }
+.deleteButton {
+  color: var( --underline-color);
+  background-color: rgba(252, 88, 48, 0.795);
+}

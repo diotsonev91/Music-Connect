@@ -1,8 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; 
 import styles from "./BlogMain.module.css";
-
-// Importing background images
+import { useAuth } from "../../contexts/AuthContext"; 
 import eventsBg from "/events.png";
 import newsBg from "/news.png";
 import musiciansBg from "/musicians.png";
@@ -16,12 +15,22 @@ const sections = [
 ];
 
 const BlogMain = () => {
-
   const navigate = useNavigate();
+  const { user } = useAuth(); 
 
   return (
     <main className={styles.wrapper}>
-      <h1 className={styles.title}>Welcome to Music Blog</h1>
+      <div className={styles.headerRow}>
+        <h1 className={styles.title}>Welcome to Music Blog</h1>
+        {user && (
+          <button 
+            className={styles.addButton}
+            onClick={() => navigate("/blog_post")}
+          >
+            + Add New Blog
+          </button>
+        )}
+      </div>
 
       {sections.map((section, index) => (
         <section key={index} className={styles.section} style={{ backgroundImage: `url(${section.image})` }}>

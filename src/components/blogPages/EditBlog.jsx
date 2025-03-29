@@ -24,7 +24,8 @@ const EditBlog = ({ onSubmitSuccess }) => {
     if (!user) return;
     const result = await saveOrUpdateBlog(formData, user, id);
     if (result.success) {
-      onSubmitSuccess && onSubmitSuccess();
+      navigate(`/blog/${result.id}`); 
+      onSubmitSuccess && onSubmitSuccess(); 
     }
   };
 

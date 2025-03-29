@@ -85,6 +85,7 @@ export const useUserProfile = () => {
   // 🔥 Generic fetch for any profile field(s)
   const fetchProfileField = async (userId) => {
     try {
+      console.log("USER ID", userId)
       const userDoc = await fetchDocument(USERS_COLLECTION, userId);
       console.log("✅ Fetched profile data:", userDoc);
       return userDoc || {};

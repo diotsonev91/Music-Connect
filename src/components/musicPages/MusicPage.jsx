@@ -70,6 +70,9 @@ export default function MusicPage() {
           <div className={styles.favorite} onClick={() => navigate(`/artists`)}>
             <p>Artists</p>
           </div>
+          <div className={styles.favorite} onClick={() => navigate(`/track/upload`)}>
+            <p>Upload track</p>
+          </div>
         </div>
         </div>
       ) : (

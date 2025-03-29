@@ -30,3 +30,6 @@
     box-shadow: inset 15rem 0 0 0 #ffb380; /* Hover effect */
   }
   
+  .wide {
+    width: 20rem;
+  }

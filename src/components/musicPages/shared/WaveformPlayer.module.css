@@ -32,6 +32,17 @@
   margin-right: 10px;
 }
 
+.playButton:hover {
+  background-color: #fb923c;
+}
+
+/* 🔒 Style for disabled (loading) state */
+.playButton:disabled {
+  background-color: #a0a0a0; /* light gray */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .large .playButton {
   margin-top: 5.5em;
 }
@@ -135,4 +146,16 @@
 .arrow.pause::before {
   content: '⏸'; /* Pause symbol */
   color:white;
+}
+
+.extraContent {
+  display: flex;
+}
+
+.buttonsWrapper {
+  position:absolute;
+  left:42em;
+  top:3em;
+  display: block;
+
 }

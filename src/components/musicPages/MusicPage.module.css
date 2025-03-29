@@ -17,7 +17,7 @@
   font-size: 1.2rem;
   padding-bottom: 2em;
   padding-top: 2em;
-  color: black;
+
   background-color: rgba(250, 181, 91, 0.562);
   backdrop-filter: invert(70%);
 }
@@ -106,7 +106,7 @@
 }
 
 .customPlaylists p {
-  font-size: 38px;
+  font-size: 2em;
   font-weight: bold;
   
 }
@@ -194,7 +194,7 @@
   font-weight: bold;
   font-size: 1.5rem;
   height: 100px;
-  color: black;
+
 }
 
 /* Card Icon */
