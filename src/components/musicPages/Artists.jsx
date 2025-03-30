@@ -1,15 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import useArtists from "../../hooks/useArtists";
 import styles from "./Artists.module.css";
 import { useNavigate } from "react-router-dom";
+import { useUserProfile } from "../../hooks/useUserProfile";
 
 export default function Artists() {
   const { artists, loading, error } = useArtists();
   const navigate = useNavigate();
-
+  const {fetchUserById } = useUserProfile();
+  const [artistData, setArtistData] = useState({});
   const handleViewProfile = (uid) => {
     navigate(`/profile/${uid}`);
   };
+
+  useEffect(() => {
+    const loadProfile = async () => {
+      if (artists.length === 0) return;
+
+      const artistMap = {};
+
+      for (const artist of artists) {
+        try {
+          const fetchedUser = await fetchUserById(artist.uid);
+          if (fetchedUser) {
+            artistMap[artist.uid] = fetchedUser;
+          }
+        } catch (err) {
+          console.error("Failed to fetch artist data for", artist.uid, err);
+        }
+      }
+
+      setArtistData(artistMap);
+    };
+
+    loadProfile();
+  }, [artists]);
 
   const handleViewSongs = (artist) => {
     
@@ -27,10 +52,11 @@ export default function Artists() {
 
       <div className={styles.artistGrid}>
         {artists.map((artist) => (
+           
           <div className={styles.artistCardWrapper}>
           <div key={artist.uid} className={styles.artistCard}>
             <img
-              src="/default_avatar.png"
+              src={ artistData[artist.uid]?.photoURL || "/default_avatar.png"}
               alt={artist.displayName || artist.email}
               className={styles.avatar}
             />

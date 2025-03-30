@@ -1,6 +1,6 @@
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../services/firebaseConfig";
-import { updateDocument, fetchDocument } from  "../services/firebaseFirestore";
+import { updateDocument, fetchDocument, deleteDocument } from  "../services/firebaseFirestore";
 import { uploadFile } from "../services/firebaseStorage";
 
 export const useUserProfile = () => {
@@ -18,6 +18,16 @@ export const useUserProfile = () => {
     }
   };
 
+  const deleteUserProfileById = async (userId) => {
+    try {
+      await deleteDocument(USERS_COLLECTION, userId);
+      console.log("✅ User profile deleted successfully!");
+      return { success: true };
+    } catch (error) {
+      console.error("❌ Failed to delete user profile:", error);
+      return { success: false, error };
+    }
+  };
 
   const searchUserByEmail = async (email) => {
     try {
@@ -115,5 +125,6 @@ export const useUserProfile = () => {
     fetchProfileField,
     fetchUserById,
     searchUserByEmail, 
+    deleteUserProfileById,
   };
 };

@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { loginUser, registerUser, logoutUser, listenForAuthChanges } from "../services/firebaseAuth";
-import { addDocument,setDocument } from "../services/firebaseFirestore";
-
-import { useUserProfile } from "../hooks/useUserProfile";
+import { loginUser, registerUser, logoutUser, listenForAuthChanges, deleteCurrentUser } from "../services/firebaseAuth";
+import { setDocument } from "../services/firebaseFirestore";
+import  useBlogMutation from "../hooks/useBlogMutation"
+import  useTrackMutation from "../hooks/useTrackMutation"
+import  {useUserProfile}  from "../hooks/useUserProfile";
 import {
   updateEmail,
   updatePassword,
@@ -16,7 +17,9 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { fetchProfileField } = useUserProfile();
+  const { fetchProfileField, deleteUserProfileById } = useUserProfile();
+  const {deleteAllTracksOfUser} = useTrackMutation();
+  const {deleteAllBlogsOfUser} = useBlogMutation();
 
   // ✅ Enrich user with Firestore profile data (like displayName)
   const enrichUser = async (firebaseUser) => {
@@ -106,12 +109,49 @@ export const AuthProvider = ({ children }) => {
     await enrichUser(firebaseUser);
   };
 
+  const deleteCurrentLoggedUser = async (currentPassword) => {
+    if (!user?.uid) throw new Error("No user is currently logged in.");
+  
+    const auth = getAuth();
+    const firebaseUser = auth.currentUser;
+  
+    try {
+      setLoading(true);
+  
+      // ✅ Step 0: Re-authenticate before sensitive operations
+      const credential = EmailAuthProvider.credential(firebaseUser.email, currentPassword);
+      await reauthenticateWithCredential(firebaseUser, credential);
+  
+      // ✅ Step 1: Delete user-generated content
+      await deleteAllBlogsOfUser(user.uid);
+      await deleteAllTracksOfUser(user.uid);
+  
+      // ✅ Step 2: Delete user Firestore profile
+      await deleteUserProfileById(user.uid);
+  
+      // ✅ Step 3: Delete the user from Firebase Auth
+      await deleteCurrentUser();
+  
+      // ✅ Step 4: Clear local user state
+      setUser(null);
+      console.log("✅ Account and all data deleted successfully");
+  
+    } catch (error) {
+      console.error("❌ Failed to delete user:", error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading, updateCredentials }}>
+    <AuthContext.Provider value={{ user, login, register, logout, loading, updateCredentials, deleteCurrentLoggedUser }}>
       {!loading && children}
     </AuthContext.Provider>
   );
 };
+
 
 // ✅ Custom hook for easy access to AuthContext
 function useAuth() {

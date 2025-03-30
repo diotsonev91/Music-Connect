@@ -65,6 +65,26 @@ export default function useTrackMutation() {
     }
   };
   
+  const deleteAllTracksOfUser = async (userId) => {
+    try {
+      const userTracks = await fetchTracksByUser(userId);
+  
+      for (const track of userTracks) {
+        await deleteTrackWithFiles(
+          track.id,
+          track.trackFileUrl || null,
+          track.trackImageUrl || null,
+          track.backgroundImageUrl || null
+        );
+      }
+  
+      setMessage("All tracks deleted successfully!");
+      return { success: true };
+    } catch (error) {
+      setMessage("Error deleting all tracks: " + error.message);
+      return { success: false, error: error.message };
+    }
+  };
 
   // ✅ Fetch tracks by playlist (genre)
   const fetchTracksByPlaylist = async (playlistTitle, user) => {
@@ -320,9 +340,10 @@ const fetchTopRatedTracks = async () => {
     deleteTrackWithFiles,
     toggleTrackLike,
     trackUserViewOnTrack,
-  fetchTrackViews,
+    fetchTrackViews,
     fetchTrackLikes,
     fetchTopRatedTracks,
+    deleteAllTracksOfUser,
     isLoading: isUploading || isSaving || isUpdating || isDeleting,
     error: uploadError || saveError || updateError || deleteError,
     message,

@@ -37,3 +37,16 @@ export const registerUser = async (email, password) => {
 export const logoutUser = async () => {
   return await signOut(auth);
 };
+
+/**
+ * Deletes the currently authenticated user
+ * @returns {Promise<void>}
+ */
+export const deleteCurrentUser = async () => {
+  const currentUser = auth.currentUser;
+  if (currentUser) {
+    await currentUser.delete();
+  } else {
+    throw new Error("No user is currently logged in.");
+  }
+};

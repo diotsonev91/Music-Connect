@@ -42,10 +42,16 @@ background-image: linear-gradient(180deg, #FFFFFF 0%, #6284FF 50%,  #FF0000 100%
   }
   
   .authorInfo {
+    
     display: flex;
+    justify-content: end;
     align-items: center;
     margin-top: 20px;
+    width: 100%;
+    padding:1em;
+    gap:0.5em;
   }
+ 
   
   .authorAvatar {
     width: 50px;
@@ -67,4 +73,30 @@ background-image: linear-gradient(180deg, #FFFFFF 0%, #6284FF 50%,  #FF0000 100%
   .profileButton:hover {
     opacity: 0.8;
   }
-  
+  .trackInfo {
+    width:100%;
+    background: #007bff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0em 1em 0em 1em;
+    color:white;
+  }
+
+  .trackInfo h2 {
+    color:white;
+  }
+
+  .genreWrapper {
+    display: flex;
+    width: 10%;
+    justify-content: space-evenly;
+    background-color: #6284FF;
+  }
+
+  .userNameNav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap:4em;
+  }

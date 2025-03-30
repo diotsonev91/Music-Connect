@@ -63,7 +63,7 @@
     margin-top: 20px;
     font-size: 1rem;
     line-height: 1.6;
-    background-color: var(--bg-color);
+    background: rgba(233, 218, 218, 0.199);
     border-radius: 8px;
     padding:5em;
     color:var(--color) ;
@@ -71,8 +71,8 @@
   
   /* Comments Section */
   .commentsSection {
-    color:var(--bg-color) ;
-    background-color: var(--bg-color);
+    color:var(--color) ;
+    background: var(--bg-color);
     margin-top: 30px;
     padding:1em;
     border-radius: 8px;
@@ -104,8 +104,8 @@
   }
   
   .comment {
-    color:var(--bg-color) ;
-    background: #333;
+    color:var(--color) ;
+    background: rgba(204, 184, 184, 0.404);
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 10px;
@@ -113,7 +113,8 @@
   
   .commentDate {
     font-size: 0.8rem;
-    color:var(--bg-color) ;
+    color:var(--color) ;
+
     margin-top: 5px;
     display: block;
   }

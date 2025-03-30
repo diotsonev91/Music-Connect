@@ -88,7 +88,7 @@ const BlogDetails = () => {
     const result = await postCommentToBlog(id, commentObj);
     if (result.success) {
       // ✅ Update local UI after successful Firestore save
-      setComments((prev) => [...prev, commentObj]);
+      setComments((prev) => [...prev, { ...commentObj, id: result.id }]);
       setNewComment("");
     } else {
       alert("Failed to post comment");
@@ -108,9 +108,11 @@ const BlogDetails = () => {
         prev.map((c) => (c.id === commentId ? { ...c, ...updatedComment } : c))
       );
     } else {
+      //console.log(result);
       alert("Failed to edit comment");
     }
   };
+
   const confirmDeleteComment = (commentId) => {
     setCommentToDelete(commentId);
     setShowConfirm(true);

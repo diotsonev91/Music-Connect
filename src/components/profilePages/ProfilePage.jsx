@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ConfirmPopup from "../shared/App/ConfirmPopup"; 
 import { useAuth } from "../../contexts/AuthContext";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./ProfilePage.module.css";
@@ -7,9 +8,9 @@ import PlaylistPage from "../musicPages/PlaylistPage";
 import UserBlogs from "../blogPages/UserBlogs";
 import { useUserProfile } from "../../hooks/useUserProfile";
 import AddButton from "../shared/App/AddButton";
-
+ 
 const ProfilePage = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, deleteCurrentLoggedUser } = useAuth();
   const { uid } = useParams();
   const navigate = useNavigate();
 
@@ -21,6 +22,12 @@ const ProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [displayName, setdisplayName] = useState("");
   const [reloadProfile, setReloadProfile] = useState(false);
+  const [originalDisplayName, setOriginalDisplayName] = useState("");
+  const [originalMotto, setOriginalMotto] = useState("");
+  const [hasInitialDisplayName, setHasInitialDisplayName] = useState(false);
+  const [hasInitialMotto, setHasInitialMotto] = useState(false);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+ 
 
   const isOwnProfile = !uid || uid === user?.uid;
   const {
@@ -43,8 +50,18 @@ const ProfilePage = () => {
         const fetchedUser = isOwnProfile ? user : await fetchUserById(uid);
 
         setAvatar(avatarUrl || "/default_avatar.png");
-        setMotto(mottoText || "");
-        setdisplayName(fullProfile.displayName || "");
+
+        const initialDisplayName = fullProfile.displayName || "";
+        const initialMotto = mottoText || "";
+        
+        setdisplayName(initialDisplayName);
+        setOriginalDisplayName(initialDisplayName);
+        setHasInitialDisplayName(!!initialDisplayName); 
+        
+        setMotto(initialMotto);
+        setOriginalMotto(initialMotto);
+        setHasInitialMotto(!!initialMotto); 
+
         setCurrentUser({ ...fetchedUser, ...fullProfile });
       } catch (err) {
         console.error("Error loading profile:", err);
@@ -53,6 +70,7 @@ const ProfilePage = () => {
 
     loadProfile();
   }, [reloadProfile, uid, user?.uid, isOwnProfile]);
+
 
   const handleSaveMotto = async () => {
     if (!user?.uid || !motto) return;
@@ -95,6 +113,18 @@ const ProfilePage = () => {
     }
   };
 
+  const handleConfirmDeleteUser = async (password) => {
+    try {
+      if (!password) return alert("Password is required to delete account.");
+      await deleteCurrentLoggedUser(password);
+      navigate("/");
+    } catch (err) {
+      alert("Failed to delete user: " + err.message);
+    } finally {
+      setShowDeletePopup(false);
+    }
+  };
+
   return (
     <div className={styles.profileContainer}>
       <h2>{isOwnProfile ? "👤 My Profile" : "🎵 Artist Profile"}</h2>
@@ -129,41 +159,47 @@ const ProfilePage = () => {
               type="text"
               className={styles.displayNameInput}
               placeholder="Enter your display name"
-              value={displayName}
+              value={loading ? "loading..." : displayName}
               onChange={(e) => setdisplayName(e.target.value)}
             />
-            <AddButton
+           {((displayName !== originalDisplayName) || !hasInitialDisplayName) ?  (<AddButton
               onClick={handleSaveDisplayName}
               className={styles.saveMottoButton}
               disabled={loading}
-              text={loading ? "Saving..." : !displayName ? "Save Display Name" : "Edit Display Name"}
-            />
+              text={
+              loading
+                ? "Saving..."
+                : (displayName !== originalDisplayName ) && hasInitialDisplayName
+                ? "Edit Display Name"
+                : "Save Display Name"
+              }
+            />):
+            <div></div>
+            }
              
            
-         
-
-  
-
-        
             <label htmlFor="motto">Your Motto</label>
             <textarea
               id="motto"
               className={styles.mottoInput}
               placeholder="Share your musical motto..."
-              value={motto}
+              value={loading ? "loading..." : motto}
               onChange={(e) => setMotto(e.target.value)}
               rows={7}
             />
-            <AddButton
+            {((motto !== originalMotto) || !hasInitialMotto)  &&(<AddButton
               onClick={handleSaveMotto}
               className={styles.saveMottoButton}
               disabled={loading}
-              text={loading ? "Saving..." : motto ? "Edit Motto" : "Save Motto"}
-            />
+              text={
+                loading
+                  ? "Saving..."
+                  : (motto !== originalMotto) && hasInitialMotto
+                  ? "Edit Motto"
+                  : "Save Motto"
+              }
+            />)}
               
-           
-          
-
            <label></label> {/* Empty label to align with the row */}
            <div></div>     {/* Empty input cell to align columns */}
           <div className={styles.editButtonWrapper}>
@@ -172,6 +208,13 @@ const ProfilePage = () => {
               onClick={() => navigate("/profile/edit-user")}
               >
               ✏️ Edit User Credentials
+            </button>
+              <hr></hr>
+            <button
+              className={styles.deleteUserBtn}
+              onClick={() => setShowDeletePopup(true)}
+              >
+               Delete user
             </button>
           </div>
               </div>
@@ -202,6 +245,13 @@ const ProfilePage = () => {
           </>
         )}
       </div>
+      <ConfirmPopup
+        isOpen={showDeletePopup}
+        onClose={() => setShowDeletePopup(false)}
+        onConfirm={handleConfirmDeleteUser}
+        isAccountDeleteConfirm={true}
+        message="Are you sure you want to delete your account and all data? This cannot be undone."
+      />
     </div>
   );
 };

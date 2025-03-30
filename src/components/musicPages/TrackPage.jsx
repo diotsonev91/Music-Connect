@@ -27,6 +27,13 @@ const TrackPage = ({ showComments = true }) => {
   return (
     // 🎯 You can extract this wrapper into a separate component if needed
     <div className={styles.trackPageContainer}>
+      <div className={styles.trackInfo}>
+      <h2>{track.trackName}</h2>
+      <div className={styles.genreWrapper}>
+        <p>genre:</p>
+      <p>{track.genre}</p>
+      </div>
+      </div>
       <div className={styles.trackContainer}>
         {/* 🎵 Player Section */}
         <div
@@ -55,16 +62,20 @@ const TrackPage = ({ showComments = true }) => {
       {/* 🖊️ Author + Comments Section */}
       {showComments && (
         <>
-          <div className={styles.authorInfo}>
+      
+          <div className={styles.authorInfo}> 
+        
             <img
               src={track.author?.avatar || "/default_avatar.png"}
               alt="Author Avatar"
               className={styles.authorAvatar}
             />
+            <div className={styles.userNameNav}>
             <span>{track.author?.displayName || "Unknown Artist"}</span>
             <a href={`/profile/${track.author?.uid}`} className={styles.profileButton}>
               View Profile
             </a>
+            </div>
           </div>
 
           <CommentsSection

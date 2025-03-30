@@ -13,9 +13,13 @@ export default function FormBox({initialCreds={}, formType, onSubmit, isLoading,
 
     const validateEmail = (email) => {
         if (!email) return "Email is required";
-        if (!email.includes("@")) return "Invalid email format";
+      
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+      
+        if (!emailRegex.test(email)) return "Invalid email format";
+      
         return "";
-    };
+      };
 
     const validatePassword = (password) => {
         if (!password) return "Password is required";
@@ -69,7 +73,7 @@ export default function FormBox({initialCreds={}, formType, onSubmit, isLoading,
 
     return (
         <div className={styles.container}>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} >
                 <FormInput
                     value={email}
                     setValue={setEmail}
@@ -95,7 +99,7 @@ export default function FormBox({initialCreds={}, formType, onSubmit, isLoading,
 
 
 
-                {formType === "register" || formType==="edit" && (
+                {(formType === "register" || formType==="edit") && (
                     <FormInput
                         value={confirmPassword}
                         setValue={setConfirmPassword}

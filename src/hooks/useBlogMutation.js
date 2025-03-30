@@ -133,12 +133,12 @@ export default function useBlogMutation() {
   const postCommentToBlog = async (blogId, commentData) => {
     try {
       const path = `blogs/${blogId}/comments`;
-      await addDocument(path, {
+      const newCommentId = await addDocument(path, {
         ...commentData,
         createdAt: new Date(),
       });
       setMessage("Comment added successfully!");
-      return { success: true };
+      return { success: true , id: newCommentId };
     } catch (error) {
       setMessage("Error adding comment: " + error.message);
       return { success: false, error: error.message };
@@ -147,6 +147,9 @@ export default function useBlogMutation() {
 
   // ✅ Edit a comment using your generic updateDocument
   const editCommentOfBlog = async (blogId, commentId, updatedCommentData) => {
+    if (!commentId) {
+      return { success: false, error: "Comment ID is missing" };
+    }
     try {
       const path = `blogs/${blogId}/comments`;
       await updateDocument(path, commentId, {
@@ -176,6 +179,7 @@ export default function useBlogMutation() {
   const isLoading = isUploading || isSaving || isUpdating || isFetching || isFetchingAll || isDeleting || isDeletingImage;
 
   const fetchBlogComments = async (blogId) => {
+    
     try {
       const commentsRef = collection(db, "blogs", blogId, "comments");
       const snapshot = await getDocs(commentsRef);
@@ -198,6 +202,23 @@ export default function useBlogMutation() {
       return { success: false, error: error.message };
     }
   };
+
+  const deleteAllBlogsOfUser = async (userId) => {
+    try {
+      const blogs = await getUserBlogs(userId);
+      
+      for (const blog of blogs) {
+        const imageUrl = blog.imageUrl || null;
+        await deleteBlogPost(blog.id, imageUrl);
+      }
+  
+      setMessage("All blog posts deleted successfully!");
+      return { success: true };
+    } catch (error) {
+      setMessage("Error deleting all user blogs: " + error.message);
+      return { success: false, error: error.message };
+    }
+  };
   
   return {
     saveOrUpdateBlog,
@@ -211,6 +232,7 @@ export default function useBlogMutation() {
     trackUserView,        
     fetchBlogViews,
     editCommentOfBlog,
+    deleteAllBlogsOfUser,
     isLoading,
     error: uploadError || saveError || updateError || fetchError || fetchAllError || deleteBlogError || deleteImgError,
     message,

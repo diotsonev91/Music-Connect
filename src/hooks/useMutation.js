@@ -14,11 +14,15 @@ export default function useMutation(serviceFunction) {
       setData(result);
       return result;
     } catch (err) {
-      if(err = "Firebase: Error (auth/email-already-in-use)."){
+      if(err.message.includes("Firebase: Error (auth/email-already-in-use).")){
         setError("Email already in use");
-      }else{
+      }else if(err.message.includes("Firebase: Error (auth/user-not-found).")){
+        setError("Wrong Credentials")
+      }
+      else{
         setError(err.message);
       }
+
       
       console.error("Mutation error:", err);
     } finally {

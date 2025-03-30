@@ -12,7 +12,8 @@
   }
   
   .popupContent {
-    background-color:  var(--popup-bg-color, white);
+    background-color:  var(--bg-color);
+    color: var(--color);
     padding: 20px 30px;
     border-radius: 8px;
     text-align: center;
@@ -38,7 +39,7 @@
   
   .cancelBtn {
     background-color: #ccc;
-    color: black;
+    color: rgb(252, 252, 252);
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
