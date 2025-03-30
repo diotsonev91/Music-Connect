@@ -2,7 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 import playerReducer from './playerSlice';
 import chatReducer from './chatSlice';
-import chatSaga from './chatSaga,js';
+import chatSaga from './chatSaga.js';
 import notificationsReducer from './notificationSlice'
 // ✅ Create saga middleware
 const sagaMiddleware = createSagaMiddleware();

@@ -3,7 +3,7 @@ import styles from './ChatList.module.css';
 import { useAuth } from '../../../contexts/AuthContext';
 import { useUserProfile } from '../../../hooks/useUserProfile';
 
-const ChatList = ({ chats, onChatSelect, children }) => {
+const ChatList = ({ chats, onChatSelect, onDeleteChat, children }) => {
   const { user } = useAuth();
   const { fetchProfileField } = useUserProfile();
   const [otherUserProfiles, setOtherUserProfiles] = useState({});
@@ -90,6 +90,16 @@ const ChatList = ({ chats, onChatSelect, children }) => {
                 <span className={styles.chatName}>{displayName}</span>
                 <span className={styles.lastMessage}>{chat.lastMessage}</span>
               </div>
+              <span
+                className={styles.deleteIcon}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteChat?.(chat.id);
+                }}
+                title="Delete chat"
+              >
+                🗑️
+              </span>
             </li>
           );
         })}

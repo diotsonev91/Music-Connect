@@ -1,7 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { loginUser, registerUser, logoutUser, listenForAuthChanges } from "../services/firebaseAuth";
 import { addDocument,setDocument } from "../services/firebaseFirestore";
+
 import { useUserProfile } from "../hooks/useUserProfile";
+import {
+  updateEmail,
+  updatePassword,
+  getAuth,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+} from "firebase/auth";
 
 const AuthContext = createContext();
 
@@ -62,12 +70,52 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+
+  const updateCredentials = async ({ email, password, currentPassword }) => {
+    const auth = getAuth();
+    const firebaseUser = auth.currentUser;
+  
+    if (!firebaseUser) throw new Error("No authenticated user.");
+    if (!currentPassword) throw new Error("Current password is required for security reasons.");
+  
+    // ✅ Re-authenticate first (Firebase requires this for sensitive updates)
+    const credential = EmailAuthProvider.credential(firebaseUser.email, currentPassword);
+  
+    try {
+      await reauthenticateWithCredential(firebaseUser, credential);
+    } catch (error) {
+      console.log("FIREBASE ERROR", error)
+      throw new Error("Re-authentication failed. Please check your current password.");
+    }
+  
+    // ✅ Update email if changed
+    if (email && email !== firebaseUser.email) {
+      await updateEmail(firebaseUser, email);
+  
+      
+      await setDocument("users", firebaseUser.uid, { email }, true);
+
+    }
+  
+    // ✅ Update password if provided
+    if (password) {
+      await updatePassword(firebaseUser, password);
+    }
+  
+    // ✅ Refresh your user data
+    await enrichUser(firebaseUser);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, loading, updateCredentials }}>
       {!loading && children}
     </AuthContext.Provider>
   );
 };
 
 // ✅ Custom hook for easy access to AuthContext
-export const useAuth = () => useContext(AuthContext);
+function useAuth() {
+  return useContext(AuthContext);
+}
+
+export { useAuth };

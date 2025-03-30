@@ -20,6 +20,7 @@ import EditBlog from "../components/blogPages/EditBlog";
 import UploadTrack from "../components/musicPages/UploadTrack";
 import EditTrack from "../components/musicPages/EditTrack";
 import Artists from "../components/musicPages/Artists";
+import EditUserPage from "../components/profilePages/EditUserPage";
 
 const AppRoutes = () => {
   return (
@@ -81,7 +82,18 @@ const AppRoutes = () => {
               <ProfilePage />
             </ProtectedRoute>
           }
+          
         />
+           <Route
+          path="profile/edit-user"
+          element={
+            <ProtectedRoute>
+              <EditUserPage />
+            </ProtectedRoute>
+          }
+          
+        />
+     
         <Route
           path="chat"
           element={

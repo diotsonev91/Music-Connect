@@ -155,3 +155,11 @@
     background: #ad5400;
   }
   
+
+  .commentButton:disabled {
+    background: rgba(128, 128, 128, 0.699);
+  }
+
+  .commentButton:disabled::before {
+    content: "🚫 "; 
+  }

@@ -6,6 +6,7 @@ import eventsBg from "/events.png";
 import newsBg from "/news.png";
 import musiciansBg from "/musicians.png";
 import searchBandBg from "/search_band.png";
+import AddButton from "../shared/App/AddButton";
 
 const sections = [
   { title: "Upcoming Events", category: "events", description: "Stay updated with the latest music events happening around you.", image: eventsBg, buttonText: "View Events" },
@@ -23,12 +24,7 @@ const BlogMain = () => {
       <div className={styles.headerRow}>
         <h1 className={styles.title}>Welcome to Music Blog</h1>
         {user && (
-          <button 
-            className={styles.addButton}
-            onClick={() => navigate("/blog_post")}
-          >
-            + Add New Blog
-          </button>
+            <AddButton to="/blog_post" text="+ Add New Blog" />
         )}
       </div>
 

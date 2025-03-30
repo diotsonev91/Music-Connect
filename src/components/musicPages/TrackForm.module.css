@@ -157,3 +157,12 @@ audio {
     font-weight: bold;
     color: var(--message-color);
 }
+
+.selectDiv {
+    display: flex;
+    gap:3px;
+}
+
+.selectDiv p {
+    color:gray;
+}

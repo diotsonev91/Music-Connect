@@ -75,9 +75,10 @@ export const fetchDocument = async (collectionName, docId) => {
  * @param {string} collectionPath - Firestore collection path (e.g., "blogs/blogId/views")
  * @param {string} docId - The document ID to set (e.g., userId)
  * @param {object} data - Document data to write
+ * @param {boolean} merge - Whether to merge with existing data (default: false)
  * @returns {Promise<void>}
  */
-export const setDocument = async (collectionPath, docId, data) => {
+export const setDocument = async (collectionPath, docId, data, merge = false) => {
   const docRef = doc(db, collectionPath, docId);
-  await setDoc(docRef, data);
+  await setDoc(docRef, data, { merge });
 };

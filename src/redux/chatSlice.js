@@ -23,6 +23,11 @@ const chatSlice = createSlice({
     },
     setMessagesAsRead: () => {}, 
     createOrGetPrivateChat: () => {},
+    deleteChat: () => {},
+    removeChat: (state, action) => {
+      const chatId = action.payload;
+      state.chatList = state.chatList.filter(chat => chat.id !== chatId);
+    },
   },
 });
 
@@ -36,6 +41,8 @@ export const {
   setError ,
   setMessagesAsRead,
   createOrGetPrivateChat,
+  deleteChat,
+  removeChat,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

@@ -21,6 +21,11 @@ export default function TrackForm({ trackData={}, onSubmit, loading, setTrackDat
   const [trackFileUrl, setTrackFileUrl] = useState(trackData.trackFileUrl || "");
   const [genre, setGenre] = useState("Select Genre");
   const dispatch = useDispatch();
+  const [touched, setTouched] = useState({
+    trackName: false,
+    trackFile: false,
+    genre: false
+  });
 
   useEffect(() => {
     console.log("track data inside trackform use effect",trackData)
@@ -71,14 +76,17 @@ export default function TrackForm({ trackData={}, onSubmit, loading, setTrackDat
 
   const handleFileSelect = (file, type) => {
     if (file) {
-
       if (type === "trackFile") {
         dispatch(stopTrack());
+        setTouched((prev) => ({ ...prev, trackFile: true }));
+        setTrackFileUrl(URL.createObjectURL(file));
       }
-
-      const fileURL = URL.createObjectURL(file);
-      setTrackData((prev) => ({ ...prev, [type]: file, [`${type}Url`]: fileURL }));
-      if (type === "trackFile") setTrackFileUrl(fileURL);
+  
+      setTrackData((prev) => ({
+        ...prev,
+        [type]: file,
+        [`${type}Url`]: URL.createObjectURL(file),
+      }));
     }
   };
 
@@ -103,7 +111,10 @@ export default function TrackForm({ trackData={}, onSubmit, loading, setTrackDat
         <div className={styles.trackNameField}>       
            <FormInput
           value={trackName}
-          setValue={setTrackName}
+          setValue={(val) => {
+            setTrackName(val);
+            setTouched((prev) => ({ ...prev, trackName: true }));
+          }}
           label="Track Name"
           placeholder="track name"
           type="text"
@@ -117,26 +128,39 @@ export default function TrackForm({ trackData={}, onSubmit, loading, setTrackDat
         <div className={styles.wrapper2}>
 
         {/* Genre */}
-        {errors.genre && <span className={styles.audioRequired}>{errors.genre}</span>}
+        {touched.genre && errors.genre && <span className={styles.audioRequired}>{errors.genre}</span>}
+        <div className={styles.selectDiv}>
+        <p>*</p>
         <select
           className={styles.select}
           value={genre}
-          onChange={(e) => setGenre(e.target.value)}
+          onChange={(e) => {
+            setGenre(e.target.value)
+            //console.log("Selected genre:", e.target.value); // 
+          }
+          }
+          onBlur={() => setTouched((prev) => ({ ...prev, genre: true }))}
         >
           <option value="Select Genre" disabled>Select Genre</option>
-          {genres.map((genre) => (
-            <option key={genre.name} value={genre.name}>{genre.name}</option>
+          {genres.map((g) => (
+            <option key={g.name} value={g.name}>{g.name}</option>
           ))}
         </select>
+        </div>
      
 
         {/* File Upload */}
-        {errors.trackFile && <span className={styles.audioRequired}>{errors.trackFile}</span>}
+        {touched.trackFile && errors.trackFile && <span className={styles.audioRequired}>{errors.trackFile}</span>}
         <FileUploadButton
   accept="audio/*"
-  buttonText={trackData?.trackName ? "Replace Track" : "Upload Track"}
+  buttonText={trackData?.trackName ? "Replace Track" : "*Upload Track"}
   onFileSelect={(file) => handleFileSelect(file, "trackFile")}
   width="wide"
+  onClick={() => {
+    setTimeout(() => {
+      setTouched((prev) => ({ ...prev, trackFile: true }));
+    }, 1000); 
+  }}
 />
 
 <FileUploadButton

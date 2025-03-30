@@ -6,17 +6,18 @@ import styles from "./PlaylistPage.module.css"; // Import styles
 import defaultImage from "/logo3.png"; // Default image
 import { FaHeart, FaShareAlt, FaEye, FaComment } from "react-icons/fa"; // Import icons
 import { useAuth } from "../../contexts/AuthContext";
+import ConfirmPopup from "../shared/App/ConfirmPopup";
 
 const PlaylistPage = ({  userId = "" }) => {
   const { playlistTitle } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const { fetchTracksByPlaylist, fetchTracksByUser, toggleTrackLike, fetchTrackLikes,   fetchTrackViews, 
-  trackUserViewOnTrack, fetchTrackComments, fetchTopRatedTracks, isLoading, error } = useTrackMutation();
+  trackUserViewOnTrack, fetchTrackComments, fetchTopRatedTracks, isLoading, error, deleteTrackWithFiles } = useTrackMutation();
   const [tracks, setTracks] = useState([]);
   const { user} = useAuth();
   const searchParams = new URLSearchParams(location.search);
-  const userIdFromQuery = searchParams.get("userId");
+  const userIdFromQuery = searchParams.get("userId"); 
   const isCurrentUsersSongs = playlistTitle === "myUploads" || location.pathname === "/profile";
 
 
@@ -28,6 +29,10 @@ const PlaylistPage = ({  userId = "" }) => {
       ? `Songs by ${decodeURIComponent(userName)}`
       : playlistTitle;
   });
+
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [trackToDelete, setTrackToDelete] = useState(null);
+  
 
   useEffect(() => {
     const loadTracks = async () => {
@@ -100,6 +105,32 @@ const PlaylistPage = ({  userId = "" }) => {
   }
   };
 
+  
+  const openDeletePopup = (track) => {
+    setTrackToDelete(track);
+    setShowDeletePopup(true);
+  };
+  
+  const handleConfirmDelete = async () => {
+    if (!trackToDelete) return;
+  
+    const result = await deleteTrackWithFiles(
+      trackToDelete.id,
+      trackToDelete.trackFileUrl,
+      trackToDelete.trackImageUrl,
+      trackToDelete.backgroundImageUrl
+    );
+  
+    if (result.success) {
+      setTracks(prev => prev.filter(t => t.id !== trackToDelete.id));
+    } else {
+      alert("Failed to delete track: " + result.error);
+    }
+  
+    setShowDeletePopup(false);
+    setTrackToDelete(null);
+  };
+
   const handleTrackClick = async (trackId) => {
     if (user?.uid) {
       await trackUserViewOnTrack(trackId, user.uid);
@@ -140,12 +171,22 @@ const PlaylistPage = ({  userId = "" }) => {
               {/* Waveform Player */}
               {track.trackFileUrl && ( <WaveformPlayer trackId={track.id} audioUrl={track.trackFileUrl} showComments={false}> 
                 {isCurrentUsersSongs && (
-    <button
-      className={styles.editButton}
-      onClick={() => navigate(`/track/${track.id}/edit`)}
-    >
-      ✏️ Edit
-    </button>)}
+                  <div className={styles.trackEdits}>
+
+                  <button
+                    className={styles.editButton}
+                    onClick={() => navigate(`/track/${track.id}/edit`)}
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    className={styles.editButton}
+                    onClick={() => openDeletePopup(track)}
+                  >
+                    🗑️ Delete
+                  </button>
+                  </div>
+                )}
 
                  </WaveformPlayer>
               )}
@@ -174,7 +215,14 @@ const PlaylistPage = ({  userId = "" }) => {
           </div>
         ))
       )}
+      <ConfirmPopup
+  isOpen={showDeletePopup}
+  onClose={() => setShowDeletePopup(false)}
+  onConfirm={handleConfirmDelete}
+  message={`Are you sure you want to delete "${trackToDelete?.trackName}"?`}
+/>
     </div>
+    
   );
 };
 

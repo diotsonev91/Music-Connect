@@ -6,6 +6,7 @@
     background: url('/chat_background.png');
     background-size:cover;
     background-position: center;
+    position:relative;
   }
   
   .title {
@@ -100,4 +101,31 @@
     border-radius: 50px;
     background-color: #536c9b;
     padding:0.3em;
+  }
+
+  .deleteIcon {
+    position: absolute;
+    right: 1rem;
+    font-size: 1.2rem;
+    color: #c0392b;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .listItem:hover .deleteIcon {
+    opacity: 1;
+  }
+
+  .deleteIcon:hover {
+    background-color: red;
+    border-radius: 50px;
+  }
+
+  .deleteIcon:hover::before {
+    display: inline-block;
+    padding:0.6em;
+    color:white;
+    content: "delete ";
+    text-align: start;
   }

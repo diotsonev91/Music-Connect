@@ -214,7 +214,13 @@ const BlogDetails = () => {
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
             />
-            <button className={styles.commentButton} onClick={handleAddComment}>Add Comment</button>
+             <button
+  className={styles.commentButton}
+  onClick={handleAddComment}
+  disabled={!user}
+>
+  {user ? "Add Comment" : "Login to add comment"}
+</button>
           </div>
         </div>
       </div>

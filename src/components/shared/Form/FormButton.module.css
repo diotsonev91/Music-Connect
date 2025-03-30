@@ -3,10 +3,11 @@
     margin-bottom: 1em;
     display: block;
     width: 100%;
-    border: 3px solid rgba(42, 51, 70, 0.959);
+    border: 3px solid rgba(237, 239, 245, 0.959);
     border-left: none;
     border-right: none;
     background: linear-gradient(90deg, #5f178f98 , #385a86, #46abd349);
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 2px 4px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     color: #e0d9d9;
     font-weight:bolder;
     font-size:large;
@@ -40,5 +41,6 @@
     background: linear-gradient(90deg,#a9c1cac9, #697381, #46558b9f);
     opacity: 0.6;
     cursor: not-allowed;
+    border: 3px solid rgba(42, 51, 70, 0.959);
   }
 

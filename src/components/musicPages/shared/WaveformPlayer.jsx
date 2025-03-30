@@ -5,6 +5,7 @@ import { useComments } from "../../../contexts/TrackCommentContext";
 import WavesurferPlayer from "@wavesurfer/react";
 import styles from "./WaveformPlayer.module.css";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
 
 const WaveformPlayer = ({
   trackId,
@@ -27,6 +28,8 @@ const WaveformPlayer = ({
 
   const isCurrentTrack = currentTrackId === trackId;
   const isCurrentPlaying = isCurrentTrack && isPlaying;
+  const {user}= useAuth();
+  
   const location = useLocation();
 
 
@@ -44,6 +47,7 @@ const isLoading =
       dispatch(playTrack({ trackId, audioUrl }));
       setIsPlayQueued(false); // ✅ Reset queue flag
     }
+    
   }, [isPlayQueued, isReady, isLocalReady, isCurrentPlaying, trackId, audioUrl, dispatch, location]);
 
   const handlePlayPause = () => {
@@ -152,7 +156,7 @@ const isLoading =
 
         
       {/* 📝 Add Comment */}
-      {showComments && isCurrentTrack && (
+      {user &&  showComments && isCurrentTrack && (
         <button onClick={handleAddComment} className={styles.commentButton}>
           Add Comment at {Math.floor(progress * 100)}%
         </button>

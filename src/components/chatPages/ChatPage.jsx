@@ -4,18 +4,31 @@ import { useParams } from 'react-router-dom';
 import ChatList from './chat-list/ChatList';
 import ChatWindow from './chat/ChatWindow';
 import styles from './ChatPage.module.css';
-import { fetchChats, createOrGetPrivateChat } from '../../redux/chatSlice'; 
+import { fetchChats, createOrGetPrivateChat, deleteChat } from '../../redux/chatSlice'; 
+import AddButton from '../shared/App/AddButton';
+import { useAuth } from "../../contexts/AuthContext";
+import { useUserProfile } from "../../hooks/useUserProfile";
+import ConfirmPopup from "../shared/App/ConfirmPopup"; // 
+
+
+
 
 const ChatPage = () => {
   const [selectedChat, setSelectedChat] = useState(null);
   const [email, setEmail] = useState('');
+  const [popupOpen, setPopupOpen] = useState(false);          
+  const [chatToDelete, setChatToDelete] = useState(null); 
+  
+  
   const dispatch = useDispatch();
   const chatList = useSelector(state => state.chat.chatList);
   const { chatId } = useParams();
+  const { user } = useAuth(); 
+  const { searchUserByEmail } = useUserProfile();
 
   useEffect(() => {
-    dispatch(fetchChats());
-  }, [dispatch]);
+    dispatch(fetchChats({ userId: user.uid }));
+  }, [dispatch, , user]);
 
   // ✅ Auto-select chat if URL has /chat/:chatId
   useEffect(() => {
@@ -31,17 +44,51 @@ const ChatPage = () => {
     setSelectedChat(chat);
   };
 
-  const handleAddUserByEmail = () => {
-    if (!email.trim()) return;
 
-    // ✅ Dispatch saga action to handle chat creation logic
-    dispatch(createOrGetPrivateChat({ email }));
+
+  const handleDeleteChat = (chatId) => {
+    setChatToDelete(chatId);     // ✅ store which chat to delete
+    setPopupOpen(true);          // ✅ show popup
+  };
+
+  const confirmDelete = () => {
+    dispatch(deleteChat({ chatId: chatToDelete, userId: user.uid }));
+    setPopupOpen(false);
+    setChatToDelete(null);
+  };
+
+  const cancelDelete = () => {
+    setPopupOpen(false);
+    setChatToDelete(null);
+  };
+
+  const handleAddUserByEmail = async () => {
+    if (!email.trim()) return;
+  
+    const targetUser = await searchUserByEmail(email);
+    if (!targetUser) {
+      alert("User not found.");
+      return;
+    }
+    const cleanTargetUser = { 
+      ...targetUser, 
+      createdAt: targetUser.createdAt?.toMillis?.() || null 
+    };
+  
+    dispatch(createOrGetPrivateChat({
+      userId: user.uid,      
+      targetUser:cleanTargetUser            
+    }));
+  
     setEmail('');
   };
 
   return (
     <div className={styles.chatPage}>
-      <ChatList chats={chatList} onChatSelect={handleChatSelect}>
+      <ChatList chats={chatList} 
+      onChatSelect={handleChatSelect}
+      onDeleteChat={handleDeleteChat}
+      >
         <div className={styles.addUserSection}>
           <input
             type="text"
@@ -49,11 +96,20 @@ const ChatPage = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <button onClick={handleAddUserByEmail}>Add New User</button>
+         
+          <AddButton onClick={handleAddUserByEmail} text="+ Add New User" />
+        
         </div>
       </ChatList>
 
       <ChatWindow selectedChat={selectedChat} />
+
+      <ConfirmPopup 
+        isOpen={popupOpen}
+        onClose={cancelDelete}
+        onConfirm={confirmDelete}
+        message="Are you sure you want to delete this chat?"
+      />
     </div>
   );
 };

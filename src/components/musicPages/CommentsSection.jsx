@@ -123,6 +123,7 @@ const confirmDelete = async () => {
   onConfirm={confirmDelete}
   message="Are you sure you want to delete this comment?"
 />
+    {user && (
       <form onSubmit={handleAddComment}>
         <input
           ref={inputRef}
@@ -138,8 +139,10 @@ const confirmDelete = async () => {
             selectedTimestamp !== null ? styles.highlightPlaceholder : ""
           }`}
         />
-        <button type="submit" className={styles.commentButton}>Comment</button>
-      </form>
+         <button type="submit" className={styles.commentButton}>Comment</button>
+      </form> 
+      ) }
+
 
       {/* ✅ Edit Modal */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>

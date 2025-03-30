@@ -1,0 +1,62 @@
+.editUserWrapper {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4rem 1rem;
+    min-height: 40vh;
+    background: linear-gradient(145deg, #f5f7fa, #b8d3ff);
+  }
+  
+  .formContainer {
+    display: block;
+    margin: auto;
+  
+    width: 800px;
+    padding: 40px;
+   
+    background: linear-gradient(145deg, #73a7a8, #abfffb);;
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+    border-radius: 10px;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
+  }
+  
+  .backButton {
+    display: block;
+    margin: 2rem auto 0;
+    background-color: #22b41f;
+    color: #ffffff;
+    border: none;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  }
+  
+  .backButton:hover {
+    background-color: #d6d6d6;
+  }
+  
+
+
+  /* Subtle animation */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
