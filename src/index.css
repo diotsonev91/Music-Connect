@@ -22,9 +22,14 @@ html {
 
 
 :root {
+  
   --primary-font: "Lato", sans-serif;
-  --text-color: rgba(255, 255, 255, 0.87);
-  --bg-color: #242424;
+  --bg-color: rgb(255, 255, 255);
+  --text-color: #000000;
+  --border-color: #ccc;
+  --button-bg: #ff5a5f;
+  --button-hover: #ff1a1f;
+  --message-color: green;
 
   font-family: var(--primary-font);
   line-height: 1.5;
@@ -49,9 +54,8 @@ html {
 
 /* Apply to body */
 body {
-  background-color: rgb(255, 255, 255);
+  background:var(--bg-color) ;
   width:100%;
-  
 }
 
 /* Apply font to form elements */

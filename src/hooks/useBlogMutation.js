@@ -24,14 +24,14 @@ export default function useBlogMutation() {
       setMessage("User not logged in.");
       return { success: false, error: "User not logged in." };
     }
-
+  
     try {
       let imageUrl = formData.imageUrl;
-
+  
       if (formData.image instanceof File) {
         imageUrl = await upload(formData.image, "blog_images", formData.imageUrl);
       }
-
+  
       const blogData = {
         title: formData.title,
         category: formData.category,
@@ -43,12 +43,18 @@ export default function useBlogMutation() {
           displayName: user.displayName || "Anonymous",
           avatar: user?.photoURL
         },
-
         createdAt: new Date(),
       };
-
+  
+      // ✅ Add event-specific data if applicable
+      if (formData.category === "events") {
+        blogData.price = formData.price || "";
+        blogData.date = formData.date || "";
+        blogData.location = formData.location || "";
+      }
+  
       let newId;
-
+  
       if (blogId) {
         await updateBlog({ id: blogId, ...blogData });
         setMessage("Blog post updated successfully!");
@@ -57,8 +63,6 @@ export default function useBlogMutation() {
         const savedBlogId = await saveBlog(blogData);
         console.log("SAVED BLOG:  ", savedBlogId);
         setMessage("Blog post created successfully!");
-  
-        // Make sure saveBlog returns the new blog's ID
         newId = savedBlogId || null;
       }
   
@@ -68,6 +72,7 @@ export default function useBlogMutation() {
       return { success: false, error: error.message };
     }
   };
+  
   
   const trackUserView = async (blogId, userId) => {
     try {

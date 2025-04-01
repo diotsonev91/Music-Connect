@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { playTrack, pauseTrack, stopTrack } from "../../../redux/playerSlice";
+import { playTrack, pauseTrack, stopTrack,setActiveTrack, setPlayerReady } from "../../../redux/playerSlice";
 import { useComments } from "../../../contexts/TrackCommentContext";
 import WavesurferPlayer from "@wavesurfer/react";
 import styles from "./WaveformPlayer.module.css";
@@ -15,55 +15,63 @@ const WaveformPlayer = ({
   showPlayButton = true,
   children,
   onTimestampClick = () => {},
+  onClick = () => {},
+
 }) => {
   const dispatch = useDispatch();
   const { comments = {} } = showComments ? useComments() : { comments: {} };
 
-  const { currentTrackId, isPlaying, progress, isReady } = useSelector(
+  const {  activeTrackId, isPlaying, progress, isReady } = useSelector(
     (state) => state.globalPlayer
   );
 
-  const [isLocalReady, setIsLocalReady] = useState(false);
-  const [isPlayQueued, setIsPlayQueued] = useState(false);
-
-  const isCurrentTrack = currentTrackId === trackId;
+  const isCurrentTrack = activeTrackId === trackId;
   const isCurrentPlaying = isCurrentTrack && isPlaying;
   const {user}= useAuth();
   
-  const location = useLocation();
 
-
-
-const isOnPlaylistPage = location.pathname.includes("/playlist");
-const isLoading =
-(isCurrentTrack && !isReady && !isCurrentPlaying) ||
-(!isLocalReady && !isOnPlaylistPage);
-
-
+  const isLoading = false; //isCurrentTrack && !isReady && isPlaying;
   const waveRef = useRef(null);
 
   useEffect(() => {
-    if (isPlayQueued && isReady && isLocalReady && !isCurrentPlaying) {
-      dispatch(playTrack({ trackId, audioUrl }));
-      setIsPlayQueued(false); // ✅ Reset queue flag
+    if (!isCurrentTrack && waveRef.current) {
+      waveRef.current.pause?.();
+      waveRef.current.stop?.();
+      dispatch(playTrack({activeTrackId , audioUrl}))
     }
-    
-  }, [isPlayQueued, isReady, isLocalReady, isCurrentPlaying, trackId, audioUrl, dispatch, location]);
+  }, [isCurrentTrack]);
+ 
+  const playFromSource = () => {
+    if(!showComments){
+      onClick();
+    }else{
+      dispatch(playTrack({ trackId, audioUrl }));
+    }
+  }
 
   const handlePlayPause = () => {
-    if (!audioUrl || isLoading || isPlayQueued) return;
-  
-    if (isCurrentPlaying) {
-      dispatch(pauseTrack());
-    } else {
+    
+    if (!audioUrl || isLoading) return;
+        
+    if (activeTrackId === trackId && isPlaying) {
+      dispatch(pauseTrack({trackId}));
+    }else if(activeTrackId === trackId){
+    
+        playFromSource();
+   
+    }else {
       // Prevent multiple clicks
-      setIsPlayQueued(true);
-  
+      console.log("Active track id",activeTrackId)
+      console.log("Current track id",trackId)
+      
+      dispatch(stopTrack());
+     
       // Wait for global player to stabilize before dispatch
       setTimeout(() => {
-        dispatch(playTrack({ trackId, audioUrl }));
-        setIsPlayQueued(false);
-      }, 100); 
+        
+        playFromSource();
+        dispatch(setActiveTrack(trackId));
+      }, 20); 
     }
   };
 
@@ -94,11 +102,13 @@ const isLoading =
         onReady={(ws) => {
           waveRef.current = ws;
           setIsLocalReady(true);
+          dispatch(setPlayerReady())
         }}
         onError={(err) => {
           console.warn("WaveSurfer local error:", err);
           setIsLocalReady(true); // prevent infinite loading on fail
         }}
+        
       />)}
 
       {/* 🔥 Overlay Progress */}
@@ -146,11 +156,11 @@ const isLoading =
       {/* ▶️ Play Button */}
       {showPlayButton && (
         <button
-          onClick={handlePlayPause}
+          onClick={ handlePlayPause}
           className={styles.playButton}
           disabled={isLoading}
         >
-          {isLoading ? "Loading..." : isCurrentPlaying ? "Pause" : "Play"}
+           {isLoading ? "Loading..." : isCurrentPlaying ? "Pause" : "Play"}
         </button>
       )}
 

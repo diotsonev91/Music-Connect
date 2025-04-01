@@ -3,11 +3,11 @@ import { useParams } from "react-router-dom";
 import WaveformPlayer from "./shared/WaveformPlayer";
 import CommentsSection from "./CommentsSection";
 import styles from "./TrackPage.module.css";
-import useTrackMutation from "../../hooks/useTrackMutation"; // ✅ Import your hook
+import useTrackMutation from "../../hooks/useTrackMutation"; 
 
 const TrackPage = ({ showComments = true }) => {
   const { id } = useParams(); // ✅ Get track ID from URL
-  const { fetchTrackById } = useTrackMutation(); // ✅ Use your hook
+  const { fetchTrackById } = useTrackMutation(); 
   const [track, setTrack] = useState(null);
   const [selectedTimestamp, setSelectedTimestamp] = useState(null);
 
@@ -25,7 +25,6 @@ const TrackPage = ({ showComments = true }) => {
   }
 
   return (
-    // 🎯 You can extract this wrapper into a separate component if needed
     <div className={styles.trackPageContainer}>
       <div className={styles.trackInfo}>
       <h2>{track.trackName}</h2>
@@ -35,7 +34,7 @@ const TrackPage = ({ showComments = true }) => {
       </div>
       </div>
       <div className={styles.trackContainer}>
-        {/* 🎵 Player Section */}
+        {/*  Player Section */}
         <div
           className={styles.playerContainer}
           style={{ backgroundImage: `url(${track.backgroundImageUrl || "/header.png"})` }}
@@ -49,7 +48,7 @@ const TrackPage = ({ showComments = true }) => {
           />
         </div>
 
-        {/* 🎨 Track Image Section */}
+        {/*  Track Image Section */}
         <div className={styles.trackImageContainer}>
           <img
             src={track.trackImageUrl || "/test_hiphop.webp"}
@@ -59,7 +58,7 @@ const TrackPage = ({ showComments = true }) => {
         </div>
       </div>
 
-      {/* 🖊️ Author + Comments Section */}
+      {/*  Author + Comments Section */}
       {showComments && (
         <>
       

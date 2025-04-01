@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; 
-import styles from "./BlogMain.module.css";
+import styles from "./BlogsMain.module.css";
 import { useAuth } from "../../contexts/AuthContext"; 
 import eventsBg from "/events.png";
 import newsBg from "/news.png";
@@ -15,7 +15,7 @@ const sections = [
   { title: "Find a Band", category: "search_band", description: "Looking for a band to join or searching for new members?", image: searchBandBg, buttonText: "Search Bands" }
 ];
 
-const BlogMain = () => {
+const BlogsMain = () => {
   const navigate = useNavigate();
   const { user } = useAuth(); 
 
@@ -42,4 +42,4 @@ const BlogMain = () => {
   );
 };
 
-export default BlogMain;
+export default BlogsMain;

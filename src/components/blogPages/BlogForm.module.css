@@ -13,7 +13,7 @@
 }
 
 .label{
-    color: var(--text-color);
+    color: var(--color);
     font-size: 1rem;
 }
 
@@ -39,7 +39,7 @@
     font-size: 2rem;
     margin-bottom: 1em;
     font-weight: bold;
-    color: var(--text-color);
+    color: var(--color);
 }
 
 .blogTitle {
@@ -154,3 +154,21 @@
 .deleteImageBtn:hover {
     transform: scale(1.5);
 }
+
+.errorText {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+
+  .disabled {
+    opacity: 0.6;
+    pointer-events: none;
+    background-color: #ccc !important;
+    cursor: not-allowed;
+  }
+
+  .hrSpace {
+    padding:0.7em;
+    color:transparent;
+  }

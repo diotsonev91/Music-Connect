@@ -22,7 +22,7 @@ const PostBlog = ({ onSubmitSuccess }) => {
 
   return (
     <div>
-      <h1>Create a New Blog Post</h1>
+      
       <BlogForm onSubmit={handleSubmit} loading={isLoading} />
       {error && <p style={{ color: "red" }}>{error}</p>}
       {message && <p>{message}</p>}

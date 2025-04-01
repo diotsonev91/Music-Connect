@@ -1,0 +1,96 @@
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.helpCenter {
+    max-width: 600px;
+    margin: auto;
+    background-color: #072939b9;
+  
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  
+  align-items: center;
+  overflow: hidden;
+  padding:1em;margin-top: 1em;
+  --size: 750px;
+  --speed: 2s;
+  --easing: cubic-bezier(0.8, 0.2, 0.2, 0.8);
+
+
+
+  background-image: linear-gradient(hsl(222, 84, 60, 100%), hsl(164, 79, 71));
+  animation: rotate var(--speed) var(--easing) alternate;
+}
+  
+.helpCenter h2 {
+  color: #ffff;
+}
+
+* {
+  transition: all 0.5s ease-out;
+}
+
+
+  .intro {
+    margin-bottom: 1rem;
+    color: #ffffff;
+  }
+  
+  .faqList {
+    margin-bottom: 2rem;
+  }
+  
+  .faqItem {
+    border-bottom: 1px solid #ddd;
+    padding: 1rem 0;
+  }
+  
+  .question {
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    color: #fffdfd;
+  }
+  
+  .answer {
+    margin-top: 0.5rem;
+    color: #fff7f7;
+  }
+  
+  .contactBox {
+    text-align: center;
+  }
+  
+  .contactBtn {
+    background-color: #1db954;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+  }
+  
+  .contactBtn:hover {
+    background-color: #17a34a;
+  }
+  
+
+  .wrapperHelp {
+   
+    padding: 4em;
+    background:  url("/artists_background.png");
+    
+    background-size: cover;
+    background-position: top;
+    background-color: rgba(0, 174, 255, 0.774);
+  background-blend-mode: screen;
+  }

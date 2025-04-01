@@ -80,8 +80,8 @@ const AppFooter = () => {
 
             <div>
               <b>Resources</b>
-              <a href="#">Help Center</a>
-              <a href="#">Community</a>
+              <a onClick={() => handleLink("/help-center")}>Help Center</a>
+              <a onClick={() => handleLink("/blogs")}>Community</a>
             </div>
 
             <div>
@@ -106,7 +106,7 @@ const AppFooter = () => {
             <feColorMatrix
               in="blur"
               mode="matrix"
-              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9"
+              values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 279 -9"
               result="blob"
             />
           </filter>

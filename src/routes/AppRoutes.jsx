@@ -8,7 +8,7 @@ import RegisterPage from "../components/authPages/RegisterPage";
 import ProfilePage from "../components/profilePages/ProfilePage";
 import ChatPage from "../components/chatPages/ChatPage";
 import HomePage from "../components/homePages/HomePage";
-import BlogMain from "../components/blogPages/BlogMain";
+import BlogsMain from "../components/blogPages/BlogsMain";
 import MusicPage from "../components/musicPages/MusicPage";
 import TrackPage from "../components/musicPages/TrackPage";
 import { TrackCommentProvider } from "../contexts/TrackCommentContext"; 
@@ -21,6 +21,7 @@ import UploadTrack from "../components/musicPages/UploadTrack";
 import EditTrack from "../components/musicPages/EditTrack";
 import Artists from "../components/musicPages/Artists";
 import EditUserPage from "../components/profilePages/EditUserPage";
+import HelpCenter from "../components/shared/App/HelpCenter";
 
 const AppRoutes = () => {
   return (
@@ -28,12 +29,13 @@ const AppRoutes = () => {
       {/* Public routes wrapped with Layout */}
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
-        <Route path="blog" element={<BlogMain />} />
+        <Route path="blogs" element={<BlogsMain />} />
         <Route path="music" element={<MusicPage />} />
         <Route path="playlist/:playlistTitle" element={<PlaylistPage />} />
         <Route path="playlist" element={<PlaylistPage />} />
         <Route path="blogs/:category" element={<BlogsPage />} />
         <Route path="artists" element={<Artists/>} />
+        <Route path="help-center" element={<HelpCenter />} />
         {/* ✅ Separate Route for Blog Details */}
         <Route path="blog/:id" element={<BlogDetails />} />
         

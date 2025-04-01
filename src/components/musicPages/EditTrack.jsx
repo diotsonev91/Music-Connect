@@ -5,18 +5,17 @@ import { useParams } from "react-router-dom";
 import TrackForm from "./TrackForm";
 import TrackView from "./shared/TrackView";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { stopTrack } from "../../redux/playerSlice";
+
 const EditTrack = () => {
-  const { id } = useParams(); // ✅ Get track ID from URL
-  const { user } = useAuth(); // ✅ Get user from AuthContext
+  const { id } = useParams(); 
+  const { user } = useAuth(); 
   const { saveOrUpdateTrack, fetchTrackById, isLoading, error, message } = useTrackMutation(); // ✅ Use mutation hook
   const navigate = useNavigate();
   // ✅ Store the full track object
   const [trackData, setTrackData] = useState(null);
-  const dispatch = useDispatch(); 
 
-  // ✅ Fetch track by ID first
+
+ 
   useEffect(() => {
     const loadTrack = async () => {
       const track = await fetchTrackById(id); // ✅ Fetch the track by ID
@@ -36,7 +35,6 @@ const EditTrack = () => {
 
 
   
-  // ✅ Handle form submission
   const handleSubmit = async (formData) => {
     if (!user) return;
 

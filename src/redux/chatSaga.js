@@ -27,7 +27,14 @@ function* fetchChatsSaga(action) {
 
     while (true) {
       const snapshot = yield take(channel);
-      const chats = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const chats = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toMillis?.() || null, // 👈 fix is here
+        };
+      });
       yield put(setChats(chats));
     }
   } catch (err) {

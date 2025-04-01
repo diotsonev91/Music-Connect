@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom"; // For navigation
-import useTrackMutation from "../../hooks/useTrackMutation"; // Import hook
-import WaveformPlayer from "./shared/WaveformPlayer"; // Import player
-import styles from "./PlaylistPage.module.css"; // Import styles
-import defaultImage from "/logo3.png"; // Default image
-import { FaHeart, FaShareAlt, FaEye, FaComment } from "react-icons/fa"; // Import icons
+import { useNavigate, useParams, useLocation } from "react-router-dom"; 
+import useTrackMutation from "../../hooks/useTrackMutation"; 
+import WaveformPlayer from "./shared/WaveformPlayer"; 
+import styles from "./PlaylistPage.module.css"; 
+import defaultImage from "/logo3.png"; 
+import { FaHeart, FaShareAlt, FaEye, FaComment } from "react-icons/fa"; 
 import { useAuth } from "../../contexts/AuthContext";
 import ConfirmPopup from "../shared/App/ConfirmPopup";
+import { playTrack , setActiveTrack } from "../../redux/playerSlice";
+import { useDispatch } from "react-redux";
 
 const PlaylistPage = ({  userId = "" }) => {
   const { playlistTitle } = useParams();
@@ -20,6 +22,8 @@ const PlaylistPage = ({  userId = "" }) => {
   const userIdFromQuery = searchParams.get("userId"); 
   const isCurrentUsersSongs = playlistTitle === "myUploads" || location.pathname === "/profile";
 
+  const dispatch = useDispatch(); //new line
+
 
   const userName = searchParams.get("userName");
 
@@ -32,7 +36,7 @@ const PlaylistPage = ({  userId = "" }) => {
 
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [trackToDelete, setTrackToDelete] = useState(null);
-  
+  const [playbackQueue, setPlaybackQueue] = useState([]);
 
   useEffect(() => {
     const loadTracks = async () => {
@@ -79,7 +83,14 @@ const PlaylistPage = ({  userId = "" }) => {
               };
             })
           );
+          const minimalQueue = tracksWithStats.map((t) => ({
+            id: t.id,
+            trackFileUrl: t.trackFileUrl,
+          }));
+          setPlaybackQueue(minimalQueue);
           setTracks(tracksWithStats);
+          console.log(minimalQueue)
+          console.log(tracksWithStats)
         }
            
       } catch (err) {
@@ -144,7 +155,20 @@ const PlaylistPage = ({  userId = "" }) => {
     alert("Link copied to clipboard!");
   };
 
-  
+  //new function bellow 
+  const handlePlayFromPlaylist = (trackId, index) => {
+    if (!tracks.length) return;
+    
+    const trackToPlay = tracks.find(t => t.id === trackId) || tracks[index];
+    setActiveTrack(trackId);
+    dispatch(playTrack({
+      trackId: trackToPlay.id,
+      audioUrl: trackToPlay.trackFileUrl,
+      playlistQueue: playbackQueue, // The full playlist
+      currentTrackIndex: index, // Current position
+      playlistSource: playlistTitle
+    }));
+  };
 
   return (
     <div className={styles.playlistContainer}>
@@ -160,7 +184,7 @@ const PlaylistPage = ({  userId = "" }) => {
       ) : tracks.length === 0 ? (
         <p className={styles.noTracks}>No tracks found in this playlist.</p>
       ) : (
-        tracks.map((track) => (
+        tracks.map((track, index) => (
           <div key={track.id} className={styles.trackItem}>
             {/* Clickable Track Title */}
             <h3 className={styles.trackTitle} onClick={() => handleTrackClick(track.id)}>
@@ -169,7 +193,9 @@ const PlaylistPage = ({  userId = "" }) => {
 
             <div className={styles.trackContent}>
               {/* Waveform Player */}
-              {track.trackFileUrl && ( <WaveformPlayer trackId={track.id} audioUrl={track.trackFileUrl} showComments={false}> 
+              {track.trackFileUrl && ( <WaveformPlayer trackId={track.id} audioUrl={track.trackFileUrl} showComments={false}
+              onClick={() => handlePlayFromPlaylist(track.id, index)}
+              > 
                 {isCurrentUsersSongs && (
                   <div className={styles.trackEdits}>
 

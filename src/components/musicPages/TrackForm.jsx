@@ -152,30 +152,30 @@ export default function TrackForm({ trackData={}, onSubmit, loading, setTrackDat
         {/* File Upload */}
         {touched.trackFile && errors.trackFile && <span className={styles.audioRequired}>{errors.trackFile}</span>}
         <FileUploadButton
-  accept="audio/*"
-  buttonText={trackData?.trackName ? "Replace Track" : "*Upload Track"}
-  onFileSelect={(file) => handleFileSelect(file, "trackFile")}
-  width="wide"
-  onClick={() => {
-    setTimeout(() => {
-      setTouched((prev) => ({ ...prev, trackFile: true }));
-    }, 1000); 
-  }}
-/>
+          accept="audio/*"
+          buttonText={trackData?.trackName ? "Replace Track" : "*Upload Track"}
+          onFileSelect={(file) => handleFileSelect(file, "trackFile")}
+          width="wide"
+          onClick={() => {
+            setTimeout(() => {
+              setTouched((prev) => ({ ...prev, trackFile: true }));
+            }, 1000); 
+          }}
+        />
 
-<FileUploadButton
-  accept="image/*"
-  buttonText={trackData?.trackName ? "Replace Image" : "Track Image"}
-  onFileSelect={(file) => handleFileSelect(file, "trackImage")}
-  width="wide"
-/>
+          <FileUploadButton
+            accept="image/*"
+            buttonText={trackData?.trackName ? "Replace Image" : "Track Image"}
+            onFileSelect={(file) => handleFileSelect(file, "trackImage")}
+            width="wide"
+          />
 
-<FileUploadButton
-  accept="image/*"
-  buttonText={trackData?.trackName ? "Change Background" : "Background"}
-  onFileSelect={(file) => handleFileSelect(file, "backgroundImage")}
-  width="wide"
-/>
+          <FileUploadButton
+            accept="image/*"
+            buttonText={trackData?.trackName ? "Change Background" : "Background"}
+            onFileSelect={(file) => handleFileSelect(file, "backgroundImage")}
+            width="wide"
+          />
 
         <button type="submit" className={styles.submitButton} disabled={loading || !isFormValid}>
           {loading ? "Submitting..." : trackData?.trackName ? "Update Track" : "Upload Track"}

@@ -32,7 +32,7 @@ const BlogDetails = () => {
   useEffect(() => {
     const fetchBlog = async () => {
       const blogData = await getBlog(id);
-      
+      console.log("Blog DAta", blogData)
       if (blogData) {
         setBlog(blogData);
         const commentsFetch = await fetchBlogComments(id); 
@@ -158,6 +158,14 @@ const BlogDetails = () => {
             <p className={styles.publisher}><FontAwesomeIcon icon={faPenNib} /> By {blog.author?.displayName || "Unknown"}</p>
             <p className={styles.date}><FontAwesomeIcon icon={faCalendarAlt} /> Posted on {new Date(blog.createdAt?.seconds * 1000).toLocaleDateString()}</p>
             <p className={styles.stats}><FontAwesomeIcon icon={faEye} /> {blog.uniqueViews || 0} views • {comments.length} comments</p>
+            {blog.category === "events" && (
+              <div className={styles.eventDetails}>
+                <h3>🎤 Event Info</h3>
+                <p>Price: {blog.price} BGN</p>
+                <p className={styles.date}>Date: {new Date(blog.date).toLocaleDateString()}</p>
+                <p>Location: {blog.location}</p>
+              </div>
+            )}
           </div>
         </div>
 

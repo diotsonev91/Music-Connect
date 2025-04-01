@@ -164,3 +164,9 @@
   .commentButton:disabled::before {
     content: "🚫 "; 
   }
+
+  .eventDetails p,
+  .eventDetails h3 {
+    color: var(--color);
+    font-size: 1rem;
+  }

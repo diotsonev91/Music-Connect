@@ -1,12 +1,12 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { pauseTrack, resumeTrack, updateProgress, setPlayerReady  } from "../../redux/playerSlice";
+import { pauseTrack, resumeTrack, updateProgress, setPlayerReady, playTrack, playNextTrack , playPreviousTrack } from "../../redux/playerSlice";
 import WavesurferPlayer from "@wavesurfer/react";
 import styles from "./globalPlayer.module.css";
 
 const GlobalWaveformPlayer = () => {
   const dispatch = useDispatch();
-  const { audioUrl, isPlaying } = useSelector((state) => state.globalPlayer);
+  const { audioUrl, isPlaying, activeTrackId, playlistQueue, currentTrackId ,  currentTrackIndex } = useSelector((state) => state.globalPlayer);
 
   const [volume, setVolume] = useState(0.5);
   const [waveKey, setWaveKey] = useState(0);
@@ -71,6 +71,25 @@ const GlobalWaveformPlayer = () => {
 
   if (!audioUrl) return null;
 
+  const handleTrackEnd = () => {
+    if (!playlistQueue || currentTrackIndex === null) return;
+    
+    const nextIndex = currentTrackIndex + 1;
+    const nextTrack = playlistQueue[nextIndex];
+    
+    if (nextTrack) {
+      dispatch(playTrack({
+        trackId: nextTrack.id,
+        audioUrl: nextTrack.trackFileUrl,
+        playlistQueue,
+        currentTrackIndex: nextIndex
+      }));
+    } else {
+      // End of playlist
+      dispatch(stopTrack());
+    }
+  };
+
   return (
     <div className={styles.globalPlayer}>
       <WavesurferPlayer
@@ -85,15 +104,24 @@ const GlobalWaveformPlayer = () => {
         normalize
         onReady={(ws) => {
           console.log("🎧 Global WaveSurfer ready");
+        
           setWaveInstance(ws);
           ws.setVolume(volume);
         
-          // ✅ Dispatch when waveform is ready
-          if (isPlaying) ws.play();
-          dispatch(setPlayerReady());
+          // 🧠 Ensure we don't auto-play the wrong track
+          const isStillActive = currentTrackId === activeTrackId;
         
-         
+          try {
+            if (isStillActive && isPlaying) {
+              ws.play();
+            }
+          } catch (err) {
+            console.warn("⚠️ Error trying to play:", err);
+          }
+        
+          dispatch(setPlayerReady());
         }}
+        onFinish={handleTrackEnd}
         onError={(error) => {
           if (
             error?.name === "AbortError" ||
@@ -113,7 +141,7 @@ const GlobalWaveformPlayer = () => {
       <div className={styles.trackControl}>
         <button
           className={styles.playPauseBtn}
-          onClick={() => dispatch(isPlaying ? pauseTrack() : resumeTrack())}
+          onClick={() => dispatch(isPlaying ? pauseTrack({activeTrackId}) : resumeTrack({activeTrackId}))}
         >
           {isPlaying ? "⏸ Pause" : "▶ Play"}
         </button>
@@ -128,6 +156,14 @@ const GlobalWaveformPlayer = () => {
             value={volume}
             onChange={(e) => setVolume(parseFloat(e.target.value))}
           />
+           <div className={styles.playlistControls}>
+        <button onClick={() => dispatch(playPreviousTrack())}>
+          Previous
+        </button>
+        <button onClick={() => dispatch(playNextTrack())}>
+          Next
+        </button>
+      </div>
         </div>
       </div>
     </div>

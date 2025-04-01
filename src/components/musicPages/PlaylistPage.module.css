@@ -12,9 +12,14 @@
   display: block;
   font-size: 22px;
   font-weight: bold;
-  color: #000000;
+  background-image: linear-gradient(to right, #553c9a 45%, #ee4b2b);
+  padding:1em;
+  border-radius: 30px;
   text-align: center;
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
+  width:50%;
+  margin: auto;
+  
 }
 
 .trackItem {
@@ -118,3 +123,4 @@
 .trackEdits {
   display: flex;
 }
+

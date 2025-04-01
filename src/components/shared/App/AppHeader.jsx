@@ -26,9 +26,9 @@ const AppHeader = () => {
 
         {/* Navigation Links */}
         <ul className={styles.navLinks}>
-          <li>
+          <li onClick={() => navigate("/music")}>
             <span
-              onClick={() => navigate("/music")}
+              
               className={`${styles.navItem} ${styles.musicBefore}`}
             >
               music
@@ -46,10 +46,10 @@ const AppHeader = () => {
           )}
           <li>
             <span
-              onClick={() => navigate("/blog")}
+              onClick={() => navigate("/blogs")}
               className={`${styles.navItem} ${styles.blogBefore}`}
             >
-              blog
+              blogs
             </span>
           </li>
           {user ? (
