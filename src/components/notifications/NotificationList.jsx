@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { markAsRead } from "../../redux/notificationSlice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import styles from "./NotificationList.module.css";
 
 const NotificationList = () => {

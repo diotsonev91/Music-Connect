@@ -2,12 +2,12 @@ import React from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import useBlogMutation from "../../hooks/useBlogMutation";
 import BlogForm from "./BlogForm";
-import { useNavigate } from "react-router-dom"; // ✅ Import this
+import { useNavigate } from "react-router"; 
 
 const PostBlog = ({ onSubmitSuccess }) => {
   const { user } = useAuth();
   const { saveOrUpdateBlog, isLoading, error, message } = useBlogMutation();
-  const navigate = useNavigate(); // ✅ Setup navigate
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (formData) => {
     if (!user) return;
@@ -16,7 +16,7 @@ const PostBlog = ({ onSubmitSuccess }) => {
     console.log("RESULT OF BLOG POST",result)
     if (result.success && result.id) {
       navigate(`/blog/${result.id}`); 
-      onSubmitSuccess && onSubmitSuccess(); // optional callback
+      onSubmitSuccess && onSubmitSuccess(); 
     }
   };
 

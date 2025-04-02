@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ConfirmPopup from "../shared/App/ConfirmPopup"; 
 import { useAuth } from "../../contexts/AuthContext";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 import styles from "./ProfilePage.module.css";
 import FileUploadButton from "../shared/App/FileUploadButton";
 import PlaylistPage from "../musicPages/PlaylistPage";

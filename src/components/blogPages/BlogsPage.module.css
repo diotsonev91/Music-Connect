@@ -7,7 +7,7 @@
   .pageTitle {
     font-size: 24px;
     font-weight: bold;
-    color: #fff;
+    color: var(--color);
     text-align: center;
     margin-bottom: 20px;
   }
@@ -19,7 +19,7 @@
   }
   
   .sortContainer label {
-    color: #fff;
+    color: var(--color);
     font-size: 14px;
     margin-right: 5px;
   }
@@ -58,5 +58,13 @@
     flex-wrap: wrap;
     gap: 20px;
   }
+
+  .loaderWrapper {
+    
+    position: absolute;
+    top:-9cm;
+    left:-9cm;
+  }
+  
   
   

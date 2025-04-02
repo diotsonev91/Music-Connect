@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import WaveformPlayer from "./shared/WaveformPlayer";
 import CommentsSection from "./CommentsSection";
 import styles from "./TrackPage.module.css";

@@ -5,12 +5,12 @@ import { useDispatch } from "react-redux";
 import { sendMessage } from '../../../../redux/chatSlice';
 import { useAuth } from "../../../../contexts/AuthContext";
 import { uploadFile } from "../../../../services/firebaseStorage";
-import Loader from "../../../shared/loaders/Loader"; // ✅ Import your loader
+import Loader from "../../../shared/loaders/Loader"; 
 
 const ChatFooter = ({ selectedChat }) => {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false); // ✅ Loading state for image upload
+  const [loading, setLoading] = useState(false); 
   const fileInputRef = useRef(null);
   const dispatch = useDispatch();
   const { user } = useAuth();

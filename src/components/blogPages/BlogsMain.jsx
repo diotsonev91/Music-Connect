@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router"; 
 import styles from "./BlogsMain.module.css";
 import { useAuth } from "../../contexts/AuthContext"; 
 import eventsBg from "/events.png";

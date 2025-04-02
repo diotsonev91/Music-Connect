@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router"; 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook, faPenNib, faCalendarAlt, faEye } from "@fortawesome/free-solid-svg-icons";
 import styles from "./BlogCard.module.css";

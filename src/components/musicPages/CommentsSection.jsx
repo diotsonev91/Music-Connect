@@ -32,7 +32,7 @@ const handleDeleteClick = (comment) => {
   // Handle Confirm Delete
 const confirmDelete = async () => {
   if (commentToDelete) {
-    await deleteCommentFromTrack(trackId, commentToDelete.id); // 🔥 Your hook method to delete from Firestore
+    await deleteCommentFromTrack(trackId, commentToDelete.id); 
     const updatedComments = await fetchTrackComments(trackId);
     setCommentsForTrack(trackId, updatedComments); // ✅ Update context
   }

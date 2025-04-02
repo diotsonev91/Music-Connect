@@ -14,7 +14,7 @@ import ethnicImage from "/ethnic.png";
 import classicalImage from "/classical.png";
 import acousticImage from "/acoustic.png";
 import { useAuth } from "../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const genres = [
   { name: "Hip Hop", icon: <FaMicrophone />, image: hipHopImage },

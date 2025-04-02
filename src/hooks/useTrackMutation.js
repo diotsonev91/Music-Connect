@@ -10,6 +10,57 @@ export default function useTrackMutation() {
   const { mutate: saveTrack, isLoading: isSaving, error: saveError } = useMutation((data) => addDocument("tracks", data));
   const { mutate: update, isLoading: isUpdating, error: updateError } = useMutation((data) => updateDocument("tracks", data.id, data));
   const { mutate: removeTrack, isLoading: isDeleting, error: deleteError } = useMutation((id) => deleteDocument("tracks", id));
+  const {
+    mutate: fetchTracksByPlaylist,
+    isLoading: isLoadingPlaylist,
+    error: playlistError,
+  } = useMutation(async ({ playlistTitle, user }) => {
+    let q;
+  
+    if (playlistTitle === "myPlaylist" && user?.uid) {
+      const likedTracksSnapshot = await getDocs(collection(db, "tracks"));
+      const likedTracks = [];
+  
+      for (const docSnap of likedTracksSnapshot.docs) {
+        const likeDoc = await getDoc(doc(db, `tracks/${docSnap.id}/likes`, user.uid));
+        if (likeDoc.exists()) {
+          likedTracks.push({ id: docSnap.id, ...docSnap.data() });
+        }
+      }
+      return likedTracks;
+    }
+  
+    if (playlistTitle === "myUploads" && user?.uid) {
+      q = query(collection(db, "tracks"), where("author.uid", "==", user.uid));
+    } else if (playlistTitle === "newTracks") {
+      q = query(collection(db, "tracks"), orderBy("createdAt", "desc"), limit(15));
+    } else {
+      q = query(collection(db, "tracks"), where("genre", "==", playlistTitle));
+    }
+  
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  });
+  
+  const { mutate: fetchTracksByUser, isLoading: isLoadingUserTracks, error: userTracksError } = useMutation(async (userId) => {
+    const q = query(collection(db, "tracks"), where("author.uid", "==", userId));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  });
+  
+  const { mutate: fetchTrackById, isLoading: isLoadingTrack, error: trackError } = useMutation(async (trackId) => {
+    const docSnap = await getDoc(doc(db, "tracks", trackId));
+    return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
+  });
+
+  const {
+    mutate: fetchTrackComments,
+    isLoading: isLoadingComments,
+    error: commentsError,
+  } = useMutation(async (trackId) => {
+    const comments = await fetchCollection(`tracks/${trackId}/comments`);
+    return comments;
+  });
 
   const [message, setMessage] = useState("");
 
@@ -86,76 +137,6 @@ export default function useTrackMutation() {
     }
   };
 
-  // ✅ Fetch tracks by playlist (genre)
-  const fetchTracksByPlaylist = async (playlistTitle, user) => {
-    try {
-      let q;
-  
-      // 🧡 Fetch liked tracks by current user
-      if (playlistTitle === "myPlaylist" && user?.uid) {
-        const likedTracksSnapshot = await getDocs(collection(db, "tracks"));
-        const likedTracks = [];
-  
-        for (const docSnap of likedTracksSnapshot.docs) {
-          const likeDoc = await getDoc(doc(db, `tracks/${docSnap.id}/likes`, user.uid));
-          if (likeDoc.exists()) {
-            likedTracks.push({ id: docSnap.id, ...docSnap.data() });
-          }
-        }
-  
-        return likedTracks;
-      }
-  
-      //  Fetch uploaded tracks by current user
-      if (playlistTitle === "myUploads" && user?.uid) {
-        q = query(collection(db, "tracks"), where("author.uid", "==", user.uid));
-      }
-  
-      //  Fetch newest tracks (latest 5)
-      else if (playlistTitle === "newTracks") {
-        q = query(collection(db, "tracks"), orderBy("createdAt", "desc"), limit(15));
-      }
-  
-      // Fetch by genre
-      else {
-        q = query(collection(db, "tracks"), where("genre", "==", playlistTitle));
-      }
-  
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  
-    } catch (error) {
-      setMessage("Error fetching tracks: " + error.message);
-      return [];
-    }
-  };
-
-  // ✅ Fetch tracks by user ID
-  const fetchTracksByUser = async (userId) => {
-    try {
-      const q = query(
-        collection(db, "tracks"),
-        where("author.uid", "==", userId)
-      );
-      const snapshot = await getDocs(q);
-      return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) {
-      setMessage("Error fetching user tracks: " + error.message);
-      return [];
-    }
-  };
-
-  // ✅ Fetch a single track by ID
-  const fetchTrackById = async (trackId) => {
-    try {
-      const docRef = doc(db, "tracks", trackId);
-      const docSnap = await getDoc(docRef);
-      return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
-    } catch (error) {
-      setMessage("Error fetching track: " + error.message);
-      return null;
-    }
-  };
 
   // ✅ Delete Track & Associated Files
   const deleteTrackWithFiles = async (trackId, trackFileUrl, trackImageUrl, backgroundImageUrl) => {
@@ -250,17 +231,6 @@ const deleteCommentFromTrack = async (trackId, commentId) => {
   }
 };
 
-// ✅ Fetch Comments
-const fetchTrackComments = async (trackId) => {
-  try {
-    const comments = await fetchCollection(`tracks/${trackId}/comments`);
-    return comments;
-  } catch (error) {
-    setMessage("Error fetching comments: " + error.message);
-    return [];
-  }
-};
-
 // ✅ Toggle Like / Unlike Track
 const toggleTrackLike = async (trackId, user) => {
   if (!user?.uid) return { success: false, error: "User not logged in" };
@@ -328,24 +298,50 @@ const fetchTopRatedTracks = async () => {
 };
 
 
-  return {
-    saveOrUpdateTrack,
-    fetchTracksByPlaylist,
-    fetchTracksByUser,
-    fetchTrackById,
-    addCommentToTrack,  
-    updateCommentOnTrack,
-    deleteCommentFromTrack,   
-    fetchTrackComments,  
-    deleteTrackWithFiles,
-    toggleTrackLike,
-    trackUserViewOnTrack,
-    fetchTrackViews,
-    fetchTrackLikes,
-    fetchTopRatedTracks,
-    deleteAllTracksOfUser,
-    isLoading: isUploading || isSaving || isUpdating || isDeleting,
-    error: uploadError || saveError || updateError || deleteError,
-    message,
-  };
+return {
+  // core actions
+  saveOrUpdateTrack,
+  deleteTrackWithFiles,
+  deleteAllTracksOfUser,
+
+  // comments
+  addCommentToTrack,
+  updateCommentOnTrack,
+  deleteCommentFromTrack,
+  fetchTrackComments,
+
+  // fetch mutations with loading states
+  fetchTracksByPlaylist,
+  fetchTracksByUser,
+  fetchTrackById,
+
+  // engagement
+  toggleTrackLike,
+  fetchTrackLikes,
+  trackUserViewOnTrack,
+  fetchTrackViews,
+  fetchTopRatedTracks,
+
+  // shared state
+  isLoading:
+    isUploading ||
+    isSaving ||
+    isUpdating ||
+    isDeleting ||
+    isLoadingPlaylist ||
+    isLoadingUserTracks ||
+    isLoadingTrack,
+
+  error:
+    uploadError ||
+    saveError ||
+    updateError ||
+    deleteError ||
+    playlistError ||
+    userTracksError ||
+    trackError,
+
+  message,
+};
+
 }

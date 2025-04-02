@@ -3,7 +3,7 @@ import { useState } from "react";
 import styles from "./AppFooter.module.css";
 import ConfirmPopup from "./ConfirmPopup";
 import { useAuth } from "../../../contexts/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const AppFooter = () => {
   const { user, logout } = useAuth();

@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./AppHeader.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useTheme } from "../../../contexts/ThemeContext"; // Import ThemeContext
 import GlobalWaveformPlayer from "../../global/GlobalWaveformPlayer";

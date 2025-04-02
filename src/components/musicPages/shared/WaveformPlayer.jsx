@@ -4,7 +4,7 @@ import { playTrack, pauseTrack, stopTrack,setActiveTrack, setPlayerReady } from 
 import { useComments } from "../../../contexts/TrackCommentContext";
 import WavesurferPlayer from "@wavesurfer/react";
 import styles from "./WaveformPlayer.module.css";
-import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router";
 import { useAuth } from "../../../contexts/AuthContext";
 
 const WaveformPlayer = ({

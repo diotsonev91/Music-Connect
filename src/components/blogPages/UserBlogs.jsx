@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
 import useBlogMutation from "../../hooks/useBlogMutation";
 import ConfirmPopup from "../shared/App/ConfirmPopup"; 

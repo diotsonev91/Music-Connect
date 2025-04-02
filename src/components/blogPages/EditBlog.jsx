@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import useBlogMutation from "../../hooks/useBlogMutation";
 import BlogForm from "./BlogForm";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 
 const EditBlog = ({ onSubmitSuccess }) => {
   const { id } = useParams();

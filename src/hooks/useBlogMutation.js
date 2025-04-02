@@ -15,8 +15,41 @@ export default function useBlogMutation() {
   const { mutate: fetchBlog, isLoading: isFetching, error: fetchError } = useMutation((id) => fetchDocument("blogs", id));
   const { mutate: fetchBlogs, isLoading: isFetchingAll, error: fetchAllError } = useMutation(() => fetchCollection("blogs"));
   const { mutate: deleteBlog, isLoading: isDeleting, error: deleteBlogError } = useMutation((id) => deleteDocument("blogs", id));
+  const { mutate: getBlogViews, isLoading: isLoadingViews, error: viewsError } = useMutation(async (blogId) => {
+    const viewsPath = `blogs/${blogId}/views`;
+    const views = await fetchCollection(viewsPath);
+    return views.length;
+  });
+  
+  const { mutate: getBlogComments, isLoading: isLoadingComments, error: commentsError } = useMutation(async (blogId) => {
+    const commentsRef = collection(db, "blogs", blogId, "comments");
+    const snapshot = await getDocs(commentsRef);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  });
 
   const [message, setMessage] = useState("");
+
+  const isLoading =
+  isUploading ||
+  isSaving ||
+  isUpdating ||
+  isFetching ||
+  isFetchingAll ||
+  isDeleting ||
+  isDeletingImage ||
+  isLoadingViews ||
+  isLoadingComments;
+
+  const error =
+  uploadError ||
+  saveError ||
+  updateError ||
+  fetchError ||
+  fetchAllError ||
+  deleteBlogError ||
+  deleteImgError ||
+  viewsError ||
+  commentsError;
 
   // ✅ Function to create or update a blog post
   const saveOrUpdateBlog = async (formData, user, blogId = null) => {
@@ -90,12 +123,19 @@ export default function useBlogMutation() {
 
   const fetchBlogViews = async (blogId) => {
     try {
-      const viewsPath = `blogs/${blogId}/views`;
-      const views = await fetchCollection(viewsPath); // Fetch all view documents
-      return views.length;
+      return await getBlogViews(blogId);
     } catch (error) {
       setMessage("Error fetching blog views: " + error.message);
       return 0;
+    }
+  };
+  
+  const fetchBlogComments = async (blogId) => {
+    try {
+      return await getBlogComments(blogId);
+    } catch (error) {
+      setMessage("Error fetching blog comments: " + error.message);
+      return [];
     }
   };
   
@@ -181,20 +221,6 @@ export default function useBlogMutation() {
     }
   };
 
-  const isLoading = isUploading || isSaving || isUpdating || isFetching || isFetchingAll || isDeleting || isDeletingImage;
-
-  const fetchBlogComments = async (blogId) => {
-    
-    try {
-      const commentsRef = collection(db, "blogs", blogId, "comments");
-      const snapshot = await getDocs(commentsRef);
-      const comments = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      return comments;
-    } catch (error) {
-      setMessage("Error fetching blog comments: " + error.message);
-      return [];
-    }
-  };
 
   const deleteCommentOfBlog = async (blogId, commentId) => {
     try {
@@ -239,7 +265,7 @@ export default function useBlogMutation() {
     editCommentOfBlog,
     deleteAllBlogsOfUser,
     isLoading,
-    error: uploadError || saveError || updateError || fetchError || fetchAllError || deleteBlogError || deleteImgError,
+    error,
     message,
   };
 }

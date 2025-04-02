@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "./ChatHeader.module.css";
 import { useAuth } from '../../../../contexts/AuthContext';
 import { useUserProfile } from '../../../../hooks/useUserProfile';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const ChatHeader = ({ selectedChat }) => {
   const { user } = useAuth();

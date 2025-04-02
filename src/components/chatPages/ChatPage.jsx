@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import ChatList from './chat-list/ChatList';
 import ChatWindow from './chat/ChatWindow';
 import styles from './ChatPage.module.css';

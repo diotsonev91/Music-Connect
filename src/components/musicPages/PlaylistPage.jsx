@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom"; 
+import { useNavigate, useParams, useLocation } from "react-router"; 
 import useTrackMutation from "../../hooks/useTrackMutation"; 
 import WaveformPlayer from "./shared/WaveformPlayer"; 
 import styles from "./PlaylistPage.module.css"; 
@@ -9,6 +9,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import ConfirmPopup from "../shared/App/ConfirmPopup";
 import { playTrack , setActiveTrack } from "../../redux/playerSlice";
 import { useDispatch } from "react-redux";
+import Loader from "../shared/loaders/Loader";
 
 const PlaylistPage = ({  userId = "" }) => {
   const { playlistTitle } = useParams();
@@ -51,7 +52,7 @@ const PlaylistPage = ({  userId = "" }) => {
             data = await fetchTopRatedTracks();
             setDisplayTitle("Top Rated Tracks");
           }else {
-            data = await fetchTracksByPlaylist(playlistTitle, user);
+            data = await fetchTracksByPlaylist({playlistTitle, user});
           
             switch (playlistTitle) {
               case "newTracks":
@@ -178,7 +179,9 @@ const PlaylistPage = ({  userId = "" }) => {
 
 
       {isLoading ? (
-        <p>Loading tracks...</p>
+             <div className={styles.loaderWrapper}>
+             <Loader></Loader>
+             </div>
       ) : error ? (
         <p className={styles.error}>Error: {error.message}</p>
       ) : tracks.length === 0 ? (

@@ -1,7 +1,7 @@
 import React from "react";
 import AppHeader from "./AppHeader";
 import AppFooter from "./AppFooter";
-import { Outlet } from "react-router-dom";
+import { Outlet } from "react-router";
 import styles from "./Layout.module.css";
 const Layout = () => {
   return (

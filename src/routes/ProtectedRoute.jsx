@@ -1,12 +1,13 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
+import Loader from "../components/shared/loaders/Loader";
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>; // You can replace this with a spinner or skeleton UI
+    return <Loader />;
   }
 
   return user ? children : <Navigate to="/login" />;

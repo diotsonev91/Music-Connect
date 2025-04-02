@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBook, faPenNib, faCalendarAlt, faEye, faComment } from "@fortawesome/free-solid-svg-icons";
 import useBlogMutation from "../../hooks/useBlogMutation";
@@ -11,7 +11,7 @@ import ConfirmPopup from "../shared/App/ConfirmPopup";
 
 const BlogDetails = () => {
   const { id } = useParams(); // ✅ Get the blog ID from the URL
-  const { user} = useAuth();
+  const { user, loading} = useAuth();
   const { getBlog, postCommentToBlog, fetchBlogComments,editCommentOfBlog,deleteCommentOfBlog, trackUserView, fetchBlogViews } = useBlogMutation();
   const [blog, setBlog] = useState(null);
   const [comments, setComments] = useState([]);
@@ -46,7 +46,7 @@ const BlogDetails = () => {
   
         const totalViews = await fetchBlogViews(id);
         setBlog((prev) => ({ ...prev, uniqueViews: totalViews }));
-        
+        console.log(user)
       }
     };
     fetchBlog();
@@ -65,7 +65,7 @@ const BlogDetails = () => {
 
   
   if (!blog) {
-    return <p className={styles.error}>Loading blog or blog not found.</p>;
+    return <p className={styles.error}> Blog not found.</p>;
   }
 
   const avatarSrc = blog.author?.avatar || "/default_avatar.png";
@@ -227,9 +227,9 @@ const BlogDetails = () => {
              <button
   className={styles.commentButton}
   onClick={handleAddComment}
-  disabled={!user}
+  disabled={!user || loading}
 >
-  {user ? "Add Comment" : "Login to add comment"}
+{loading ? "Checking login..." : user ? "Add Comment" : "Login to add comment"}
 </button>
           </div>
         </div>

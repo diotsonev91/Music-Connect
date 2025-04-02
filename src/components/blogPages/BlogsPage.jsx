@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import EventCard from "./EventCard";
 import BlogCard from "./BlogCard";
 import styles from "./BlogsPage.module.css";
 import useBlogMutation from "../../hooks/useBlogMutation";
+import Loader from "../shared/loaders/Loader";
 
 const BlogsPage = () => {
   const { category } = useParams(); // Get category from URL
@@ -37,7 +38,7 @@ const BlogsPage = () => {
   
     fetchBlogs();
   }, []);
-  // ✅ No dependencies → Runs only on mount
+ 
 
   // Filter blogs by category
   const filteredBlogs = blogs.filter((blog) => blog.category === category);
@@ -59,7 +60,7 @@ const BlogsPage = () => {
 
   return (
     <div className={styles.blogsContainer}>
-      <h2 className={styles.pageTitle}>{category.replace("_", " ").toUpperCase()} Blogs</h2>
+      <h2 className={styles.pageTitle}>{category.replace("_", " ").toUpperCase()} </h2>
       <div className={styles.sortContainer}>
         <label>Sort By:</label>
         <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
@@ -70,7 +71,9 @@ const BlogsPage = () => {
         </select>
       </div>
       {isLoading ? (
-        <p>Loading blogs...</p>
+        <div className={styles.loaderWrapper}>
+        <Loader></Loader>
+        </div>
       ) : error ? (
         <p className={styles.error}>Error: {error.message}</p>
       ) : currentBlogs.length === 0 ? (

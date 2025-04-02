@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router";
 import { useAuth } from "../contexts/AuthContext";
+import Loader from "../components/shared/loaders/Loader";
 
 const PublicRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -8,7 +9,7 @@ const PublicRoute = ({ children }) => {
 
   
   if (loading) {
-    return <div>Loading...</div>; // Prevents flickering issues
+    return <Loader />;
   }
 
   if (user && (location.pathname === "/login" || location.pathname === "/register")) {

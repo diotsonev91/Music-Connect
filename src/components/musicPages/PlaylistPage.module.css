@@ -124,3 +124,10 @@
   display: flex;
 }
 
+.loaderWrapper {
+    
+  position: absolute;
+  top:-10cm;
+  left:-8cm;
+}
+

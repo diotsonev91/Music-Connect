@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useArtists from "../../hooks/useArtists";
 import styles from "./Artists.module.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useUserProfile } from "../../hooks/useUserProfile";
 
 export default function Artists() {

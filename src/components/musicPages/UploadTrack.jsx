@@ -4,7 +4,7 @@ import useTrackMutation from "../../hooks/useTrackMutation"; // ✅ Use our cust
 import TrackForm from "./TrackForm";
 import TrackView from "./shared/TrackView";
 import styles from "./UploadTrack.module.css"; 
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const UploadTrack = ({ onSubmitSuccess }) => {
   const navigate = useNavigate(); 
