@@ -1,20 +1,43 @@
-# 🚀 Firebase-Powered React App
+🎵 Music Connect
+A full-stack React + Firebase app for real-time chat, blog posts, media uploads, track listening, and social interaction. Built with Vite for lightning-fast development and deployed on Firebase Hosting.
 
-A full-stack React app using **Firebase Authentication, Firestore, and Storage** for real-time chat, blog posts, and media uploads. Built with **Vite** for fast development and deployed on **Firebase Hosting**.
+✨ Features
+✅ Email/Password Authentication
 
-## Features
-✅ Email/Password Authentication  
-✅ Real-time Firestore Chat  
-✅ Blog System (CRUD)  
-✅ Image & Media Uploads (Firebase Storage) with **comments**  
-✅ Fully Responsive UI  
+✅ Real-time Chat (Firestore)
 
-## 🛠️ Technologies Used
-- **React + Vite** (Frontend)
-- **Firebase Authentication** (Login & Signup)
-- **Firestore Database** (Real-time chat & blog storage)
-- **Firebase Storage** (Upload images & media with comments)
-- **Firebase Hosting** (Live deployment)
+✅ Blog System (CRUD)
+
+✅ Track Uploads & Listening
+
+✅ Image & Media Uploads (with comments)
+
+✅ Notifications System
+
+⚙️ Optimized for desktop. Mobile UX improvements are underway.
+
+🛠️ Technologies Used
+⚛️ React + Vite (Frontend)
+
+🔥 Firebase Authentication (Login & Signup)
+
+🗃️ Firestore Database (Chat, Blogs, and Track Metadata)
+
+🗂️ Firebase Storage (Image, Audio & Media Uploads)
+
+🚀 Firebase Hosting (Production Deployment)
+
+📦 Redux (Global state management for music player and notifications)
+
+🌀 Redux-Saga (Handling side effects, async chat operations)
+
+🧠 Context API
+
+    - AuthContext (User authentication state)
+
+    - ThemeContext (Dark/Light mode)
+
+    - TrackCommentContext (Track comments local state)
 
 ## 📦 Installation & Setup
 1. **Clone the repository**  
